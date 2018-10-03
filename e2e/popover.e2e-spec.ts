@@ -20,7 +20,9 @@ describe('Popover', () => {
   it('should match previous screenshot', (done) => {
     SkyHostBrowser.get('visual/popover');
     SkyHostBrowser.setWindowBreakpoint('lg');
-    expect('#screenshot-all-popovers').toMatchBaselineScreenshot(done);
+    expect('#screenshot-all-popovers').toMatchBaselineScreenshot(done, {
+      screenshotName: 'popover-all-popovers'
+    });
   });
 
   it('should open a popover above the caller', (done) => {
@@ -76,7 +78,9 @@ describe('Popover', () => {
     SkyHostBrowser.setWindowBreakpoint('xs');
     SkyHostBrowser.scrollTo(`#screenshot-popover-tiny`);
     element(by.id(`btn-popover-tiny`)).click();
-    expect('#screenshot-popover-tiny').toMatchBaselineScreenshot(done);
+    expect('#screenshot-popover-tiny').toMatchBaselineScreenshot(done, {
+      screenshotName: 'popover-tiny-screen'
+    });
   });
 
   it('should handle absolutely positioned items inside the popover', (done) => {
@@ -85,7 +89,9 @@ describe('Popover', () => {
     SkyHostBrowser.scrollTo('#screenshot-popover-with-dropdown');
     element(by.id('btn-popover-with-dropdown')).click();
     element(by.css('#screenshot-popover-with-dropdown .sky-dropdown-button')).click();
-    expect('#screenshot-popover-with-dropdown').toMatchBaselineScreenshot(done);
+    expect('#screenshot-popover-with-dropdown').toMatchBaselineScreenshot(done, {
+      screenshotName: 'popover-with-dropdown'
+    });
   });
 
   it('should handle left aligned popover in positioned parent', (done) => {
@@ -115,6 +121,8 @@ describe('Popover', () => {
     SkyHostBrowser.setWindowBreakpoint('lg');
     SkyHostBrowser.scrollTo('#screenshot-popover-fullscreen');
     element(by.id('btn-popover-fullscreen')).click();
-    expect('.sky-popover-container.sky-popover-placement-fullscreen').toMatchBaselineScreenshot(done);
+    expect('.sky-popover-container.sky-popover-placement-fullscreen').toMatchBaselineScreenshot(done, {
+      screenshotName: 'popover-fullscreen'
+    });
   });
 });
