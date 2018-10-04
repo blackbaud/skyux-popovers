@@ -61,7 +61,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     if (this.buttonType === 'select' || this.buttonType === 'tab') {
       return this._label;
     }
-    return this._label || this.getResource('skyux_context_menu_default_label');
+    return this._label || this.getResource('skyux_dropdown_context_menu_default_label');
   }
 
   public set label(value: string) {
