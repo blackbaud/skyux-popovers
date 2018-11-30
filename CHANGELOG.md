@@ -1,6 +1,6 @@
 # 3.0.0-rc.4 (2018-11-30)
 
-- Updated dependency to properly style the hover state for a selected, non-disabled tab. [#41](https://github.com/blackbaud/skyux-theme/pull/41)
+- Updated dependency to properly style the hover state for a selected, non-disabled tab. [blackbaud/skyux-theme#41](https://github.com/blackbaud/skyux-theme/pull/41)
 
 # 3.0.0-rc.3 (2018-11-19)
 
