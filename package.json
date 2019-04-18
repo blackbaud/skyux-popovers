@@ -33,8 +33,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@blackbaud/skyux": "2.38.0",
-    "@blackbaud/skyux-builder": "1.30.0",
-    "@skyux-sdk/builder-plugin-skyux": "1.0.0-rc.5"
+    "@blackbaud/skyux": "2.46.0",
+    "@blackbaud/skyux-builder": "1.33.0",
+    "@skyux-sdk/builder-plugin-skyux": "1.0.0-rc.6"
   }
 }
