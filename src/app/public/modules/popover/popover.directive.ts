@@ -31,18 +31,34 @@ import { SkyPopoverMessageType } from './types/popover-message-type';
   selector: '[skyPopover]'
 })
 export class SkyPopoverDirective implements OnChanges, OnDestroy {
+
+  /**
+   * References the popover component to display. Add this directive to the trigger element that opens the popover.
+   */
   @Input()
   public skyPopover: SkyPopoverComponent;
 
+  /**
+   * Specifies the horizontal alignment of the popover in relation to the trigger element.
+   */
   @Input()
   public skyPopoverAlignment: SkyPopoverAlignment;
 
+  /**
+   * Specifies the placement of the popover in relation to the trigger element.
+   */
   @Input()
   public skyPopoverPlacement: SkyPopoverPlacement;
 
+  /**
+   * Specifies the user action that displays the popover.
+   */
   @Input()
   public skyPopoverTrigger: SkyPopoverTrigger = 'click';
 
+  /**
+   * Provides an observable to send commands to the popover that respect the `SkyPopoverMessage` type.
+   */
   @Input()
   public skyPopoverMessageStream = new Subject<SkyPopoverMessage>();
 

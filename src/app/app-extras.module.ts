@@ -3,20 +3,53 @@ import {
 } from '@angular/core';
 
 import {
+  SkyCodeModule
+} from '@blackbaud/skyux-lib-code-block';
+
+import {
+  SkyDocsDemoPageModule,
+  SkyDocsSourceCodeProvider,
+  SkyDocsTypeDefinitionsProvider,
+  SkyDocsCodeExamplesModule,
+  SkyDocsDemoModule
+} from '@skyux/docs-tools';
+
+import {
+  SkyAppLinkModule
+} from '@skyux/router';
+
+import {
   SkyDropdownModule,
   SkyPopoverModule
 } from './public';
 
+import {
+  SkyPopoversSourceCodeProvider
+} from './public/plugin-resources/popovers-source-code-provider';
+
+import {
+  SkyPopoversTypeDefinitionsProvider
+} from './public/plugin-resources/popovers-type-definitions-provider';
+
 @NgModule({
-  imports: [
-    SkyDropdownModule,
-    SkyPopoverModule
-  ],
   exports: [
+    SkyCodeModule,
+    SkyDocsDemoModule,
+    SkyDocsDemoPageModule,
     SkyDropdownModule,
-    SkyPopoverModule
+    SkyPopoverModule,
+    SkyAppLinkModule,
+    SkyDocsCodeExamplesModule
   ],
-  providers: [],
-  entryComponents: []
+  providers: [
+    {
+      provide: SkyDocsSourceCodeProvider,
+      useClass: SkyPopoversSourceCodeProvider
+    },
+    {
+      provide: SkyDocsTypeDefinitionsProvider,
+      useClass: SkyPopoversTypeDefinitionsProvider
+    }
+  ]
 })
 export class AppExtrasModule { }

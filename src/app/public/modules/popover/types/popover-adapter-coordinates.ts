@@ -1,3 +1,6 @@
+/**
+ * @ignore
+ */
 export interface SkyPopoverAdapterCoordinates {
   isOutsideViewport: boolean;
   top?: number;

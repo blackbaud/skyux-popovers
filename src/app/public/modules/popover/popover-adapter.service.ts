@@ -17,6 +17,9 @@ import {
   SkyPopoverPosition
 } from './types';
 
+/**
+ * @ignore
+ */
 @Injectable()
 export class SkyPopoverAdapterService {
   constructor(

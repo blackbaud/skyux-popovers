@@ -52,12 +52,24 @@ import { SkyPopoverAdapterService } from './popover-adapter.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkyPopoverComponent implements OnInit, OnDestroy {
+
+  /**
+   * Indicates whether to close the popover when it loses focus.
+   * To require users to click a trigger button to close the popover, set this input to false.
+   */
   @Input()
   public dismissOnBlur = true;
 
+  /**
+   * Specifies a title for the popover.
+   */
   @Input()
   public popoverTitle: string;
 
+  /**
+   * Specifies the horizontal alignment of the popover in relation to the trigger element.
+   * The `skyPopoverAlignment` property on the popover directive overwrites this property.
+   */
   @Input()
   public set alignment(value: SkyPopoverAlignment) {
     this._alignment = value;
@@ -67,6 +79,10 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     return this._alignment || 'center';
   }
 
+  /**
+   * Specifies the placement of the popover in relation to the trigger element.
+   * The `skyPopoverPlacement` property on the popover directive overwrites this property.
+   */
   @Input()
   public set placement(value: SkyPopoverPlacement) {
     this._placement = value;
@@ -76,9 +92,15 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     return this._placement || 'above';
   }
 
+  /**
+   * Fires when users open the popover.
+   */
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
+  /**
+   * Fires when users close the popover.
+   */
   @Output()
   public popoverClosed = new EventEmitter<SkyPopoverComponent>();
 
