@@ -8,15 +8,9 @@ import {
 } from './public';
 
 @NgModule({
-  imports: [
-    SkyDropdownModule,
-    SkyPopoverModule
-  ],
   exports: [
     SkyDropdownModule,
     SkyPopoverModule
-  ],
-  providers: [],
-  entryComponents: []
+  ]
 })
 export class AppExtrasModule { }
