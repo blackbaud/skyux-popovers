@@ -18,10 +18,7 @@ import {
   SkyAppLinkModule
 } from '@skyux/router';
 
-import {
-  SkyDropdownModule,
-  SkyPopoverModule
-} from './public';
+const popovers = require('@skyux/popovers/bundles/bundle.umd');
 
 import {
   SkyPopoversSourceCodeProvider
@@ -36,8 +33,8 @@ import {
     SkyCodeModule,
     SkyDocsDemoModule,
     SkyDocsDemoPageModule,
-    SkyDropdownModule,
-    SkyPopoverModule,
+    popovers.SkyDropdownModule,
+    popovers.SkyPopoverModule,
     SkyAppLinkModule,
     SkyDocsCodeExamplesModule
   ],
