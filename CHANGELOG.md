@@ -1,3 +1,7 @@
+# 3.2.0-alpha.0 (2019-06-20)
+
+- Built library against the `fix-umd-modules` branch in Builder to try out a new AoT implementation.
+
 # 3.1.0 (2019-06-20)
 
 - Updated development dependencies to support `@skyux-sdk/builder@3.6.7`. [#17](https://github.com/blackbaud/skyux-popovers/pull/17)
