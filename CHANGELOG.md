@@ -1,3 +1,7 @@
+# 3.2.0-alpha.1 (2019-06-20)
+
+- Fixed `SkyDropdownModule` to properly import `SkyPopoversResourcesModule`.
+
 # 3.2.0-alpha.0 (2019-06-20)
 
 - Built library against the `fix-umd-modules` branch in Builder to try out a new AoT implementation.
