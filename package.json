@@ -1,6 +1,6 @@
 {
   "name": "@skyux/popovers",
-  "version": "3.2.0-alpha.2",
+  "version": "3.1.0",
   "description": "SKY UX Popovers",
   "main": "bundles/bundle.umd.js",
   "module": "index.ts",
@@ -59,7 +59,7 @@
     "@skyux/indicators": "3.0.3",
     "@skyux/modals": "3.0.4",
     "@skyux/omnibar-interop": "3.1.0",
-    "@skyux/popovers": "3.0.0",
+    "@skyux/popovers": "3.1.0",
     "@skyux/router": "3.1.1",
     "@skyux/theme": "3.7.0",
     "@types/core-js": "2.5.2",

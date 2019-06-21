@@ -1,15 +1,3 @@
-# 3.2.0-alpha.2 (2019-06-20)
-
-- Built library against `@skyux-sdk/builder@3.6.7` to verify existing implementation of AoT does not work.
-
-# 3.2.0-alpha.1 (2019-06-20)
-
-- Fixed `SkyDropdownModule` to properly import `SkyPopoversResourcesModule`.
-
-# 3.2.0-alpha.0 (2019-06-20)
-
-- Built library against the `fix-umd-modules` branch in Builder to try out a new AoT implementation.
-
 # 3.1.0 (2019-06-20)
 
 - Updated development dependencies to support `@skyux-sdk/builder@3.6.7`. [#17](https://github.com/blackbaud/skyux-popovers/pull/17)
