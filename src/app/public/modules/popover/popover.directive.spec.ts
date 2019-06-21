@@ -38,8 +38,14 @@ import {
 import {
   SkyPopoverMessageType
 } from './types/popover-message-type';
-import { SkyPopoverDirective } from './popover.directive';
-import { SkyPopoverAdapterService } from './popover-adapter.service';
+
+import {
+  SkyPopoverDirective
+} from './popover.directive';
+
+import {
+  SkyPopoverAdapterService
+} from './popover-adapter.service';
 
 class MockWindowService {
   public getWindow(): any {
