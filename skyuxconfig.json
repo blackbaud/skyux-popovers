@@ -9,6 +9,14 @@
   "plugins": [
     "@skyux-sdk/builder-plugin-skyux"
   ],
+  "omnibar": {
+    "experimental": true
+  },
+  "params": {
+    "svcid": {
+      "value": "skyux"
+    }
+  },
   "testSettings": {
     "e2e": {
       "browserSet": "speedy"
