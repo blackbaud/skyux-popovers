@@ -21,7 +21,7 @@ import {
 import {
   SkyDropdownModule,
   SkyPopoverModule
-} from '@skyux/popovers';
+} from './public';
 
 import {
   SkyPopoversSourceCodeProvider

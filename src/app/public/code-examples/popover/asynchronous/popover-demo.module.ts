@@ -7,12 +7,17 @@ import {
 } from '@angular/common';
 
 import {
+  SkyPopoverModule
+} from '@skyux/popovers';
+
+import {
   PopoverDemoComponent
 } from './popover-demo.component';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    SkyPopoverModule
   ],
   declarations: [
     PopoverDemoComponent
