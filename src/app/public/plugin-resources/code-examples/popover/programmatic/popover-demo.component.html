@@ -1,7 +1,12 @@
-<button
-  class="sky-btn"
-  type="button"
+<sky-help-inline
   [skyPopover]="myPopover"
+  [skyPopoverMessageStream]="popoverController"
+></sky-help-inline>
+
+<button
+  class="sky-btn sky-margin-inline-default"
+  type="button"
+  (click)="openPopover()"
 >
   Open popover
 </button>

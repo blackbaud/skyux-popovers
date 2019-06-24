@@ -7,6 +7,10 @@ import {
 } from '@angular/common';
 
 import {
+  SkyHelpInlineModule
+} from '@skyux/indicators';
+
+import {
   SkyPopoverModule
 } from '@skyux/popovers';
 
@@ -17,6 +21,7 @@ import {
 @NgModule({
   imports: [
     CommonModule,
+    SkyHelpInlineModule,
     SkyPopoverModule
   ],
   declarations: [

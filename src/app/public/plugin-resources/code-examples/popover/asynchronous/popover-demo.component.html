@@ -1,11 +1,11 @@
 <button
-  class="sky-btn"
+  class="sky-btn sky-btn-default"
   type="button"
-  [skyPopover]="myPopover"
+  [skyPopover]="asyncPopoverRef"
 >
   Open popover
 </button>
 
-<sky-popover #myPopover>
-  This is a popover.
+<sky-popover #asyncPopover>
+  My asynchronous popover.
 </sky-popover>
