@@ -7,11 +7,12 @@ import {
 } from '@blackbaud/skyux-lib-code-block';
 
 import {
-  SkyDocsDemoPageModule,
-  SkyDocsSourceCodeProvider,
-  SkyDocsTypeDefinitionsProvider,
   SkyDocsCodeExamplesModule,
-  SkyDocsDemoModule
+  SkyDocsDemoModule,
+  SkyDocsDemoPageModule,
+  SkyDocsDesignGuidelinesModule,
+  SkyDocsSourceCodeProvider,
+  SkyDocsTypeDefinitionsProvider
 } from '@skyux/docs-tools';
 
 import {
@@ -33,13 +34,14 @@ import {
 
 @NgModule({
   exports: [
+    SkyAppLinkModule,
     SkyCodeModule,
-    SkyDocsDemoModule,
-    SkyDocsDemoPageModule,
     SkyDropdownModule,
     SkyPopoverModule,
-    SkyAppLinkModule,
-    SkyDocsCodeExamplesModule
+    SkyDocsCodeExamplesModule,
+    SkyDocsDemoModule,
+    SkyDocsDemoPageModule,
+    SkyDocsDesignGuidelinesModule
   ],
   providers: [
     {
