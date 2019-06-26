@@ -1,6 +1,12 @@
-::ng-deep
-.sky-popover-container:not(.hidden) {
-  animation-play-state: visible !important;
+::ng-deep {
+  .sky-popover-container:not(.hidden) {
+    animation-play-state: visible !important;
+  }
+
+  // Hide the omnibar.
+  .sky-omnibar-iframe {
+    display: none;
+  }
 }
 
 #screenshot-all-popovers {

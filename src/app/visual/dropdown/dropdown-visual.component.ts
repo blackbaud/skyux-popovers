@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'dropdown-visual',
-  templateUrl: './dropdown-visual.component.html'
+  templateUrl: './dropdown-visual.component.html',
+  styleUrls: ['./dropdown-visual.component.scss']
 })
 export class DropdownVisualComponent {
   public dropdownOpen = false;
