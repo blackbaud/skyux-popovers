@@ -223,7 +223,7 @@ describe('SkyPopoverComponent', () => {
 
     fixture.componentInstance.isOpen = true;
 
-    SkyAppTestUtility.fireDomEvent(fixture.nativeElement, 'keyup', {
+    SkyAppTestUtility.fireDomEvent(fixture.nativeElement, 'keydown', {
       keyboardEventInit: { key: 'Escape' }
     });
     expect(spy).toHaveBeenCalledWith();
@@ -231,7 +231,7 @@ describe('SkyPopoverComponent', () => {
     spy.calls.reset();
 
     // Should ignore other key events.
-    SkyAppTestUtility.fireDomEvent(fixture.nativeElement, 'keyup', {
+    SkyAppTestUtility.fireDomEvent(fixture.nativeElement, 'keydown', {
       keyboardEventInit: { key: 'Backspace' }
     });
     expect(spy).not.toHaveBeenCalled();
