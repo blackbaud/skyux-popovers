@@ -291,7 +291,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       });
 
     Observable
-      .fromEvent(hostElement, 'keyup')
+      .fromEvent(hostElement, 'keydown')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
