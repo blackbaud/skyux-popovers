@@ -33,7 +33,11 @@ export class SkyDropdownItemComponent implements AfterViewInit {
     this.isDisabled = !this.isFocusable();
 
     // Make sure anchor elements are tab-able.
-    this.buttonElement.tabIndex = 0;
+    const buttonElement = this.buttonElement;
+    /* istanbul ignore else */
+    if (buttonElement) {
+      buttonElement.tabIndex = 0;
+    }
 
     this.changeDetector.detectChanges();
   }
