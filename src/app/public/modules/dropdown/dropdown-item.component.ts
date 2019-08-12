@@ -17,9 +17,12 @@ export class SkyDropdownItemComponent implements AfterViewInit {
   @Input()
   public ariaRole = 'menuitem';
 
+  public get buttonElement(): HTMLButtonElement {
+    return this.elementRef.nativeElement.querySelector('button,a');
+  }
+
   public isActive = false;
   public isDisabled = false;
-  public buttonElement: HTMLButtonElement;
 
   public constructor(
     public elementRef: ElementRef,
@@ -27,8 +30,11 @@ export class SkyDropdownItemComponent implements AfterViewInit {
   ) { }
 
   public ngAfterViewInit() {
-    this.buttonElement = this.elementRef.nativeElement.querySelector('button');
     this.isDisabled = !this.isFocusable();
+
+    // Make sure anchor elements are tab-able.
+    this.buttonElement.tabIndex = 0;
+
     this.changeDetector.detectChanges();
   }
 
