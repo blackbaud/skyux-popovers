@@ -4,7 +4,8 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Input
+  Input,
+  Renderer2
 } from '@angular/core';
 
 @Component({
@@ -26,7 +27,8 @@ export class SkyDropdownItemComponent implements AfterViewInit {
 
   public constructor(
     public elementRef: ElementRef,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private renderer: Renderer2
   ) { }
 
   public ngAfterViewInit() {
@@ -36,7 +38,7 @@ export class SkyDropdownItemComponent implements AfterViewInit {
     const buttonElement = this.buttonElement;
     /* istanbul ignore else */
     if (buttonElement) {
-      buttonElement.tabIndex = 0;
+      this.renderer.setAttribute(buttonElement, 'tabIndex', '0');
     }
 
     this.changeDetector.detectChanges();
