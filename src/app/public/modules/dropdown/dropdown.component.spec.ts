@@ -764,7 +764,7 @@ describe('Dropdown component', () => {
       openOrClosePopoverWithButtonClick(true);
     }
 
-    it('buttonIsFocused and menuIsFocused reflect the state of focus', fakeAsync(() => {
+    it('should reflect the state of focus', fakeAsync(() => {
       fixture.detectChanges();
 
       const buttonEl = getDropdownButtonElement();
