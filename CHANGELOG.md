@@ -1,3 +1,7 @@
+# 3.3.0 (2019-08-19)
+
+- Added `buttonIsFocused` and `menuIsFocused` properties to the dropdown component. [#30](https://github.com/blackbaud/skyux-popovers/pull/30)
+
 # 3.2.0 (2019-08-14)
 
 - Added support for anchor elements in the dropdown menu component. [#28](https://github.com/blackbaud/skyux-popovers/pull/28)
