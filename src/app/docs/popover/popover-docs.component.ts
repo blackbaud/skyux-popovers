@@ -10,6 +10,12 @@ export class PopoverDocsComponent {
 
   public demoSettings: any = {};
 
+  public get showAlignmentOptions(): boolean {
+    const placement = this.demoSettings.skyPopoverPlacement;
+
+    return (placement === 'above' || placement === 'below');
+  }
+
   public onDemoSelectionChange(change: any): void {
     if (change.showTitle === true) {
       this.demoSettings.popoverTitle = 'Popover title';

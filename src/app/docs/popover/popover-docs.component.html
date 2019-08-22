@@ -29,7 +29,7 @@
       </sky-docs-demo-control-panel-section>
 
       <sky-docs-demo-control-panel-section>
-        <sky-docs-demo-control-panel-radio-group
+        <sky-docs-demo-control-panel-radio-group *ngIf="showAlignmentOptions"
           heading="Alignment"
           name="alignment"
           [initialValue]="'center'"
