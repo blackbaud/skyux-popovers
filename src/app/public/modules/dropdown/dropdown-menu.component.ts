@@ -184,11 +184,13 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
     if (key === 'arrowdown' || key === 'down') {
       this.focusNextItem();
       event.preventDefault();
+      event.stopPropagation();
     }
 
     if (key === 'arrowup' || key === 'up') {
       this.focusPreviousItem();
       event.preventDefault();
+      event.stopPropagation();
     }
   }
 

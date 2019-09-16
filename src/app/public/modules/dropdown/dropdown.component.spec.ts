@@ -576,6 +576,94 @@ describe('Dropdown component', () => {
       verifyActiveMenuItemByIndex(0);
       verifyFocusedMenuItemByIndex(0, false);
     }));
+
+    it('should prevent enter key from bubbling beyond host element', fakeAsync(() => {
+      tick();
+      fixture.detectChanges();
+      const buttonElem = getDropdownButtonElement();
+      const popoverElem = getPopoverContainerElement();
+
+      let numDocumentKeyEvents = 0;
+      document.addEventListener('keydown', function () {
+        numDocumentKeyEvents++;
+      });
+
+      let numDropdownKeyEvents = 0;
+      buttonElem.addEventListener('keydown', function () {
+        numDropdownKeyEvents++;
+      });
+
+      let numPopoverEvents = 0;
+      popoverElem.addEventListener('keydown', function () {
+        numPopoverEvents++;
+      });
+
+      // Open Dropdown with "enter" key.
+      dispatchKeyboardButtonClickEvent(buttonElem);
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Select first menu item with "enter" key.
+      const menuItemButton = popoverElem.querySelectorAll('button').item(0);
+      dispatchKeyboardButtonClickEvent(menuItemButton);
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      expect(numDocumentKeyEvents).toEqual(0);
+      expect(numDropdownKeyEvents).toEqual(1);
+      expect(numPopoverEvents).toEqual(1);
+    }));
+
+    it('should prevent arrow keys from bubbling beyond host element', fakeAsync(() => {
+      tick();
+      fixture.detectChanges();
+      const hostElem = getDropdownMenuHostElement();
+      const buttonElem = getDropdownButtonElement();
+
+      let numDocumentKeyEvents = 0;
+      document.addEventListener('keydown', function () {
+        numDocumentKeyEvents++;
+      });
+
+      let numDropdownKeyEvents = 0;
+      buttonElem.addEventListener('keydown', function () {
+        numDropdownKeyEvents++;
+      });
+
+      let numHostEvents = 0;
+      hostElem.addEventListener('keydown', function () {
+        numHostEvents++;
+      });
+
+      // Open Dropdown with "down" key.
+      SkyAppTestUtility.fireDomEvent(buttonElem, 'keydown', {
+        keyboardEventInit: { key: 'Down' }
+      });
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      // Navigate down and up with arrow keys.
+      SkyAppTestUtility.fireDomEvent(hostElem, 'keydown', {
+        keyboardEventInit: { key: 'Down' }
+      });
+      tick();
+      fixture.detectChanges();
+      tick();
+      SkyAppTestUtility.fireDomEvent(hostElem, 'keydown', {
+        keyboardEventInit: { key: 'Up' }
+      });
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      expect(numDocumentKeyEvents).toEqual(0);
+      expect(numDropdownKeyEvents).toEqual(1);
+      expect(numHostEvents).toEqual(2);
+    }));
   });
 
   describe('message stream', () => {

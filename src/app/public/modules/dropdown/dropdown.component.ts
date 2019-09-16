@@ -170,6 +170,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
           this.windowRef.getWindow().setTimeout(() => {
             this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
           });
+          event.stopPropagation();
           break;
 
         // Allow the menu to be opened with the arrowdown key
@@ -181,6 +182,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
             this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
             event.preventDefault();
           }
+          event.stopPropagation();
           break;
       }
 
@@ -191,6 +193,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     switch (key) {
       case 'enter':
         this.isKeyboardActive = true;
+        event.stopPropagation();
         break;
 
       case 'down':
@@ -198,6 +201,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         this.isKeyboardActive = true;
         this.sendMessage(SkyDropdownMessageType.Open);
         event.preventDefault();
+        event.stopPropagation();
         break;
     }
   }
