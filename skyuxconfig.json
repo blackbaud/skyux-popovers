@@ -3,12 +3,6 @@
   "name": "skyux-popovers",
   "mode": "easy",
   "compileMode": "aot",
-  "skyuxModules": [
-    "SkyErrorModule"
-  ],
-  "moduleAliases": {
-    "@skyux/popovers": "src/app/public"
-  },
   "plugins": [
     "@skyux-sdk/builder-plugin-skyux"
   ],

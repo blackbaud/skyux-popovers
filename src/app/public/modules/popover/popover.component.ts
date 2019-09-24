@@ -78,6 +78,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
    * The `skyPopoverAlignment` property on the popover directive overwrites this property.
+   * @default "center"
    */
   @Input()
   public set alignment(value: SkyPopoverAlignment) {
@@ -91,6 +92,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   /**
    * Specifies the placement of the popover in relation to the trigger element.
    * The `skyPopoverPlacement` property on the popover directive overwrites this property.
+   * @default "above"
    */
   @Input()
   public set placement(value: SkyPopoverPlacement) {

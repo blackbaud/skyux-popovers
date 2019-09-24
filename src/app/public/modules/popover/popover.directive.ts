@@ -48,12 +48,14 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
+   * @default "center"
    */
   @Input()
   public skyPopoverAlignment: SkyPopoverAlignment;
 
   /**
    * Specifies the placement of the popover in relation to the trigger element.
+   * @default "above"
    */
   @Input()
   public skyPopoverPlacement: SkyPopoverPlacement;
