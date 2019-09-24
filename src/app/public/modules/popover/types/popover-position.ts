@@ -2,7 +2,7 @@ import { SkyPopoverAlignment } from './popover-alignment';
 import { SkyPopoverPlacement } from './popover-placement';
 
 /**
- * @ignore
+ * @internal
  */
 export interface SkyPopoverPosition {
   top?: number;

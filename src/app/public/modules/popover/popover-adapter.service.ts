@@ -18,7 +18,7 @@ import {
 } from './types';
 
 /**
- * @ignore
+ * @internal
  */
 @Injectable()
 export class SkyPopoverAdapterService {

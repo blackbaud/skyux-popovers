@@ -1,5 +1,5 @@
 /**
- * @ignore
+ * @internal
  */
 export interface SkyPopoverAdapterCoordinates {
   isOutsideViewport: boolean;

@@ -1,5 +1,5 @@
 /**
- * @ignore
+ * @internal
  */
 export interface SkyPopoverAdapterArrowCoordinates {
   top: number;

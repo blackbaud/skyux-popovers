@@ -3,7 +3,7 @@ import {
 } from '@angular/core';
 
 /**
- * @ignore
+ * @internal
  */
 export interface SkyPopoverAdapterElements {
   popover: ElementRef;
