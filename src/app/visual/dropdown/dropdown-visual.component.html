@@ -1,3 +1,6 @@
+
+
+
 <div id="screenshot-dropdown-button" style="height: 170px;width: 300px;">
   <sky-dropdown>
     <sky-dropdown-button>
@@ -29,6 +32,19 @@
     </sky-dropdown-menu>
   </sky-dropdown>
 </div>
+
+<sky-dropdown>
+  <sky-dropdown-button>
+    Show dropdown
+  </sky-dropdown-button>
+  <sky-dropdown-menu>
+    <sky-dropdown-item *ngFor="let item of colors">
+      <button type="button">
+        {{ item.name }}
+      </button>
+    </sky-dropdown-item>
+  </sky-dropdown-menu>
+</sky-dropdown>
 
 <div id="screenshot-dropdown-z-index">
   <div style="position: relative; background-color: red; width: 300px;">

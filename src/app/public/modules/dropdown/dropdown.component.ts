@@ -151,6 +151,8 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
+    this.popover.dropdown = true;
+
     this.messageStream
       .takeUntil(this.ngUnsubscribe)
       .subscribe((message: SkyDropdownMessage) => {
