@@ -1,10 +1,16 @@
 import {
+  ChangeDetectionStrategy,
   Component
 } from '@angular/core';
 
+import {
+  SkyDocsDemoControlPanelChange
+} from '@skyux/docs-tools';
+
 @Component({
   selector: 'app-popover-docs',
-  templateUrl: './popover-docs.component.html'
+  templateUrl: './popover-docs.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopoverDocsComponent {
 
@@ -16,10 +22,10 @@ export class PopoverDocsComponent {
     return (placement === 'above' || placement === 'below');
   }
 
-  public onDemoSelectionChange(change: any): void {
+  public onDemoSelectionChange(change: SkyDocsDemoControlPanelChange): void {
     if (change.showTitle === true) {
       this.demoSettings.popoverTitle = 'Popover title';
-    } else {
+    } else if (change.showTitle === false) {
       this.demoSettings.popoverTitle = undefined;
     }
 

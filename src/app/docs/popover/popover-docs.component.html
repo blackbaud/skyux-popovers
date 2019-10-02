@@ -16,7 +16,7 @@
       <sky-docs-demo-control-panel-section>
         <sky-docs-demo-control-panel-radio-group
           heading="Placement"
-          name="placement"
+          propertyName="placement"
           [initialValue]="'above'"
           [choices]="[
             { value: 'above', label: 'Above' },
@@ -31,7 +31,7 @@
       <sky-docs-demo-control-panel-section>
         <sky-docs-demo-control-panel-radio-group *ngIf="showAlignmentOptions"
           heading="Alignment"
-          name="alignment"
+          propertyName="alignment"
           [initialValue]="'center'"
           [choices]="[
             { value: 'left', label: 'Left' },
@@ -43,7 +43,7 @@
 
         <sky-docs-demo-control-panel-checkbox
           label="Show title"
-          name="showTitle"
+          propertyName="showTitle"
           [checked]="true"
         >
         </sky-docs-demo-control-panel-checkbox>
