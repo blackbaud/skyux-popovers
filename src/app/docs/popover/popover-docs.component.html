@@ -81,15 +81,15 @@
 
   <sky-docs-code-examples>
     <sky-docs-code-example
-      title="Basic setup"
+      heading="Basic setup"
       sourceCodeLocation="src/app/public/plugin-resources/code-examples/popover/basic"
     ></sky-docs-code-example>
     <sky-docs-code-example
-      title="Using the message stream"
+      heading="Using the message stream"
       sourceCodeLocation="src/app/public/plugin-resources/code-examples/popover/programmatic"
     ></sky-docs-code-example>
     <sky-docs-code-example
-      title="Asynchronous popovers"
+      heading="Asynchronous popovers"
       sourceCodeLocation="src/app/public/plugin-resources/code-examples/popover/asynchronous"
     ></sky-docs-code-example>
   </sky-docs-code-examples>
@@ -97,20 +97,20 @@
   <sky-docs-design-guidelines>
 
     <sky-docs-demo-page-section heading="Usage">
-      <sky-docs-design-guideline heading="Use when">
+      <sky-docs-design-guideline heading="Use when" headingStyle="success">
         <p>
-          Users require access to small chunks of contextual content that are only valuable some of the time.
+          Use popovers when users require access to small chunks of contextual content that are only valuable some of the time.
         </p>
         <p>
-          Tasks include complex or unfamiliar capabilities, and users require guidance on subtle-but-important elements.
+          Use popovers when tasks include complex or unfamiliar capabilities, and users require guidance on subtle-but-important elements.
         </p>
       </sky-docs-design-guideline>
-      <sky-docs-design-guideline heading="Don't use when">
+      <sky-docs-design-guideline heading="Don't use when" headingStyle="danger">
         <p>
-          The content is valuable most of the time. Use <a routerLink="/design/guidelines/user-assistance" fragment="persistent-inline-help">persistent inline help</a> instead.
+          Don't use popovers when the content is valuable most of the time. Use <a href="https://developer.blackbaud.com/skyux/design/guidelines/user-assistance#inline-help">persistent inline help</a> instead.
         </p>
         <p>
-          A large amount of content is necessary. Use a <a routerLink="/components/flyout">flyout</a> instead.
+          Don't use popovers when a large amount of content is necessary. Use a <a href="https://developer.blackbaud.com/skyux/components/flyout">flyout</a> instead.
         </p>
       </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
@@ -119,8 +119,41 @@
       <sky-docs-anatomy thumbnailPath="~/assets/img/guidelines/popover/anatomy.png">
         <sky-docs-anatomy-item>Content area</sky-docs-anatomy-item>
         <sky-docs-anatomy-item>Highlight border</sky-docs-anatomy-item>
-        <sky-docs-anatomy-item [isOptional]="true">Element pointer</sky-docs-anatomy-item>
+        <sky-docs-anatomy-item>Element pointer</sky-docs-anatomy-item>
       </sky-docs-anatomy>
+    </sky-docs-demo-page-section>
+
+    <sky-docs-demo-page-section heading="Options">
+      <sky-docs-design-guideline heading="Positioning">
+        <p>
+          You can specify the position of the popover in relation to the element it references. The default position is centered above that element.
+        </p>
+        <sky-docs-design-guideline-thumbnail
+          imageSource="~/assets/img/guidelines/popover/option-position.png"
+        >
+        </sky-docs-design-guideline-thumbnail>
+      </sky-docs-design-guideline>
+
+      <sky-docs-design-guideline heading="Trigger">
+        <p>
+          To ensure usability on touch devices, trigger user-invoked popovers on <sky-code>click</sky-code> actions rather than <sky-code>mouseenter</sky-code> actions.
+        </p>
+        <sky-docs-design-guideline-thumbnail
+          videoSource="~/assets/img/guidelines/popover/popover-click.mp4"
+          [showBorder]="true"
+        >
+        </sky-docs-design-guideline-thumbnail>
+      </sky-docs-design-guideline>
+      <sky-docs-design-guideline>
+        <p>
+          You can also invoke popovers programmatically. For example, you can programmatically invoke a popover when users visit a page for the first time to highlight an important interface element that they might overlook. However, don't invoke multiple popovers on a page because this reduces their effectiveness.
+        </p>
+        <sky-docs-design-guideline-thumbnail
+          videoSource="~/assets/img/guidelines/popover/popover-auto.mp4"
+          [showBorder]="true"
+        >
+        </sky-docs-design-guideline-thumbnail>
+      </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
 
     <sky-docs-demo-page-section heading="Behavior and states">
@@ -140,35 +173,10 @@
       </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
 
-    <sky-docs-demo-page-section heading="Options">
-      <sky-docs-design-guideline heading="Positioning">
-        <p>
-          You can specify the position of the popover in relation to the element it references. The default position is centered above that element.
-        </p>
-        <sky-docs-design-guideline-thumbnail
-          imageSource="~/assets/img/guidelines/popover/option-position.png"
-        >
-        </sky-docs-design-guideline-thumbnail>
-      </sky-docs-design-guideline>
-
-      <sky-docs-design-guideline heading="Trigger">
-        <p>
-          To ensure usability on touch devices, trigger user-invoked popovers on <sky-code>click</sky-code> actions rather than <sky-code>mouseenter</sky-code> actions.
-        </p>
-        <p>
-          You can also invoke popovers programmatically. For example, you can programmatically invoke a popover when users visit a page for the first time to highlight an important interface element that they might overlook. However, don't invoke multiple popovers on a page because this reduces their effectiveness.
-        </p>
-      </sky-docs-design-guideline>
-    </sky-docs-demo-page-section>
-
     <sky-docs-demo-page-section heading="Content">
       <sky-docs-design-guideline>
         <p>
           Limit popovers to small chunks of contextual content. The content can include plain text, formatted HTML, or Angular components.
-        </p>
-
-        <p>
-          Don't include a large amount of content, form inputs, or complex interactions.
         </p>
 
         <sky-docs-design-guideline-thumbnail
@@ -184,6 +192,12 @@
           captionType="success"
         >
         </sky-docs-design-guideline-thumbnail>
+      </sky-docs-design-guideline>
+
+      <sky-docs-design-guideline>
+        <p>
+          Don't include a large amount of content, form inputs, or complex interactions.
+        </p>
 
         <sky-docs-design-guideline-thumbnail
           imageSource="~/assets/img/guidelines/popover/content-dont-overload.png"
