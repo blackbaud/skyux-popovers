@@ -1,15 +1,15 @@
 import {
   AnimationEvent,
+  animate,
   trigger,
   state,
   style,
-  animate,
   transition
 } from '@angular/animations';
 
 import {
-  ChangeDetectorRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -24,26 +24,26 @@ import {
   SkyWindowRefService
 } from '@skyux/core';
 
+import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/takeUntil';
+
 import {
   Observable
 } from 'rxjs/Observable';
-
-import 'rxjs/add/observable/fromEvent';
 
 import {
   Subject
 } from 'rxjs/Subject';
 
-import 'rxjs/add/operator/takeUntil';
+import {
+  SkyPopoverAdapterService
+} from './popover-adapter.service';
 
 import {
   SkyPopoverAlignment,
   SkyPopoverPlacement
 } from './types';
-
-import {
-  SkyPopoverAdapterService
-} from './popover-adapter.service';
 
 @Component({
   selector: 'sky-popover',
@@ -63,19 +63,6 @@ import {
 export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   /**
-   * Indicates whether to close the popover when it loses focus.
-   * To require users to click a trigger button to close the popover, set this input to false.
-   */
-  @Input()
-  public dismissOnBlur = true;
-
-  /**
-   * Specifies a title for the popover.
-   */
-  @Input()
-  public popoverTitle: string;
-
-  /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
    * The `skyPopoverAlignment` property on the popover directive overwrites this property.
    * @default "center"
@@ -88,6 +75,13 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   public get alignment(): SkyPopoverAlignment {
     return this._alignment || 'center';
   }
+
+  /**
+   * Indicates whether to close the popover when it loses focus.
+   * To require users to click a trigger button to close the popover, set this input to false.
+   */
+  @Input()
+  public dismissOnBlur = true;
 
   /**
    * Specifies the placement of the popover in relation to the trigger element.
@@ -104,10 +98,10 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fires when users open the popover.
+   * Specifies a title for the popover.
    */
-  @Output()
-  public popoverOpened = new EventEmitter<SkyPopoverComponent>();
+  @Input()
+  public popoverTitle: string;
 
   /**
    * Fires when users close the popover.
@@ -115,30 +109,48 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @Output()
   public popoverClosed = new EventEmitter<SkyPopoverComponent>();
 
-  @ViewChild('popoverContainer')
-  public popoverContainer: ElementRef;
+  /**
+   * Fires when users open the popover.
+   */
+  @Output()
+  public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
   @ViewChild('popoverArrow')
   public popoverArrow: ElementRef;
 
-  public isOpen = false;
-  public isVisible = false;
-  public isMouseEnter = false;
-  public classNames: string[] = [];
+  @ViewChild('popoverContainer')
+  public popoverContainer: ElementRef;
+
   public animationState: 'hidden' | 'visible' = 'hidden';
 
-  public popoverTop: number;
-  public popoverLeft: number;
   public arrowTop: number;
+
   public arrowLeft: number;
 
+  public classNames: string[] = [];
+
+  public isMouseEnter = false;
+
+  public isOpen = false;
+
+  public isVisible = false;
+
+  public popoverLeft: number;
+
+  public popoverTop: number;
+
   private caller: ElementRef;
+
   private idled = new Subject<boolean>();
+
   private isMarkedForCloseOnMouseLeave = false;
+
   private preferredPlacement: SkyPopoverPlacement;
+
   private scrollListeners: Function[] = [];
 
   private _alignment: SkyPopoverAlignment;
+
   private _placement: SkyPopoverPlacement;
 
   constructor(
@@ -148,12 +160,12 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     private windowRef: SkyWindowRefService
   ) { }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.preferredPlacement = this.placement;
     this.adapterService.hidePopover(this.popoverContainer);
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.removeListeners();
     this.idled.complete();
   }
@@ -162,7 +174,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     caller: ElementRef,
     placement?: SkyPopoverPlacement,
     alignment?: SkyPopoverAlignment
-  ) {
+  ): void {
     if (!caller) {
       return;
     }
@@ -189,7 +201,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     });
   }
 
-  public reposition() {
+  public reposition(): void {
     this.placement = this.preferredPlacement;
     this.changeDetector.markForCheck();
 
@@ -200,13 +212,13 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.positionPopover();
   }
 
-  public close() {
+  public close(): void {
     this.animationState = 'hidden';
     this.removeListeners();
     this.changeDetector.markForCheck();
   }
 
-  public onAnimationStart(event: AnimationEvent) {
+  public onAnimationStart(event: AnimationEvent): void {
     if (event.fromState === 'void') {
       return;
     }
@@ -216,7 +228,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onAnimationDone(event: AnimationEvent) {
+  public onAnimationDone(event: AnimationEvent): void {
     if (event.fromState === 'void') {
       return;
     }
@@ -232,11 +244,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   // TODO: This method is no longer used. Remove it when we decide to make breaking changes.
-  public markForCloseOnMouseLeave() {
+  public markForCloseOnMouseLeave(): void {
     this.isMarkedForCloseOnMouseLeave = true;
   }
 
-  private positionPopover() {
+  private positionPopover(): void {
     if (this.placement !== 'fullscreen') {
       const elements = {
         popover: this.popoverContainer,

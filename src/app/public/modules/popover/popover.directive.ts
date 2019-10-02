@@ -7,15 +7,23 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/take';
-
 import {
   SkyWindowRefService
 } from '@skyux/core';
+
+import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/takeUntil';
+
+import 'rxjs/add/operator/take';
+
+import {
+  Observable
+} from 'rxjs/Observable';
+
+import {
+  Subject
+} from 'rxjs/Subject';
 
 import {
   SkyPopoverAlignment,
@@ -58,19 +66,19 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
    * @default "above"
    */
   @Input()
-  public skyPopoverPlacement: SkyPopoverPlacement;
+  public skyPopoverMessageStream = new Subject<SkyPopoverMessage>();
 
   /**
    * Specifies the user action that displays the popover.
    */
   @Input()
-  public skyPopoverTrigger: SkyPopoverTrigger = 'click';
+  public skyPopoverPlacement: SkyPopoverPlacement;
 
   /**
    * Provides an observable to send commands to the popover that respect the `SkyPopoverMessage` type.
    */
   @Input()
-  public skyPopoverMessageStream = new Subject<SkyPopoverMessage>();
+  public skyPopoverTrigger: SkyPopoverTrigger = 'click';
 
   private idled = new Subject<boolean>();
 
@@ -79,7 +87,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     private windowRef: SkyWindowRefService
   ) { }
 
-  public ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges): void {
     /* istanbul ignore else */
     if (changes.skyPopover) {
       this.removeEventListeners();
@@ -94,7 +102,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     this.idled.complete();
   }
 
-  public togglePopover() {
+  public togglePopover(): void {
     if (this.isPopoverOpen()) {
       this.sendMessage(SkyPopoverMessageType.Close);
       return;
@@ -103,7 +111,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     this.sendMessage(SkyPopoverMessageType.Open);
   }
 
-  private positionPopover() {
+  private positionPopover(): void {
     this.skyPopover.positionNextTo(
       this.elementRef,
       this.skyPopoverPlacement,
@@ -111,11 +119,11 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     );
   }
 
-  private closePopover() {
+  private closePopover(): void {
     this.skyPopover.close();
   }
 
-  private closePopoverOrMarkForClose() {
+  private closePopoverOrMarkForClose(): void {
     if (this.skyPopover.isMouseEnter) {
       this.skyPopover.markForCloseOnMouseLeave();
     } else {
@@ -127,7 +135,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     return (this.skyPopover && this.skyPopover.isOpen);
   }
 
-  private addEventListeners() {
+  private addEventListeners(): void {
     const element = this.elementRef.nativeElement;
 
     this.skyPopoverMessageStream
@@ -193,13 +201,13 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
       });
   }
 
-  private removeEventListeners() {
+  private removeEventListeners(): void {
     this.idled.next(true);
     this.idled.unsubscribe();
     this.idled = new Subject<boolean>();
   }
 
-  private handleIncomingMessages(message: SkyPopoverMessage) {
+  private handleIncomingMessages(message: SkyPopoverMessage): void {
     /* tslint:disable-next-line:switch-default */
     switch (message.type) {
       case SkyPopoverMessageType.Open:
@@ -219,7 +227,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     }
   }
 
-  private sendMessage(messageType: SkyPopoverMessageType) {
+  private sendMessage(messageType: SkyPopoverMessageType): void {
     this.skyPopoverMessageStream.next({ type: messageType });
   }
 }
