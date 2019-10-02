@@ -15,6 +15,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkyDropdownItemComponent implements AfterViewInit {
+
   @Input()
   public ariaRole = 'menuitem';
 
@@ -23,6 +24,7 @@ export class SkyDropdownItemComponent implements AfterViewInit {
   }
 
   public isActive = false;
+
   public isDisabled = false;
 
   public constructor(
