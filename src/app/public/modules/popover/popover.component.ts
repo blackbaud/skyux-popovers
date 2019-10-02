@@ -106,7 +106,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   public classNames: string[] = [];
 
-  public dropdown = false;
+  public containOverflow = false;
 
   public isMouseEnter = false;
 
@@ -168,7 +168,10 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
     // Let the styles render before gauging the dimensions.
     this.windowRef.getWindow().setTimeout(() => {
-      if (this.adapterService.isPopoverLargerThanParent(this.popoverContainer) && !this.dropdown) {
+      if (
+        this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
+        && !this.containOverflow
+      ) {
         this.placement = 'fullscreen';
       }
 
@@ -184,7 +187,10 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.placement = this.preferredPlacement;
     this.changeDetector.markForCheck();
 
-    if (this.adapterService.isPopoverLargerThanParent(this.popoverContainer) && !this.dropdown) {
+    if (
+      this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
+      && !this.containOverflow
+    ) {
       this.placement = 'fullscreen';
     }
 

@@ -182,7 +182,7 @@ $popover-max-width: 276px;
   }
 }
 
-.sky-popover-dropdown-container {
+.sky-popover-contain-overflow {
   .sky-popover {
     overflow-y: auto;
     max-height: -webkit-calc(50vh - 50px);
