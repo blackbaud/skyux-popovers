@@ -22,6 +22,7 @@
   },
   "app": {
     "styles": [
+      "src/app/visual-styles.scss",
       "@skyux/theme/css/sky.css"
     ]
   }
