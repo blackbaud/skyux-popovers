@@ -16,6 +16,19 @@ export class PopoverDocsComponent {
 
   public demoSettings: any = {};
 
+  public alignmentChoices = [
+    { value: 'left', label: 'Left' },
+    { value: 'right', label: 'Right' },
+    { value: 'center', label: 'Center' }
+  ];
+
+  public placementChoices = [
+    { value: 'above', label: 'Above' },
+    { value: 'below', label: 'Below' },
+    { value: 'left', label: 'Left' },
+    { value: 'right', label: 'Right' }
+  ];
+
   public get showAlignmentOptions(): boolean {
     const placement = this.demoSettings.skyPopoverPlacement;
 
