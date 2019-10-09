@@ -77,7 +77,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   public get allowFullscreen(): boolean {
-    return this._allowFullscreen || true;
+    return this._allowFullscreen === undefined ? true : this._allowFullscreen;
   }
 
   @Input()
