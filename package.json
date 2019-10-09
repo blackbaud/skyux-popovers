@@ -63,6 +63,7 @@
     "@skyux/theme": "3.7.0",
     "@types/core-js": "2.5.2",
     "codelyzer": "4.5.0",
+    "core-js": "2.6.9",
     "rxjs": "6.5.2",
     "rxjs-compat": "6.5.2",
     "ts-node": "8.3.0",
