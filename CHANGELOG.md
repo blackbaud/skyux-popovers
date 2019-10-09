@@ -1,6 +1,6 @@
 # 3.4.0 (2019-10-09)
 
-- Added the `allowFullscreen` property to the popover component. Updated the dropdown component to prevent the dropdown menu items from displaying fullscreen. [#36](https://github.com/blackbaud/skyux-popovers/pull/36)
+- Added the `allowFullscreen` input property to the popover component. Updated the dropdown component to prevent the dropdown menu items from displaying fullscreen. [#36](https://github.com/blackbaud/skyux-popovers/pull/36)
 
 # 3.3.0 (2019-08-19)
 
