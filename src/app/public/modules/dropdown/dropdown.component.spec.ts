@@ -316,11 +316,11 @@ describe('Dropdown component', () => {
     });
 
     it('should constrain overflow and not be full screen when there are a long list of dropdown items', fakeAsync(() => {
-
-      component.setItems([
-        // tslint:disable-next-line:max-line-length
-        { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }, { name: 'Foo', disabled: false }
-      ]);
+      let items = [];
+      for (let index = 0; index < 50; index++) {
+        items.push({ name: 'Foo', disabled: false });
+      }
+      component.setItems(items);
       openOrClosePopoverWithButtonClick();
 
       const popoverContainer = getPopoverContainerElement();
@@ -328,7 +328,7 @@ describe('Dropdown component', () => {
       fixture.detectChanges();
       expect(popoverContainer).not.toHaveCssClass('sky-popover-placement-fullscreen');
       expect(popoverContainer).toHaveCssClass('sky-popover-placement-below');
-      expect(popoverContainer).toHaveCssClass('sky-popover-contain-overflow');
+      expect(popoverContainer).toHaveCssClass('sky-popover-max-height');
       expect(isScrollable(popover)).toBe(true);
     }));
 

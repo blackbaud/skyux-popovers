@@ -57,10 +57,10 @@ describe('Dropdown', () => {
   it('should match dropdown screenshot when menu items overflow dropdown', (done) => {
     SkyHostBrowser.get('visual/dropdown');
     SkyHostBrowser.setWindowBreakpoint('lg');
-    SkyHostBrowser.scrollTo('#screenshot-dropdown-contain-overflow');
-    element(by.css('#screenshot-dropdown-contain-overflow .sky-dropdown-button')).click();
-    expect('#screenshot-dropdown-contain-overflow').toMatchBaselineScreenshot(done, {
-      screenshotName: 'dropdown-contain-overflow'
+    SkyHostBrowser.scrollTo('#screenshot-dropdown-max-height');
+    element(by.css('#screenshot-dropdown-max-height .sky-dropdown-button')).click();
+    expect('#screenshot-dropdown-max-height').toMatchBaselineScreenshot(done, {
+      screenshotName: 'dropdown-max-height'
     });
   });
 });

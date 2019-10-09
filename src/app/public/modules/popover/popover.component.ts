@@ -72,6 +72,9 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   @Input()
+  public allowFullscreen = true;
+
+  @Input()
   public dismissOnBlur = true;
 
   @Input()
@@ -105,8 +108,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   public arrowLeft: number;
 
   public classNames: string[] = [];
-
-  public containOverflow = false;
 
   public isMouseEnter = false;
 
@@ -169,8 +170,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     // Let the styles render before gauging the dimensions.
     this.windowRef.getWindow().setTimeout(() => {
       if (
-        this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
-        && !this.containOverflow
+        this.allowFullscreen
+        && this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
       ) {
         this.placement = 'fullscreen';
       }
@@ -188,8 +189,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.changeDetector.markForCheck();
 
     if (
-      this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
-      && !this.containOverflow
+      this.allowFullscreen
+      && this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
     ) {
       this.placement = 'fullscreen';
     }
