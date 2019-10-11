@@ -1,6 +1,6 @@
 {
   "name": "@skyux/popovers",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "SKY UX Popovers",
   "main": "bundles/bundle.umd.js",
   "module": "index.ts",
