@@ -13,7 +13,9 @@ cache:
     - node_modules
 
 before_install:
-  - bash <(curl -s https://blackbaud.github.io/skyux-travis/v3/library-before-install.sh)
+  - npm install -g blackbaud/skyux-sdk-cli#trust-linux-remove-argv
+  - skyux version
+  - skyux certs install
 
 install:
   - bash <(curl -s https://blackbaud.github.io/skyux-travis/v3/library-install.sh)
