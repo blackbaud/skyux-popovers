@@ -4,7 +4,8 @@ import {
 } from '@angular/core';
 
 import {
-  SkyDocsDemoControlPanelChange
+  SkyDocsDemoControlPanelChange,
+  SkyDocsDemoControlPanelRadioChoice
 } from '@skyux/docs-tools';
 
 @Component({
@@ -14,15 +15,15 @@ import {
 })
 export class PopoverDocsComponent {
 
-  public demoSettings: any = {};
-
-  public alignmentChoices = [
+  public alignmentChoices: SkyDocsDemoControlPanelRadioChoice[] = [
     { value: 'left', label: 'Left' },
     { value: 'right', label: 'Right' },
     { value: 'center', label: 'Center' }
   ];
 
-  public placementChoices = [
+  public demoSettings: any = {};
+
+  public placementChoices: SkyDocsDemoControlPanelRadioChoice[] = [
     { value: 'above', label: 'Above' },
     { value: 'below', label: 'Below' },
     { value: 'left', label: 'Left' },

@@ -1,9 +1,9 @@
 <sky-docs-demo-page
-  pageTitle="Popover"
-  moduleName="SkyPopoverModule"
-  packageName="@skyux/popovers"
   gitRepoUrl="https://github.com/blackbaud/skyux-popovers"
-  sourceCodeLocation="src/app/public/modules/popover"
+  moduleName="SkyPopoverModule"
+  moduleSourceCodePath="src/app/public/modules/popover"
+  packageName="@skyux/popovers"
+  pageTitle="Popover"
 >
   <sky-docs-demo-page-summary>
     The popover module displays small chunks of contextual content on pages or modals. It highlights content in an HTML-formatted popover that is similar to a tooltip but provides more room for plain text, HTML content, or Angular components. The popover trigger directive ties the popover to an element that users can interact with to display the popover.
@@ -17,8 +17,8 @@
         <sky-docs-demo-control-panel-radio-group
           heading="Placement"
           propertyName="placement"
-          [initialValue]="'above'"
           [choices]="placementChoices"
+          [initialValue]="'above'"
         >
         </sky-docs-demo-control-panel-radio-group>
       </sky-docs-demo-control-panel-section>
@@ -27,8 +27,8 @@
         <sky-docs-demo-control-panel-radio-group *ngIf="showAlignmentOptions"
           heading="Alignment"
           propertyName="alignment"
-          [initialValue]="'center'"
           [choices]="alignmentChoices"
+          [initialValue]="'center'"
         >
         </sky-docs-demo-control-panel-radio-group>
 
@@ -55,9 +55,9 @@
       class="sky-btn sky-btn-link"
       type="button"
       [skyPopover]="myPopover0"
-      skyPopoverTrigger="mouseenter"
       [skyPopoverAlignment]="demoSettings.skyPopoverAlignment"
       [skyPopoverPlacement]="demoSettings.skyPopoverPlacement"
+      [skyPopoverTrigger]="'mouseenter'"
     >
       Popover demo on hover
     </button>
@@ -73,22 +73,27 @@
   <sky-docs-code-examples>
     <sky-docs-code-example
       heading="Basic setup"
-      sourceCodeLocation="src/app/public/plugin-resources/code-examples/popover/basic"
+      sourceCodePath="src/app/public/plugin-resources/code-examples/popover/basic"
     ></sky-docs-code-example>
     <sky-docs-code-example
       heading="Using the message stream"
-      sourceCodeLocation="src/app/public/plugin-resources/code-examples/popover/programmatic"
+      sourceCodePath="src/app/public/plugin-resources/code-examples/popover/programmatic"
     ></sky-docs-code-example>
     <sky-docs-code-example
       heading="Asynchronous popovers"
-      sourceCodeLocation="src/app/public/plugin-resources/code-examples/popover/asynchronous"
+      sourceCodePath="src/app/public/plugin-resources/code-examples/popover/asynchronous"
     ></sky-docs-code-example>
   </sky-docs-code-examples>
 
   <sky-docs-design-guidelines>
 
-    <sky-docs-demo-page-section heading="Usage">
-      <sky-docs-design-guideline heading="Use when" headingStyle="success">
+    <sky-docs-demo-page-section
+      heading="Usage"
+    >
+      <sky-docs-design-guideline
+        heading="Use when"
+        headingStyle="success"
+      >
         <p>
           Use popovers when users require access to small chunks of contextual content that are only valuable some of the time.
         </p>
@@ -96,7 +101,10 @@
           Use popovers when tasks include complex or unfamiliar capabilities, and users require guidance on subtle-but-important elements.
         </p>
       </sky-docs-design-guideline>
-      <sky-docs-design-guideline heading="Don't use when" headingStyle="danger">
+      <sky-docs-design-guideline
+        heading="Don't use when"
+        headingStyle="danger"
+      >
         <p>
           Don't use popovers when the content is valuable most of the time. Use <a href="https://developer.blackbaud.com/skyux/design/guidelines/user-assistance#inline-help">persistent inline help</a> instead.
         </p>
@@ -106,16 +114,24 @@
       </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
 
-    <sky-docs-demo-page-section heading="Anatomy">
-      <sky-docs-anatomy thumbnailPath="~/assets/img/guidelines/popover/anatomy.png">
+    <sky-docs-demo-page-section
+      heading="Anatomy"
+    >
+      <sky-docs-anatomy
+        thumbnailPath="~/assets/img/guidelines/popover/anatomy.png"
+      >
         <sky-docs-anatomy-item>Content area</sky-docs-anatomy-item>
         <sky-docs-anatomy-item>Highlight border</sky-docs-anatomy-item>
         <sky-docs-anatomy-item>Element pointer</sky-docs-anatomy-item>
       </sky-docs-anatomy>
     </sky-docs-demo-page-section>
 
-    <sky-docs-demo-page-section heading="Options">
-      <sky-docs-design-guideline heading="Positioning">
+    <sky-docs-demo-page-section
+      heading="Options"
+    >
+      <sky-docs-design-guideline
+        heading="Positioning"
+      >
         <p>
           You can specify the position of the popover in relation to the element it references. The default position is centered above that element.
         </p>
@@ -125,7 +141,9 @@
         </sky-docs-design-guideline-thumbnail>
       </sky-docs-design-guideline>
 
-      <sky-docs-design-guideline heading="Trigger">
+      <sky-docs-design-guideline
+        heading="Trigger"
+      >
         <p>
           To ensure usability on touch devices, trigger user-invoked popovers on <sky-code>click</sky-code> actions rather than <sky-code>mouseenter</sky-code> actions.
         </p>
@@ -147,13 +165,19 @@
       </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
 
-    <sky-docs-demo-page-section heading="Behavior and states">
-      <sky-docs-design-guideline heading="Closing">
+    <sky-docs-demo-page-section
+      heading="Behavior and states"
+    >
+      <sky-docs-design-guideline
+        heading="Closing"
+      >
         <p>
           Popovers close when users click elsewhere or focus on another element.
         </p>
       </sky-docs-design-guideline>
-      <sky-docs-design-guideline heading="Responsiveness">
+      <sky-docs-design-guideline
+        heading="Responsiveness"
+      >
         <p>
           If a popover doesn't fit in the viewport at its current position, it automatically repositions. If the popover doesn't fit at any position, it converts to a modal that overlays the page.
         </p>
@@ -164,23 +188,25 @@
       </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
 
-    <sky-docs-demo-page-section heading="Content">
+    <sky-docs-demo-page-section
+      heading="Content"
+    >
       <sky-docs-design-guideline>
         <p>
           Limit popovers to small chunks of contextual content. The content can include plain text, formatted HTML, or Angular components.
         </p>
 
         <sky-docs-design-guideline-thumbnail
-          imageSource="~/assets/img/guidelines/popover/content-simple.png"
           caption="use small chunks of plain text."
           captionType="success"
+          imageSource="~/assets/img/guidelines/popover/content-simple.png"
         >
         </sky-docs-design-guideline-thumbnail>
 
         <sky-docs-design-guideline-thumbnail
-          imageSource="~/assets/img/guidelines/popover/content-html.png"
           caption="use small chunks of formatted HTML."
           captionType="success"
+          imageSource="~/assets/img/guidelines/popover/content-html.png"
         >
         </sky-docs-design-guideline-thumbnail>
       </sky-docs-design-guideline>
@@ -191,16 +217,18 @@
         </p>
 
         <sky-docs-design-guideline-thumbnail
-          imageSource="~/assets/img/guidelines/popover/content-dont-overload.png"
           caption="display large amounts of content in popovers."
           captionType="danger"
+          imageSource="~/assets/img/guidelines/popover/content-dont-overload.png"
           [showBorder]="true"
         >
         </sky-docs-design-guideline-thumbnail>
       </sky-docs-design-guideline>
     </sky-docs-demo-page-section>
 
-    <sky-docs-demo-page-section heading="Layout">
+    <sky-docs-demo-page-section
+      heading="Layout"
+    >
       <sky-docs-design-guideline>
         <p>
           In most cases, use the default placement for popovers to center them above the elements they reference. This minimizes the risk of obscuring content that users haven’t seen and avoids obscuring the content that they will interact with next.

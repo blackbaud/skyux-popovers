@@ -62,20 +62,20 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
   public skyPopoverAlignment: SkyPopoverAlignment;
 
   /**
-   * Specifies the placement of the popover in relation to the trigger element.
-   * @default "above"
+   * Provides an observable to send commands to the popover that respect the `SkyPopoverMessage` type.
    */
   @Input()
   public skyPopoverMessageStream = new Subject<SkyPopoverMessage>();
 
   /**
-   * Specifies the user action that displays the popover.
+   * Specifies the placement of the popover in relation to the trigger element.
+   * @default "above"
    */
   @Input()
   public skyPopoverPlacement: SkyPopoverPlacement;
 
   /**
-   * Provides an observable to send commands to the popover that respect the `SkyPopoverMessage` type.
+   * Specifies the user action that displays the popover.
    */
   @Input()
   public skyPopoverTrigger: SkyPopoverTrigger = 'click';
