@@ -51,7 +51,7 @@
     "@pact-foundation/pact": "9.2.2",
     "@pact-foundation/pact-web": "9.2.2",
     "@skyux-sdk/builder": "3.11.0",
-    "@skyux-sdk/builder-plugin-skyux": "blackbaud/skyux-builder-plugin-skyux#source-code-provider",
+    "@skyux-sdk/builder-plugin-skyux": "1.1.0",
     "@skyux-sdk/e2e": "3.1.2",
     "@skyux-sdk/pact": "3.3.1",
     "@skyux-sdk/testing": "3.1.0",

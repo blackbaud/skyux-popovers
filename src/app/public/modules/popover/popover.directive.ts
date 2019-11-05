@@ -50,6 +50,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
+   * @required
    */
   @Input()
   public skyPopover: SkyPopoverComponent;
