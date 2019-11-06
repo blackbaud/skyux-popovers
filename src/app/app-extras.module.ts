@@ -7,12 +7,7 @@ import {
 } from '@blackbaud/skyux-lib-code-block';
 
 import {
-  SkyDocsCodeExamplesModule,
-  SkyDocsDemoModule,
-  SkyDocsDemoPageModule,
-  SkyDocsDesignGuidelinesModule,
-  SkyDocsSourceCodeProvider,
-  SkyDocsTypeDefinitionsProvider
+  SkyDocsToolsModule
 } from '@skyux/docs-tools';
 
 import {
@@ -24,34 +19,13 @@ import {
   SkyPopoverModule
 } from './public';
 
-import {
-  SkyPopoversSourceCodeProvider
-} from './public/plugin-resources/popovers-source-code-provider';
-
-import {
-  SkyPopoversTypeDefinitionsProvider
-} from './public/plugin-resources/popovers-type-definitions-provider';
-
 @NgModule({
   exports: [
     SkyAppLinkModule,
     SkyCodeModule,
     SkyDropdownModule,
     SkyPopoverModule,
-    SkyDocsCodeExamplesModule,
-    SkyDocsDemoModule,
-    SkyDocsDemoPageModule,
-    SkyDocsDesignGuidelinesModule
-  ],
-  providers: [
-    {
-      provide: SkyDocsSourceCodeProvider,
-      useClass: SkyPopoversSourceCodeProvider
-    },
-    {
-      provide: SkyDocsTypeDefinitionsProvider,
-      useClass: SkyPopoversTypeDefinitionsProvider
-    }
+    SkyDocsToolsModule
   ]
 })
 export class AppExtrasModule { }
