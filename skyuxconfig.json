@@ -3,15 +3,17 @@
   "name": "skyux-popovers",
   "mode": "easy",
   "compileMode": "aot",
-  "skyuxModules": [
-    "SkyErrorModule"
-  ],
-  "moduleAliases": {
-    "@skyux/popovers": "src/app/public"
-  },
   "plugins": [
     "@skyux-sdk/builder-plugin-skyux"
   ],
+  "omnibar": {
+    "experimental": true
+  },
+  "params": {
+    "svcid": {
+      "value": "skyux"
+    }
+  },
   "testSettings": {
     "e2e": {
       "browserSet": "speedy"
