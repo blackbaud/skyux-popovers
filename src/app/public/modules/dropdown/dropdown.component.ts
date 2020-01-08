@@ -48,9 +48,19 @@ import {
 })
 export class SkyDropdownComponent implements OnInit, OnDestroy {
 
+  /**
+   * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
+   * Available values are `left`, `right`, and `center`.
+   * @default "center"
+   */
   @Input()
   public alignment: SkyPopoverAlignment = 'left';
 
+  /**
+   * Specifies a background color for the dropdown button. Available values are `default` and
+   * `primary`. These values set the background color from the
+   * [secondary and primary button classes](@https://developer.blackbaud.com/skyux/components/button) respectively.
+   */
   @Input()
   public set buttonStyle(value: string) {
     this._buttonStyle = value;
@@ -60,6 +70,13 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._buttonStyle || 'default';
   }
 
+  /**
+   * Specifies the type of button to render as the dropdown's trigger element. To display a button
+   * with text and a caret, specify `select` and then enter the button text in a
+   * `sky-dropdown-button` element. To display a round button with an ellipsis, specify
+   * `context-menu`. And to display a button with a [Font Awesome icon](http://fontawesome.io/icons/), specify the icon's class name.
+   * For example, to display the `fa-filter` icon, specify `filter`. This property accepts `string` values.
+   */
   @Input()
   public set buttonType(value: string) {
     this._buttonType = value;
@@ -69,12 +86,22 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._buttonType || 'select';
   }
 
+  /**
+   * Indicates whether to disable the dropdown button. This property accepts `boolean` values.
+   */
   @Input()
   public disabled = false;
 
+  /**
+   * Indicates whether to close the dropdown when users click away from the menu. This property accepts `boolean` values.
+   */
   @Input()
   public dismissOnBlur = true;
 
+  /**
+   * Specifies an accessibility label to provide a text equivalent for screen readers when the
+   * dropdown button has no text. This property accepts `string` values.
+   */
   @Input()
   public set label(value: string) {
     this._label = value;
@@ -87,12 +114,27 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._label || this.getString('skyux_dropdown_context_menu_default_label');
   }
 
+  /**
+   * Provides an observable to send commands to the dropdown. The commands should respect
+   * [the `SkyDropdownMessage` type](https://developer.blackbaud.com/skyux/components/dropdown#skydropdownmessage-type).
+   */
+
   @Input()
   public messageStream = new Subject<SkyDropdownMessage>();
 
+  /**
+   * Specifies a title to display in a tooltip when users hover the mouse over the dropdown button. This property accepts `string` values.
+   */
   @Input()
   public title: string;
 
+  /**
+   * This property is deprecated. We recommend against using it. It specifies how users interact
+   * with the dropdown button to expose the dropdown menu, and the available values are `click` and
+   * `hover`. We recommend the default `click` value because the `hover` value can pose accessibility
+   * issues for users on touch devices such as phones and tablets. If you choose to use the
+   * deprecated `hover` value anyway, we recommend that you not use it in combination with the `title` property.
+   */
   @Input()
   public set trigger(value: SkyDropdownTriggerType) {
     this._trigger = value;

@@ -43,15 +43,37 @@ let nextId = 0;
 })
 export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
 
+  /**
+   * Sets the dropdown menu's `aria-labelledby` attribute to support accessibility. The value should
+   * be the HTML element ID (without the leading `#`) of the element that labels the dropdown menu.
+   * This property accepts `string` values.
+   */
   @Input()
   public ariaLabelledBy: string;
 
+  /**
+   * Specifies an ARIA role for the dropdown menu to support accessibility by indicating how the
+   * dropdown menu functions and what it controls. The ARIA role indicates what the dropdown menu
+   * represents on the web page. For information about ARIA roles, see the
+   * [WAI-ARIA roles model](https://www.w3.org/WAI/PF/aria/roles). This property accepts `string` values.
+   */
   @Input()
   public ariaRole = 'menu';
 
+  /**
+   * Indicates whether to use the browser's native focus function when users navigate through menu
+   * items with the keyboard. To disable the native focus function, set this property to `false`.
+   * For example, to let users interact with the dropdown menu but keep the keyboard focus on a
+   * different element, set this property to `false`. This property accepts `boolean` values.
+   */
   @Input()
   public useNativeFocus = true;
 
+  /**
+   * Fires when the dropdown menu's active index or selected item changes. This event provides an
+   * observable to emit changes, and the response is of
+   * [the `SkyDropdownMessage` type](https://developer.blackbaud.com/skyux/components/dropdown#skydropdownmenuchange).
+   */
   @Output()
   public menuChanges = new EventEmitter<SkyDropdownMenuChange>();
 
