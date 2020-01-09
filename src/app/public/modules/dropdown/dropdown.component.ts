@@ -59,7 +59,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   /**
    * Specifies a background color for the dropdown button. Available values are `default` and
    * `primary`. These values set the background color from the
-   * [secondary and primary button classes](@https://developer.blackbaud.com/skyux/components/button) respectively.
+   * [secondary and primary button classes](https://developer.blackbaud.com/skyux/components/button) respectively.
    */
   @Input()
   public set buttonStyle(value: string) {
@@ -116,7 +116,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   /**
    * Provides an observable to send commands to the dropdown. The commands should respect
-   * [the `SkyDropdownMessage` type](https://developer.blackbaud.com/skyux/components/dropdown#skydropdownmessage-type).
+   * the [[SkyDropdownMessage]] type.
    */
 
   @Input()
@@ -129,11 +129,11 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public title: string;
 
   /**
-   * This property is deprecated. We recommend against using it. It specifies how users interact
-   * with the dropdown button to expose the dropdown menu, and the available values are `click` and
-   * `hover`. We recommend the default `click` value because the `hover` value can pose accessibility
-   * issues for users on touch devices such as phones and tablets. If you choose to use the
-   * deprecated `hover` value anyway, we recommend that you not use it in combination with the `title` property.
+   * It specifies how users interact with the dropdown button to expose the dropdown menu, and the
+   * available values are `click` and `hover`. We recommend the default `click` value because the
+   * `hover` value can pose accessibility issues for users on touch devices such as phones and tablets.
+   * @deprecated We recommend against using it. If you choose to use the deprecated `hover` value
+   * anyway, we recommend that you not use it in combination with the `title` property.
    */
   @Input()
   public set trigger(value: SkyDropdownTriggerType) {

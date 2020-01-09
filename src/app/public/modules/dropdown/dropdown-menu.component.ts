@@ -72,7 +72,7 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
   /**
    * Fires when the dropdown menu's active index or selected item changes. This event provides an
    * observable to emit changes, and the response is of
-   * [the `SkyDropdownMessage` type](https://developer.blackbaud.com/skyux/components/dropdown#skydropdownmenuchange).
+   * the [[SkyDropdownMessage]] type.
    */
   @Output()
   public menuChanges = new EventEmitter<SkyDropdownMenuChange>();
