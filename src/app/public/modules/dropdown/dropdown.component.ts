@@ -75,7 +75,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
    * with text and a caret, specify `select` and then enter the button text in a
    * `sky-dropdown-button` element. To display a round button with an ellipsis, specify
    * `context-menu`. And to display a button with a [Font Awesome icon](http://fontawesome.io/icons/), specify the icon's class name.
-   * For example, to display the `fa-filter` icon, specify `filter`. This property accepts `string` values.
+   * For example, to display the `fa-filter` icon, specify `filter`.
    */
   @Input()
   public set buttonType(value: string) {
@@ -87,20 +87,20 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Indicates whether to disable the dropdown button. This property accepts `boolean` values.
+   * Indicates whether to disable the dropdown button.
    */
   @Input()
   public disabled = false;
 
   /**
-   * Indicates whether to close the dropdown when users click away from the menu. This property accepts `boolean` values.
+   * Indicates whether to close the dropdown when users click away from the menu.
    */
   @Input()
   public dismissOnBlur = true;
 
   /**
    * Specifies an accessibility label to provide a text equivalent for screen readers when the
-   * dropdown button has no text. This property accepts `string` values.
+   * dropdown button has no text.
    */
   @Input()
   public set label(value: string) {
@@ -123,7 +123,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public messageStream = new Subject<SkyDropdownMessage>();
 
   /**
-   * Specifies a title to display in a tooltip when users hover the mouse over the dropdown button. This property accepts `string` values.
+   * Specifies a title to display in a tooltip when users hover the mouse over the dropdown button.
    */
   @Input()
   public title: string;
