@@ -4,17 +4,17 @@ import {
 
 export interface SkyDropdownMenuChange {
   /**
-   * Indicates the active menu index. This property accepts `number` values.
+   * Indicates the active menu index.
    */
   activeIndex?: number;
 
   /**
-   * Indicates the items in the menu. This property accepts values of type `SkyDropdownItemComponent`.
+   * Indicates the items in the menu.
    */
   items?: SkyDropdownItemComponent[];
 
   /**
-   * Indicates the selected item in the menu. This property accepts values of type `SkyDropdownItemComponent`.
+   * Indicates the selected item in the menu.
    */
   selectedItem?: SkyDropdownItemComponent;
 }
