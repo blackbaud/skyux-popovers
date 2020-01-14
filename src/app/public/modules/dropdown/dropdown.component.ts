@@ -129,10 +129,10 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public title: string;
 
   /**
-   * It specifies how users interact with the dropdown button to expose the dropdown menu, and the
+   * Specifies how users interact with the dropdown button to expose the dropdown menu. The
    * available values are `click` and `hover`. We recommend the default `click` value because the
    * `hover` value can pose accessibility issues for users on touch devices such as phones and tablets.
-   * @deprecated We recommend against using it. If you choose to use the deprecated `hover` value
+   * @deprecated We recommend against using this property. If you choose to use the deprecated `hover` value
    * anyway, we recommend that you not use it in combination with the `title` property.
    */
   @Input()
