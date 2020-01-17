@@ -8,6 +8,11 @@ import {
   SkyDocsDemoControlPanelRadioChoice
 } from '@skyux/docs-tools';
 
+interface DropdownItem {
+  disabled: boolean;
+  name: string;
+}
+
 @Component({
   selector: 'app-dropdown-docs',
   templateUrl: './dropdown-docs.component.html',
@@ -15,19 +20,19 @@ import {
 })
 export class DropdownDocsComponent {
 
-  public defaultItems: any[] = [
+  public defaultItems: DropdownItem[] = [
     { name: 'Addresses', disabled: false },
     { name: 'Email addresses', disabled: false },
     { name: 'Phone numbers', disabled: false }
   ];
 
-  public contextItems: any[] = [
+  public contextItems: DropdownItem[] = [
     { name: 'Edit', disabled: false },
     { name: 'Mark inactive', disabled: false },
     { name: 'Delete', disabled: false }
   ];
 
-  public items: any[] = this.defaultItems;
+  public items: DropdownItem[] = this.defaultItems;
 
   public buttonChoices: SkyDocsDemoControlPanelRadioChoice[] = [
     { value: 'select', label: 'Default' },
@@ -42,11 +47,11 @@ export class DropdownDocsComponent {
 
   public demoSettings: any = {};
 
-   public get showAlignmentOptions(): boolean {
-     const placement = this.demoSettings.skyPopoverPlacement;
+  public get showAlignmentOptions(): boolean {
+    const placement = this.demoSettings.skyPopoverPlacement;
 
-     return (placement === 'above' || placement === 'below');
-   }
+    return (placement === 'above' || placement === 'below');
+  }
 
   public onDemoSelectionChange(change: SkyDocsDemoControlPanelChange): void {
     if (change.button) {
