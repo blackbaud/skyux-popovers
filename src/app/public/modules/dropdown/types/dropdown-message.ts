@@ -5,8 +5,7 @@ import {
 export interface SkyDropdownMessage {
 
   /**
-   * Sets `SkyDropdownMessage` to one of the following listed in
-   * [Enumerations](https://developer.blackbaud.com/skyux-popovers/docs/dropdown?docs-active-tab=development#section-enumerations):
+   * Indicates the type of message to send.
    */
   type?: SkyDropdownMessageType;
 }
