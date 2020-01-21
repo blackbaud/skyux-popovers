@@ -1,21 +1,29 @@
 import {
-  Component
+  CommonModule
+} from '@angular/common';
+
+import {
+  NgModule
 } from '@angular/core';
 
-@Component({
-  selector: 'sky-dropdown-demo',
-  templateUrl: './dropdown-demo.component.html'
-})
-export class SkyDropdownDemoComponent {
-  public items: any[] = [
-    { name: 'Option 1', disabled: false },
-    { name: 'Disabled option', disabled: true },
-    { name: 'Option 3', disabled: false },
-    { name: 'Option 4', disabled: false },
-    { name: 'Option 5', disabled: false }
-  ];
+import {
+  SkyDropdownModule
+} from '@skyux/popovers';
 
-  public actionClicked(action: string) {
-    alert('You selected ' + action);
-  }
-}
+import {
+  DropdownDemoComponent
+} from './dropdown-demo.component';
+
+@NgModule({
+  imports: [
+    CommonModule,
+    SkyDropdownModule
+  ],
+  exports: [
+    DropdownDemoComponent
+  ],
+  declarations: [
+    DropdownDemoComponent
+  ]
+})
+export class DropdownDemoModule { }
