@@ -15,7 +15,7 @@ export enum SkyDropdownMessageType {
   FocusTriggerButton = 2,
 
   /**
-   * Puts focus on the next item in the
+   * Puts focus on the next item in the dropdown menu.
    */
   FocusNextItem = 3,
 

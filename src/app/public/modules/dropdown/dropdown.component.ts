@@ -51,7 +51,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   /**
    * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
    * Available values are `left`, `right`, and `center`.
-   * @default "center"
+   * @default "left"
    */
   @Input()
   public alignment: SkyPopoverAlignment = 'left';
@@ -60,6 +60,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
    * Specifies a background color for the dropdown button. Available values are `default` and
    * `primary`. These values set the background color from the
    * [secondary and primary button classes](https://developer.blackbaud.com/skyux/components/button) respectively.
+   * @default "default"
    */
   @Input()
   public set buttonStyle(value: string) {
@@ -76,6 +77,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
    * `sky-dropdown-button` element. To display a round button with an ellipsis, specify
    * `context-menu`. And to display a button with a [Font Awesome icon](http://fontawesome.io/icons/), specify the icon's class name.
    * For example, to display the `fa-filter` icon, specify `filter`.
+   * @default "select"
    */
   @Input()
   public set buttonType(value: string) {
@@ -134,6 +136,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
    * `hover` value can pose accessibility issues for users on touch devices such as phones and tablets.
    * @deprecated We recommend against using this property. If you choose to use the deprecated `hover` value
    * anyway, we recommend that you not use it in combination with the `title` property.
+   * @default "click"
    */
   @Input()
   public set trigger(value: SkyDropdownTriggerType) {
