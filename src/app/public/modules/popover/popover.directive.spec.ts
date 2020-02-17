@@ -48,7 +48,7 @@ import {
 } from './popover-adapter.service';
 
 class MockWindowService {
-  public getWindow(): any {
+  public get nativeWindow(): any {
     return {
       setTimeout(callback: Function) {
         callback();

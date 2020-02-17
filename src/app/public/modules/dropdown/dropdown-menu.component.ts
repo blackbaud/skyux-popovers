@@ -13,11 +13,13 @@ import {
   QueryList
 } from '@angular/core';
 
-import 'rxjs/add/operator/takeUntil';
-
 import {
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
+
+import {
+  takeUntil
+} from 'rxjs/operators';
 
 import {
   SkyDropdownComponent
@@ -122,7 +124,9 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
     if (this.dropdownComponent) {
       this.dropdownComponent.menuId = this.dropdownMenuId;
       this.dropdownComponent.messageStream
-        .takeUntil(this.ngUnsubscribe)
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        )
         .subscribe((message: SkyDropdownMessage) => {
           /* tslint:disable-next-line:switch-default */
           switch (message.type) {
@@ -146,7 +150,9 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
         });
 
       this.menuChanges
-        .takeUntil(this.ngUnsubscribe)
+        .pipe(
+          takeUntil(this.ngUnsubscribe)
+        )
         .subscribe((change: SkyDropdownMenuChange) => {
           // Close the dropdown when a menu item is selected.
           if (change.selectedItem) {
@@ -167,7 +173,9 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
 
     // Reset dropdown whenever the menu items change.
     this.menuItems.changes
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe((items: QueryList<SkyDropdownItemComponent>) => {
         this.reset();
         this.menuChanges.emit({

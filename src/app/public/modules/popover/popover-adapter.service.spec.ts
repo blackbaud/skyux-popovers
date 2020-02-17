@@ -25,7 +25,7 @@ describe('SkyPopoverAdapterService', () => {
   let mockBody: any;
 
   class MockWindowService {
-    public getWindow(): any {
+    public get nativeWindow(): any {
       return {
         innerWidth: 1000,
         innerHeight: 1000,
@@ -43,7 +43,7 @@ describe('SkyPopoverAdapterService', () => {
     width = 0,
     height = 0
   ) {
-    const elem = document.createElement('div');
+    const elem: any = document.createElement('div');
     elem.getBoundingClientRect = function () {
       const right = left + width;
       const bottom = top + height;
@@ -83,7 +83,7 @@ describe('SkyPopoverAdapterService', () => {
   }
 
   function spyOnWindowGetComputedStyle(windowService: SkyAppWindowRef, result: any) {
-    spyOn(windowService, 'getWindow').and.callFake(() => {
+    spyOnProperty(windowService, 'nativeWindow', 'get').and.callFake(() => {
       const obj = new MockWindowService().nativeWindow;
       obj.getComputedStyle = () => ({ overflowY: 'auto' });
       return obj;
@@ -97,7 +97,7 @@ describe('SkyPopoverAdapterService', () => {
       adapterService: SkyPopoverAdapterService,
       windowService: SkyAppWindowRef
     ) => {
-      spyOn(windowService, 'getWindow').and.callFake(() => {
+      spyOnProperty(windowService, 'nativeWindow', 'get').and.callFake(() => {
         const obj = new MockWindowService().nativeWindow;
         obj.getComputedStyle = () => ({ overflowY: overflow });
         return obj;
@@ -252,7 +252,7 @@ describe('SkyPopoverAdapterService', () => {
       adapterService: SkyPopoverAdapterService,
       windowService: SkyAppWindowRef
     ) => {
-      spyOn(windowService, 'getWindow').and.returnValue({
+      spyOnProperty(windowService, 'nativeWindow', 'get').and.returnValue({
         setTimeout(callback: Function) {
           callback();
         },
@@ -277,7 +277,7 @@ describe('SkyPopoverAdapterService', () => {
     ) => {
       const spy = spyOn(adapterService as any, 'getPopoverCoordinates').and.callThrough();
 
-      spyOn(windowService, 'getWindow').and.returnValue({
+      spyOnProperty(windowService, 'nativeWindow', 'get').and.returnValue({
         setTimeout(callback: Function) {
           callback();
         },

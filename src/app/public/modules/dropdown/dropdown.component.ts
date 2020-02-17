@@ -17,11 +17,13 @@ import {
   SkyLibResourcesService
 } from '@skyux/i18n';
 
-import 'rxjs/add/operator/takeUntil';
-
 import {
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
+
+import {
+  takeUntil
+} from 'rxjs/operators';
 
 import {
   SkyPopoverAlignment
@@ -181,10 +183,16 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this.adapter.elementHasFocus(this.popover.popoverContainer);
   }
 
-  @ViewChild('triggerButton')
+  @ViewChild('triggerButton', {
+    read: ElementRef,
+    static: false
+  })
   private triggerButton: ElementRef;
 
-  @ViewChild(SkyPopoverComponent)
+  @ViewChild(SkyPopoverComponent, {
+    read: SkyPopoverComponent,
+    static: false
+  })
   private popover: SkyPopoverComponent;
 
   private isKeyboardActive = false;
@@ -209,7 +217,9 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.messageStream
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe((message: SkyDropdownMessage) => {
         this.handleIncomingMessages(message);
       });

@@ -8,6 +8,7 @@ import {
 } from '@angular/animations';
 
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -24,17 +25,14 @@ import {
   SkyAppWindowRef
 } from '@skyux/core';
 
-import 'rxjs/add/observable/fromEvent';
-
-import 'rxjs/add/operator/takeUntil';
-
 import {
-  Observable
-} from 'rxjs/Observable';
-
-import {
+  fromEvent as observableFromEvent,
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
+
+import {
+  takeUntil
+} from 'rxjs/operators';
 
 import {
   SkyPopoverAdapterService
@@ -63,7 +61,7 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkyPopoverComponent implements OnInit, OnDestroy {
+export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
@@ -132,10 +130,16 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
-  @ViewChild('popoverArrow')
+  @ViewChild('popoverArrow', {
+    read: ElementRef,
+    static: false
+  })
   public popoverArrow: ElementRef;
 
-  @ViewChild('popoverContainer')
+  @ViewChild('popoverContainer', {
+    read: ElementRef,
+    static: false
+  })
   public popoverContainer: ElementRef;
 
   public animationState: 'hidden' | 'visible' = 'hidden';
@@ -181,6 +185,9 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.preferredPlacement = this.placement;
+  }
+
+  public ngAfterViewInit(): void {
     this.adapterService.hidePopover(this.popoverContainer);
   }
 
@@ -302,16 +309,18 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     const windowObj = this.windowRef.nativeWindow;
     const hostElement = this.elementRef.nativeElement;
 
-    Observable
-      .fromEvent(windowObj, 'resize')
-      .takeUntil(this.idled)
+    observableFromEvent(windowObj, 'resize')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe(() => {
         this.reposition();
       });
 
-    Observable
-      .fromEvent(windowObj.document, 'focusin')
-      .takeUntil(this.idled)
+    observableFromEvent(windowObj.document, 'focusin')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: KeyboardEvent) => {
         const targetIsChild = (hostElement.contains(event.target));
         const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
@@ -324,25 +333,28 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         }
       });
 
-    Observable
-      .fromEvent(windowObj.document, 'click')
-      .takeUntil(this.idled)
+    observableFromEvent(windowObj.document, 'click')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: MouseEvent) => {
         if (!this.isMouseEnter && this.dismissOnBlur) {
           this.close();
         }
       });
 
-    Observable
-      .fromEvent(hostElement, 'mouseenter')
-      .takeUntil(this.idled)
+    observableFromEvent(hostElement, 'mouseenter')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe(() => {
         this.isMouseEnter = true;
       });
 
-    Observable
-      .fromEvent(hostElement, 'mouseleave')
-      .takeUntil(this.idled)
+    observableFromEvent(hostElement, 'mouseleave')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe(() => {
         this.isMouseEnter = false;
         if (this.isMarkedForCloseOnMouseLeave) {
@@ -351,9 +363,10 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         }
       });
 
-    Observable
-      .fromEvent(hostElement, 'keyup')
-      .takeUntil(this.idled)
+    observableFromEvent(hostElement, 'keyup')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
 

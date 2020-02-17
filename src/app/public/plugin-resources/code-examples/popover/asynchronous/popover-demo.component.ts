@@ -16,7 +16,10 @@ export class PopoverDemoComponent implements AfterViewInit {
 
   public asyncPopoverRef: SkyPopoverComponent;
 
-  @ViewChild('asyncPopover')
+  @ViewChild('asyncPopover', {
+    read: SkyPopoverComponent,
+    static: false
+  })
   private asyncPopover: SkyPopoverComponent;
 
   public ngAfterViewInit(): void {
