@@ -9,16 +9,16 @@ import {
 } from '@angular/core/testing';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
+
+import {
+  SkyPopoverPosition
+} from './types/popover-position';
 
 import {
   SkyPopoverAdapterService
 } from './popover-adapter.service';
-
-import {
-  SkyPopoverPosition
-} from './types';
 
 describe('SkyPopoverAdapterService', () => {
   let mockRenderer: any;
@@ -82,9 +82,9 @@ describe('SkyPopoverAdapterService', () => {
     return new ElementRef(createElementRefDefinition(0, 0, 20, 10));
   }
 
-  function spyOnWindowGetComputedStyle(windowService: SkyWindowRefService, result: any) {
+  function spyOnWindowGetComputedStyle(windowService: SkyAppWindowRef, result: any) {
     spyOn(windowService, 'getWindow').and.callFake(() => {
-      const obj = new MockWindowService().getWindow();
+      const obj = new MockWindowService().nativeWindow;
       obj.getComputedStyle = () => ({ overflowY: 'auto' });
       return obj;
     });
@@ -93,12 +93,12 @@ describe('SkyPopoverAdapterService', () => {
   function getListenersForOverflowParents(overflow: string) {
     let listeners: any[] = [];
 
-    inject([SkyPopoverAdapterService, SkyWindowRefService], (
+    inject([SkyPopoverAdapterService, SkyAppWindowRef], (
       adapterService: SkyPopoverAdapterService,
-      windowService: SkyWindowRefService
+      windowService: SkyAppWindowRef
     ) => {
       spyOn(windowService, 'getWindow').and.callFake(() => {
-        const obj = new MockWindowService().getWindow();
+        const obj = new MockWindowService().nativeWindow;
         obj.getComputedStyle = () => ({ overflowY: overflow });
         return obj;
       });
@@ -127,7 +127,7 @@ describe('SkyPopoverAdapterService', () => {
       providers: [
         SkyPopoverAdapterService,
         { provide: Renderer2, useValue: mockRenderer },
-        { provide: SkyWindowRefService, useValue: new MockWindowService() }
+        { provide: SkyAppWindowRef, useValue: new MockWindowService() }
       ]
     });
   });
@@ -248,9 +248,9 @@ describe('SkyPopoverAdapterService', () => {
   );
 
   it('should return placement of fullscreen if popover dimensions greater than viewport',
-    inject([SkyPopoverAdapterService, SkyWindowRefService], (
+    inject([SkyPopoverAdapterService, SkyAppWindowRef], (
       adapterService: SkyPopoverAdapterService,
-      windowService: SkyWindowRefService
+      windowService: SkyAppWindowRef
     ) => {
       spyOn(windowService, 'getWindow').and.returnValue({
         setTimeout(callback: Function) {
@@ -271,9 +271,9 @@ describe('SkyPopoverAdapterService', () => {
   );
 
   it('should only check for optimal placements a few times',
-    inject([SkyPopoverAdapterService, SkyWindowRefService], (
+    inject([SkyPopoverAdapterService, SkyAppWindowRef], (
       adapterService: SkyPopoverAdapterService,
-      windowService: SkyWindowRefService
+      windowService: SkyAppWindowRef
     ) => {
       const spy = spyOn(adapterService as any, 'getPopoverCoordinates').and.callThrough();
 
@@ -397,9 +397,9 @@ describe('SkyPopoverAdapterService', () => {
     );
 
     it('should listen for `overflow: auto` parent element scroll events',
-      inject([SkyPopoverAdapterService, SkyWindowRefService], (
+      inject([SkyPopoverAdapterService, SkyAppWindowRef], (
         adapterService: SkyPopoverAdapterService,
-        windowService: SkyWindowRefService
+        windowService: SkyAppWindowRef
       ) => {
         spyOnWindowGetComputedStyle(windowService, 'auto');
 
@@ -433,9 +433,9 @@ describe('SkyPopoverAdapterService', () => {
     );
 
     it('should hide the popover if 95% of top is clipped',
-      inject([SkyPopoverAdapterService, SkyWindowRefService], (
+      inject([SkyPopoverAdapterService, SkyAppWindowRef], (
         adapterService: SkyPopoverAdapterService,
-        windowService: SkyWindowRefService
+        windowService: SkyAppWindowRef
       ) => {
         spyOnWindowGetComputedStyle(windowService, 'auto');
 
@@ -461,9 +461,9 @@ describe('SkyPopoverAdapterService', () => {
     );
 
     it('should hide the popover if 95% of bottom is clipped',
-      inject([SkyPopoverAdapterService, SkyWindowRefService], (
+      inject([SkyPopoverAdapterService, SkyAppWindowRef], (
         adapterService: SkyPopoverAdapterService,
-        windowService: SkyWindowRefService
+        windowService: SkyAppWindowRef
       ) => {
         spyOnWindowGetComputedStyle(windowService, 'auto');
 

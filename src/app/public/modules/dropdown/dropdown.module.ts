@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -58,7 +58,7 @@ import {
     SkyDropdownMenuComponent
   ],
   providers: [
-    SkyWindowRefService
+    SkyAppWindowRef
   ]
 })
 export class SkyDropdownModule { }

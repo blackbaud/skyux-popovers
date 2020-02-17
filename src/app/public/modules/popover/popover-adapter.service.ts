@@ -5,17 +5,32 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
-  SkyPopoverAdapterArrowCoordinates,
-  SkyPopoverAdapterCoordinates,
-  SkyPopoverAdapterElements,
-  SkyPopoverAlignment,
-  SkyPopoverPlacement,
+  SkyPopoverAdapterArrowCoordinates
+} from './types/popover-adapter-arrow-coordinates';
+
+import {
+  SkyPopoverAdapterCoordinates
+} from './types/popover-adapter-coordinates';
+
+import {
+  SkyPopoverAdapterElements
+} from './types/popover-adapter-elements';
+
+import {
+  SkyPopoverAlignment
+} from './types/popover-alignment';
+
+import {
+  SkyPopoverPlacement
+} from './types/popover-placement';
+
+import {
   SkyPopoverPosition
-} from './types';
+} from './types/popover-position';
 
 /**
  * @internal
@@ -25,7 +40,7 @@ export class SkyPopoverAdapterService {
 
   constructor(
     private renderer: Renderer2,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyAppWindowRef
   ) { }
 
   public getPopoverPosition(
@@ -77,7 +92,7 @@ export class SkyPopoverAdapterService {
   }
 
   public isPopoverLargerThanParent(popover: ElementRef): boolean {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const popoverRect = popover.nativeElement.getBoundingClientRect();
 
     return (
@@ -90,7 +105,7 @@ export class SkyPopoverAdapterService {
     popover: ElementRef,
     callback: (isVisibleWithinScrollable: boolean) => void
   ): Function[] {
-    const bodyElement = this.windowRef.getWindow().document.body;
+    const bodyElement = this.windowRef.nativeWindow.document.body;
     const parentElements = this.getScrollableParentElements(popover);
 
     const listeners = parentElements.map((parentElement: HTMLElement) => {
@@ -113,7 +128,7 @@ export class SkyPopoverAdapterService {
     placement: SkyPopoverPlacement,
     alignment: SkyPopoverAlignment
   ): SkyPopoverAdapterCoordinates {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const popoverRect = elements.popover.nativeElement.getBoundingClientRect();
     const callerRect = elements.caller.nativeElement.getBoundingClientRect();
 
@@ -270,7 +285,7 @@ export class SkyPopoverAdapterService {
     elements: SkyPopoverAdapterElements,
     position: SkyPopoverPosition
   ): SkyPopoverPosition {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const callerRect = elements.caller.nativeElement.getBoundingClientRect();
     const popoverRect = elements.popover.nativeElement.getBoundingClientRect();
     const pixelTolerance = 40;
@@ -321,7 +336,7 @@ export class SkyPopoverAdapterService {
   }
 
   private getScrollableParentElements(element: ElementRef): Array<HTMLElement> {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const bodyElement = windowObj.document.body;
     const result = [bodyElement];
 

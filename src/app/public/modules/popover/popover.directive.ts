@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import 'rxjs/add/observable/fromEvent';
@@ -26,10 +26,16 @@ import {
 } from 'rxjs/Subject';
 
 import {
-  SkyPopoverAlignment,
-  SkyPopoverPlacement,
+  SkyPopoverAlignment
+} from './types/popover-alignment';
+
+import {
+  SkyPopoverPlacement
+} from './types/popover-placement';
+
+import {
   SkyPopoverTrigger
-} from './types';
+} from './types/popover-trigger';
 
 import {
   SkyPopoverComponent
@@ -85,7 +91,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
   constructor(
     private elementRef: ElementRef,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyAppWindowRef
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -188,7 +194,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
           if (this.isPopoverOpen()) {
             // Give the popover a chance to set its isMouseEnter flag before checking to see
             // if it should be closed.
-            this.windowRef.getWindow().setTimeout(() => {
+            this.windowRef.nativeWindow.setTimeout(() => {
               this.closePopoverOrMarkForClose();
             });
           } else {

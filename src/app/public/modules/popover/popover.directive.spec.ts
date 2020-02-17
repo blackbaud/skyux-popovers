@@ -24,7 +24,7 @@ import {
 } from '@skyux-sdk/testing';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -115,7 +115,7 @@ describe('SkyPopoverDirective', () => {
       ],
       providers: [
         { provide: SkyPopoverAdapterService, useValue: mockAdapterService },
-        { provide: SkyWindowRefService, useValue: mockWindowService }
+        { provide: SkyAppWindowRef, useValue: mockWindowService }
       ]
     })
       .compileComponents();

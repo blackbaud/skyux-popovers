@@ -20,10 +20,16 @@ import {
 } from '@skyux-sdk/testing';
 
 import {
-  SkyPopoverModule,
-  SkyPopoverComponent,
   SkyPopoverAdapterService
-} from './index';
+} from './popover-adapter.service';
+
+import {
+  SkyPopoverComponent
+} from './popover.component';
+
+import {
+  SkyPopoverModule
+} from './popover.module';
 
 class MockPopoverAdapterService {
   public isPopoverLargerThanParent(): boolean {

@@ -28,10 +28,16 @@ import {
 } from './dropdown-item.component';
 
 import {
-  SkyDropdownMenuChange,
-  SkyDropdownMessage,
+  SkyDropdownMenuChange
+} from './types/dropdown-menu-change';
+
+import {
+  SkyDropdownMessage
+} from './types/dropdown-message';
+
+import {
   SkyDropdownMessageType
-} from './types';
+} from './types/dropdown-message-type';
 
 let nextId = 0;
 

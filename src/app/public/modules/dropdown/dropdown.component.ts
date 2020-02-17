@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -24,20 +24,32 @@ import {
 } from 'rxjs/Subject';
 
 import {
-  SkyPopoverAlignment,
-  SkyPopoverComponent,
+  SkyPopoverAlignment
+} from '../popover/types/popover-alignment';
+
+import {
   SkyPopoverTrigger
-} from '../popover';
+} from '../popover/types/popover-trigger';
+
+import {
+  SkyPopoverComponent
+} from '../popover/popover.component';
 
 import {
   SkyDropdownAdapterService
 } from './dropdown-adapter.service';
 
 import {
-  SkyDropdownMessage,
-  SkyDropdownMessageType,
+  SkyDropdownMessage
+} from './types/dropdown-message';
+
+import {
+  SkyDropdownMessageType
+} from './types/dropdown-message-type';
+
+import {
   SkyDropdownTriggerType
-} from './types';
+} from './types/dropdown-trigger-type';
 
 @Component({
   selector: 'sky-dropdown',
@@ -190,7 +202,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   private _trigger: SkyDropdownTriggerType;
 
   constructor(
-    private windowRef: SkyWindowRefService,
+    private windowRef: SkyAppWindowRef,
     private resourcesService: SkyLibResourcesService,
     private adapter: SkyDropdownAdapterService
   ) { }
@@ -218,7 +230,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         // After an item is selected with the enter key,
         // wait a moment before returning focus to the dropdown trigger element.
         case 'enter':
-          this.windowRef.getWindow().setTimeout(() => {
+          this.windowRef.nativeWindow.setTimeout(() => {
             this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
           });
           break;
@@ -286,7 +298,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         case SkyDropdownMessageType.Reposition:
           // Only reposition the dropdown if it is already open.
           if (this._isOpen) {
-            this.windowRef.getWindow().setTimeout(() => {
+            this.windowRef.nativeWindow.setTimeout(() => {
               this.popover.reposition();
             });
           }

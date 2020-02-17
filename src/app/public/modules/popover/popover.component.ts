@@ -21,7 +21,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import 'rxjs/add/observable/fromEvent';
@@ -41,9 +41,12 @@ import {
 } from './popover-adapter.service';
 
 import {
-  SkyPopoverAlignment,
+  SkyPopoverAlignment
+} from './types/popover-alignment';
+
+import {
   SkyPopoverPlacement
-} from './types';
+} from './types/popover-placement';
 
 @Component({
   selector: 'sky-popover',
@@ -173,7 +176,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     private adapterService: SkyPopoverAdapterService,
     private changeDetector: ChangeDetectorRef,
     private elementRef: ElementRef,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyAppWindowRef
   ) { }
 
   public ngOnInit(): void {
@@ -204,7 +207,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.changeDetector.markForCheck();
 
     // Let the styles render before gauging the dimensions.
-    this.windowRef.getWindow().setTimeout(() => {
+    this.windowRef.nativeWindow.setTimeout(() => {
       if (
         this.allowFullscreen &&
         this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
@@ -296,7 +299,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   private addListeners(): void {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const hostElement = this.elementRef.nativeElement;
 
     Observable

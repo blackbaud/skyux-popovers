@@ -8,13 +8,16 @@ import {
 } from 'rxjs/Subject';
 
 import {
-  SkyPopoverComponent
-} from '../popover.component';
+  SkyPopoverMessage
+} from '../types/popover-message';
 
 import {
-  SkyPopoverMessage,
   SkyPopoverMessageType
-} from '../types';
+} from '../types/popover-message-type';
+
+import {
+  SkyPopoverComponent
+} from '../popover.component';
 
 @Component({
   selector: 'sky-test-component',

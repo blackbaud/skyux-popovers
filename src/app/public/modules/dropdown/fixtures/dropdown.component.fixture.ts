@@ -10,9 +10,12 @@ import {
 } from 'rxjs/Subject';
 
 import {
-  SkyDropdownMessageType,
   SkyDropdownMessage
-} from '../types';
+} from '../types/dropdown-message';
+
+import {
+  SkyDropdownMessageType
+} from '../types/dropdown-message-type';
 
 import {
   SkyDropdownComponent
