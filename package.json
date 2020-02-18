@@ -23,10 +23,10 @@
   },
   "homepage": "https://github.com/blackbaud/skyux-popovers#readme",
   "peerDependencies": {
-    "@angular/animations": ">=4.3.6",
-    "@angular/common": ">=4.3.6",
-    "@angular/core": ">=4.3.6",
-    "@angular/platform-browser": ">=4.3.6",
+    "@angular/animations": "^9.0.1",
+    "@angular/common": "^9.0.1",
+    "@angular/core": "^9.0.1",
+    "@angular/platform-browser": "^9.0.1",
     "@skyux/core": "^3.5.1",
     "@skyux/i18n": "^3.5.0",
     "@skyux/indicators": "^3.0.0"
