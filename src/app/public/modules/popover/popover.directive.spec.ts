@@ -298,6 +298,32 @@ describe('SkyPopoverDirective', () => {
 
       fixture.destroy();
     }));
+
+    it('should allow repositioning the popover', fakeAsync(() => {
+      const caller = directiveElements[5];
+      const callerInstance = caller.injector.get(SkyPopoverDirective);
+      const openSpy = spyOn(callerInstance.skyPopover, 'positionNextTo').and.stub();
+
+      fixture.detectChanges();
+      tick();
+
+      let component = fixture.componentInstance;
+      caller.nativeElement.click();
+      callerInstance.skyPopover.isOpen = true;
+      fixture.detectChanges();
+      tick();
+
+      expect(openSpy).toHaveBeenCalled();
+      openSpy.calls.reset();
+
+      component.sendMessage(SkyPopoverMessageType.Reposition);
+      fixture.detectChanges();
+      tick();
+
+      expect(openSpy).toHaveBeenCalled();
+
+      fixture.destroy();
+    }));
   });
 
   it('should pass accessibility', async(() => {
