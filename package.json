@@ -27,9 +27,9 @@
     "@angular/common": "^9.0.1",
     "@angular/core": "^9.0.1",
     "@angular/platform-browser": "^9.0.1",
-    "@skyux/core": "^3.5.1",
-    "@skyux/i18n": "^3.5.0",
-    "@skyux/indicators": "^3.0.0"
+    "@skyux/core": "^4.0.0-rc.0",
+    "@skyux/i18n": "^4.0.0-rc.0",
+    "@skyux/indicators": "^4.0.0-rc.0"
   },
   "dependencies": {},
   "devDependencies": {
