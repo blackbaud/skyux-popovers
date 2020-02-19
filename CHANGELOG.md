@@ -1,3 +1,14 @@
+# 4.0.0-rc.0 (2020-02-19)
+
+### New features
+
+- Added support for `@angular/core@^9`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+- Updated the pipeline to transpile to the [Angular Package Format](https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/preview). [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+
+### Breaking changes
+
+- Dropped support for `rxjs@5`. Consumers may install `rxjs-compat@^6` to support older versions of `rxjs`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+
 # 3.4.0 (2019-10-09)
 
 - Added the `allowFullscreen` input property to the popover component. The dropdown component uses the `allowFullscreen` input property to prevent dropdown menu items from displaying in full screen. [#36](https://github.com/blackbaud/skyux-popovers/pull/36)
