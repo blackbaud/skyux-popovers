@@ -11,7 +11,7 @@ import {
 } from '@angular/platform-browser/animations';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -20,7 +20,7 @@ import {
 
 import {
   SkyPopoversResourcesModule
-} from '../shared';
+} from '../shared/popovers-resources.module';
 
 import {
   SkyPopoverComponent
@@ -46,7 +46,7 @@ import {
     SkyPopoverDirective
   ],
   providers: [
-    SkyWindowRefService
+    SkyAppWindowRef
   ]
 })
 export class SkyPopoverModule { }

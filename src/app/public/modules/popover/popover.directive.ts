@@ -8,28 +8,30 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
-import 'rxjs/add/observable/fromEvent';
-
-import 'rxjs/add/operator/takeUntil';
-
-import 'rxjs/add/operator/take';
-
 import {
-  Observable
-} from 'rxjs/Observable';
-
-import {
+  fromEvent as observableFromEvent,
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
 
 import {
-  SkyPopoverAlignment,
-  SkyPopoverPlacement,
+  take,
+  takeUntil
+} from 'rxjs/operators';
+
+import {
+  SkyPopoverAlignment
+} from './types/popover-alignment';
+
+import {
+  SkyPopoverPlacement
+} from './types/popover-placement';
+
+import {
   SkyPopoverTrigger
-} from './types';
+} from './types/popover-trigger';
 
 import {
   SkyPopoverComponent
@@ -85,7 +87,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
   constructor(
     private elementRef: ElementRef,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyAppWindowRef
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -140,14 +142,17 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     const element = this.elementRef.nativeElement;
 
     this.skyPopoverMessageStream
-      .takeUntil(this.idled)
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe(message => {
         this.handleIncomingMessages(message);
       });
 
-    Observable
-      .fromEvent(element, 'keyup')
-      .takeUntil(this.idled)
+    observableFromEvent(element, 'keyup')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
         if (key === 'escape' && this.isPopoverOpen()) {
@@ -158,16 +163,18 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
         }
       });
 
-    Observable
-      .fromEvent(element, 'click')
-      .takeUntil(this.idled)
+    observableFromEvent(element, 'click')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: any) => {
         this.togglePopover();
       });
 
-    Observable
-      .fromEvent(element, 'mouseenter')
-      .takeUntil(this.idled)
+    observableFromEvent(element, 'mouseenter')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: MouseEvent) => {
         this.skyPopover.isMouseEnter = true;
         if (this.skyPopoverTrigger === 'mouseenter') {
@@ -176,9 +183,10 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
         }
       });
 
-    Observable
-      .fromEvent(element, 'mouseleave')
-      .takeUntil(this.idled)
+    observableFromEvent(element, 'mouseleave')
+      .pipe(
+        takeUntil(this.idled)
+      )
       .subscribe((event: MouseEvent) => {
         this.skyPopover.isMouseEnter = false;
 
@@ -188,15 +196,19 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
           if (this.isPopoverOpen()) {
             // Give the popover a chance to set its isMouseEnter flag before checking to see
             // if it should be closed.
-            this.windowRef.getWindow().setTimeout(() => {
+            this.windowRef.nativeWindow.setTimeout(() => {
               this.closePopoverOrMarkForClose();
             });
           } else {
             // If the mouse leaves before the popover is open,
             // wait for the transition to complete before closing it.
-            this.skyPopover.popoverOpened.take(1).subscribe(() => {
-              this.closePopoverOrMarkForClose();
-            });
+            this.skyPopover.popoverOpened
+              .pipe(
+                take(1)
+              )
+              .subscribe(() => {
+                this.closePopoverOrMarkForClose();
+              });
           }
         }
       });

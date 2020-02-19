@@ -5,16 +5,19 @@ import {
 
 import {
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
+
+import {
+  SkyPopoverMessage
+} from '../types/popover-message';
+
+import {
+  SkyPopoverMessageType
+} from '../types/popover-message-type';
 
 import {
   SkyPopoverComponent
 } from '../popover.component';
-
-import {
-  SkyPopoverMessage,
-  SkyPopoverMessageType
-} from '../types';
 
 @Component({
   selector: 'sky-test-component',
@@ -25,10 +28,16 @@ export class SkyPopoverTestComponent {
   public messageStream = new Subject<SkyPopoverMessage>();
   public asyncPopoverRef: SkyPopoverComponent;
 
-  @ViewChild('asyncPopover')
+  @ViewChild('asyncPopover', {
+    read: SkyPopoverComponent,
+    static: false
+  })
   public asyncPopover: SkyPopoverComponent;
 
-  @ViewChild('anotherAsyncPopover')
+  @ViewChild('anotherAsyncPopover', {
+    read: SkyPopoverComponent,
+    static: false
+  })
   public anotherAsyncPopover: SkyPopoverComponent;
 
   public attachAsyncPopover() {

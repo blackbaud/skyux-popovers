@@ -10,34 +10,48 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
   SkyLibResourcesService
 } from '@skyux/i18n';
 
-import 'rxjs/add/operator/takeUntil';
-
 import {
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
 
 import {
-  SkyPopoverAlignment,
-  SkyPopoverComponent,
+  takeUntil
+} from 'rxjs/operators';
+
+import {
+  SkyPopoverAlignment
+} from '../popover/types/popover-alignment';
+
+import {
   SkyPopoverTrigger
-} from '../popover';
+} from '../popover/types/popover-trigger';
+
+import {
+  SkyPopoverComponent
+} from '../popover/popover.component';
 
 import {
   SkyDropdownAdapterService
 } from './dropdown-adapter.service';
 
 import {
-  SkyDropdownMessage,
-  SkyDropdownMessageType,
+  SkyDropdownMessage
+} from './types/dropdown-message';
+
+import {
+  SkyDropdownMessageType
+} from './types/dropdown-message-type';
+
+import {
   SkyDropdownTriggerType
-} from './types';
+} from './types/dropdown-trigger-type';
 
 @Component({
   selector: 'sky-dropdown',
@@ -169,10 +183,16 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this.adapter.elementHasFocus(this.popover.popoverContainer);
   }
 
-  @ViewChild('triggerButton')
+  @ViewChild('triggerButton', {
+    read: ElementRef,
+    static: false
+  })
   private triggerButton: ElementRef;
 
-  @ViewChild(SkyPopoverComponent)
+  @ViewChild(SkyPopoverComponent, {
+    read: SkyPopoverComponent,
+    static: false
+  })
   private popover: SkyPopoverComponent;
 
   private isKeyboardActive = false;
@@ -190,14 +210,16 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   private _trigger: SkyDropdownTriggerType;
 
   constructor(
-    private windowRef: SkyWindowRefService,
+    private windowRef: SkyAppWindowRef,
     private resourcesService: SkyLibResourcesService,
     private adapter: SkyDropdownAdapterService
   ) { }
 
   public ngOnInit(): void {
     this.messageStream
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
       .subscribe((message: SkyDropdownMessage) => {
         this.handleIncomingMessages(message);
       });
@@ -218,7 +240,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         // After an item is selected with the enter key,
         // wait a moment before returning focus to the dropdown trigger element.
         case 'enter':
-          this.windowRef.getWindow().setTimeout(() => {
+          this.windowRef.nativeWindow.setTimeout(() => {
             this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
           });
           break;
@@ -286,7 +308,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         case SkyDropdownMessageType.Reposition:
           // Only reposition the dropdown if it is already open.
           if (this._isOpen) {
-            this.windowRef.getWindow().setTimeout(() => {
+            this.windowRef.nativeWindow.setTimeout(() => {
               this.popover.reposition();
             });
           }

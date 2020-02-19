@@ -25,7 +25,7 @@ import {
 
 import {
   SkyDropdownMessageType
-} from './types';
+} from './types/dropdown-message-type';
 
 describe('Dropdown component', () => {
   const activeItemClass = 'sky-dropdown-item-active';

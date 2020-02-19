@@ -7,12 +7,15 @@ import {
 
 import {
   Subject
-} from 'rxjs/Subject';
+} from 'rxjs';
 
 import {
-  SkyDropdownMessageType,
   SkyDropdownMessage
-} from '../types';
+} from '../types/dropdown-message';
+
+import {
+  SkyDropdownMessageType
+} from '../types/dropdown-message-type';
 
 import {
   SkyDropdownComponent
@@ -43,13 +46,22 @@ export class DropdownTestComponent {
     { name: 'Option 4', disabled: false }
   ];
 
-  @ViewChild('dropdown')
+  @ViewChild('dropdown', {
+    read: SkyDropdownComponent,
+    static: false
+  })
   public dropdown: SkyDropdownComponent;
 
-  @ViewChild('dropdownMenu')
+  @ViewChild('dropdownMenu', {
+    read: SkyDropdownMenuComponent,
+    static: false
+  })
   public dropdownMenu: SkyDropdownMenuComponent;
 
-  @ViewChild('outsideButton')
+  @ViewChild('outsideButton', {
+    read: ElementRef,
+    static: false
+  })
   public outsideButton: ElementRef;
 
   constructor(

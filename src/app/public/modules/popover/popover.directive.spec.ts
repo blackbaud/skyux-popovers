@@ -24,7 +24,7 @@ import {
 } from '@skyux-sdk/testing';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -48,7 +48,7 @@ import {
 } from './popover-adapter.service';
 
 class MockWindowService {
-  public getWindow(): any {
+  public get nativeWindow(): any {
     return {
       setTimeout(callback: Function) {
         callback();
@@ -115,7 +115,7 @@ describe('SkyPopoverDirective', () => {
       ],
       providers: [
         { provide: SkyPopoverAdapterService, useValue: mockAdapterService },
-        { provide: SkyWindowRefService, useValue: mockWindowService }
+        { provide: SkyAppWindowRef, useValue: mockWindowService }
       ]
     })
       .compileComponents();
@@ -295,6 +295,32 @@ describe('SkyPopoverDirective', () => {
       tick();
       fixture.detectChanges();
       expect(closeSpy).toHaveBeenCalled();
+
+      fixture.destroy();
+    }));
+
+    it('should allow repositioning the popover', fakeAsync(() => {
+      const caller = directiveElements[5];
+      const callerInstance = caller.injector.get(SkyPopoverDirective);
+      const openSpy = spyOn(callerInstance.skyPopover, 'positionNextTo').and.stub();
+
+      fixture.detectChanges();
+      tick();
+
+      let component = fixture.componentInstance;
+      caller.nativeElement.click();
+      callerInstance.skyPopover.isOpen = true;
+      fixture.detectChanges();
+      tick();
+
+      expect(openSpy).toHaveBeenCalled();
+      openSpy.calls.reset();
+
+      component.sendMessage(SkyPopoverMessageType.Reposition);
+      fixture.detectChanges();
+      tick();
+
+      expect(openSpy).toHaveBeenCalled();
 
       fixture.destroy();
     }));
