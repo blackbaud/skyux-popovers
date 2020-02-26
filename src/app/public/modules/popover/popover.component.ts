@@ -17,10 +17,13 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 
 import {
+  SkyOverlayInstance,
+  SkyOverlayService,
   SkyWindowRefService
 } from '@skyux/core';
 
@@ -135,6 +138,9 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @ViewChild('popoverContainer')
   public popoverContainer: ElementRef;
 
+  @ViewChild('popoverTemplate')
+  private popoverTemplate: TemplateRef<any>;
+
   public animationState: 'hidden' | 'visible' = 'hidden';
 
   public arrowTop: number;
@@ -163,6 +169,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private scrollListeners: Function[] = [];
 
+  private overlay: SkyOverlayInstance;
+
   private _alignment: SkyPopoverAlignment;
 
   private _allowFullscreen: boolean;
@@ -172,13 +180,17 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   constructor(
     private adapterService: SkyPopoverAdapterService,
     private changeDetector: ChangeDetectorRef,
-    private elementRef: ElementRef,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyWindowRefService,
+    private overlayService: SkyOverlayService
   ) { }
 
   public ngOnInit(): void {
     this.preferredPlacement = this.placement;
-    this.adapterService.hidePopover(this.popoverContainer);
+    this.overlay = this.overlayService.create();
+    this.overlay.attachTemplate(this.popoverTemplate);
+    setTimeout(() => {
+      this.adapterService.hidePopover(this.popoverContainer);
+    });
   }
 
   public ngOnDestroy(): void {
@@ -297,7 +309,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private addListeners(): void {
     const windowObj = this.windowRef.getWindow();
-    const hostElement = this.elementRef.nativeElement;
+    const popoverElement = this.popoverContainer.nativeElement;
 
     Observable
       .fromEvent(windowObj, 'resize')
@@ -310,7 +322,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .fromEvent(windowObj.document, 'focusin')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
-        const targetIsChild = (hostElement.contains(event.target));
+        const targetIsChild = (popoverElement.contains(event.target));
         const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
 
         /* istanbul ignore else */
@@ -331,14 +343,14 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       });
 
     Observable
-      .fromEvent(hostElement, 'mouseenter')
+      .fromEvent(popoverElement, 'mouseenter')
       .takeUntil(this.idled)
       .subscribe(() => {
         this.isMouseEnter = true;
       });
 
     Observable
-      .fromEvent(hostElement, 'mouseleave')
+      .fromEvent(popoverElement, 'mouseleave')
       .takeUntil(this.idled)
       .subscribe(() => {
         this.isMouseEnter = false;
@@ -349,7 +361,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       });
 
     Observable
-      .fromEvent(hostElement, 'keyup')
+      .fromEvent(popoverElement, 'keyup')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
