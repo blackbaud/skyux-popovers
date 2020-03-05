@@ -2,14 +2,12 @@
   <div
     class="sky-popover-container"
     tabindex="-1"
+    [@popoverState]="animationState"
     [class.sky-popover-max-height]="!allowFullscreen"
     [ngClass]="[
       'sky-popover-alignment-' + alignment,
       'sky-popover-placement-' + placement
     ]"
-    [@popoverState]="animationState"
-    [style.left.px]="popoverLeft"
-    [style.top.px]="popoverTop"
     [style.visibility]="(isVisible) ? 'visible': 'hidden'"
     (@popoverState.done)="onAnimationDone($event)"
     (@popoverState.start)="onAnimationStart($event)"

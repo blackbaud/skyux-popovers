@@ -1,4 +1,17 @@
-<div id="screenshot-all-popovers">
+<button
+  class="sky-btn"
+  type="button"
+  [skyPopover]="myPopover"
+>
+  Open popover
+</button>
+
+<sky-popover #myPopover>
+  My popover content.
+</sky-popover>
+
+
+<!-- <div id="screenshot-all-popovers">
   <div class="popover-visual-container">
     <sky-popover placement="above">
       The content of a popover can be text, HTML, or Angular components.
@@ -389,4 +402,4 @@
       </sky-dropdown-menu>
     </sky-dropdown>
   </sky-popover>
-</div>
+</div> -->
