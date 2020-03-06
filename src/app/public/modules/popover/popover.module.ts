@@ -13,7 +13,7 @@ import {
 import {
   SkyAffixModule,
   SkyOverlayModule,
-  SkyAppWindowRef
+  SkyWindowRefService
 } from '@skyux/core';
 
 import {
@@ -50,7 +50,7 @@ import {
     SkyPopoverDirective
   ],
   providers: [
-    SkyAppWindowRef
+    SkyWindowRefService
   ]
 })
 export class SkyPopoverModule { }

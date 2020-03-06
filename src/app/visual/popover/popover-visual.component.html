@@ -1,13 +1,21 @@
-<button
-  class="sky-btn"
-  type="button"
-  [skyPopover]="myPopover"
->
-  Open popover
-</button>
+<div style="height:2000px;width:2000px;display:flex;align-items:center;justify-content:center;">
+  <button
+    class="sky-btn"
+    type="button"
+    [skyPopover]="myPopover"
+    [skyPopoverAlignment]="'right'"
+    [skyPopoverPlacement]="'above'"
+    [skyPopoverTrigger]="'click'"
+  >
+    Open popover
+  </button>
+</div>
 
-<sky-popover #myPopover>
-  My popover content.
+<sky-popover
+  [allowFullscreen]="false"
+  #myPopover
+>
+  <button type="button">Some button</button>
 </sky-popover>
 
 

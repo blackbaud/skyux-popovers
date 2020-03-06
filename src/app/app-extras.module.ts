@@ -16,7 +16,6 @@ import {
 } from '@skyux/router';
 
 import {
-  SkyDropdownModule,
   SkyPopoverModule
 } from './public';
 
@@ -24,7 +23,6 @@ import {
   exports: [
     SkyAppLinkModule,
     SkyCodeModule,
-    SkyDropdownModule,
     SkyPopoverModule,
     SkyDocsToolsModule
   ],
