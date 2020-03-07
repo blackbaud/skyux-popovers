@@ -18,6 +18,7 @@ import {
 } from '@angular/core';
 
 import {
+  SkyAffixAutoFitContext,
   SkyAffixConfig,
   SkyAffixer,
   SkyAffixPlacementChange,
@@ -81,20 +82,19 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._alignment || 'center';
   }
 
-  /**
-   * Indicates if the popover element should render as a full screen modal
-   * when the content is too large to fit inside its parent.
-   * @internal
-   */
-  @Input()
-  public set allowFullscreen(value: boolean) {
-    this._allowFullscreen = value;
-  }
+  // /**
+  //  * Indicates if the popover element should render as a full screen modal
+  //  * when the content is too large to fit inside its parent.
+  //  * @internal
+  //  */
+  // @Input()
+  // public set allowFullscreen(value: boolean) {
+  //   this._allowFullscreen = value;
+  // }
 
-  public get allowFullscreen(): boolean {
-    return this._allowFullscreen === undefined ? true : this._allowFullscreen;
-  }
-
+  // public get allowFullscreen(): boolean {
+  //   return this._allowFullscreen === undefined ? true : this._allowFullscreen;
+  // }
   /**
    * Indicates whether to close the popover when it loses focus.
    * To require users to click a trigger button to close the popover, set this input to false.
@@ -175,8 +175,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _alignment: SkyPopoverAlignment;
 
-  private _allowFullscreen: boolean;
-
+  // private _allowFullscreen: boolean;
+  
   private _placement: SkyPopoverPlacement;
 
   constructor(
@@ -224,17 +224,23 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     // Let the styles render before gauging the dimensions.
     this.windowRef.getWindow().setTimeout(() => {
       const config: SkyAffixConfig = {
-        placement: parseAffixPlacement(placement),
-        horizontalAlignment: parseAffixHorizontalAlignment(alignment),
+        placement: parseAffixPlacement(this.placement),
+        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
         isSticky: true,
         enableAutoFit: true,
-        verticalAlignment: 'middle'
+        verticalAlignment: 'middle',
+        autoFitContext: SkyAffixAutoFitContext.Viewport
       };
 
       this.isVisible = true;
       this.affixer.affixTo(caller.nativeElement, config);
       this.animationState = 'visible';
       this.changeDetector.markForCheck();
+
+      this.windowRef.getWindow().setTimeout(() => {
+        this.updateArrowOffset();
+        this.changeDetector.markForCheck();
+      });
     });
   }
 
@@ -401,20 +407,13 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
       .takeUntil(this.idled)
       .subscribe((change: SkyAffixPlacementChange) => {
         if (change.placement === null) {
-          if (this.allowFullscreen) {
-            this.placement = 'fullscreen';
-          } else {
-            this.isVisible = false;
-            this.changeDetector.markForCheck();
-            return;
-          }
-        } else {
-          this.placement = change.placement;
+          this.isVisible = false;
+          this.changeDetector.markForCheck();
+          return;
         }
 
+        this.placement = change.placement;
         this.isVisible = true;
-        this.changeDetector.markForCheck();
-
         this.updateArrowOffset();
         this.changeDetector.markForCheck();
       });
