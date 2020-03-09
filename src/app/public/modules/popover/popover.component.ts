@@ -82,19 +82,20 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._alignment || 'center';
   }
 
-  // /**
-  //  * Indicates if the popover element should render as a full screen modal
-  //  * when the content is too large to fit inside its parent.
-  //  * @internal
-  //  */
-  // @Input()
-  // public set allowFullscreen(value: boolean) {
-  //   this._allowFullscreen = value;
-  // }
+  /**
+   * Indicates if the popover element should render as a full screen modal
+   * when the content is too large to fit inside its parent.
+   * @internal
+   */
+  @Input()
+  public set allowFullscreen(value: boolean) {
+    this._allowFullscreen = value;
+  }
 
-  // public get allowFullscreen(): boolean {
-  //   return this._allowFullscreen === undefined ? true : this._allowFullscreen;
-  // }
+  public get allowFullscreen(): boolean {
+    return this._allowFullscreen === undefined ? true : this._allowFullscreen;
+  }
+
   /**
    * Indicates whether to close the popover when it loses focus.
    * To require users to click a trigger button to close the popover, set this input to false.
@@ -175,8 +176,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _alignment: SkyPopoverAlignment;
 
-  // private _allowFullscreen: boolean;
-  
+  private _allowFullscreen: boolean;
+
   private _placement: SkyPopoverPlacement;
 
   constructor(
@@ -213,12 +214,20 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   ): void {
     this.removeListeners();
 
-    this.caller = caller;
     this.placement = placement;
     this.alignment = alignment;
     this.preferredPlacement = this.placement;
+    this.isVisible = true;
+    this.animationState = 'visible';
     this.changeDetector.markForCheck();
 
+    if (this.caller === caller) {
+      this.addListeners();
+      this.reposition();
+      return;
+    }
+
+    this.caller = caller;
     this.addListeners();
 
     // Let the styles render before gauging the dimensions.
@@ -232,15 +241,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
         autoFitContext: SkyAffixAutoFitContext.Viewport
       };
 
-      this.isVisible = true;
-      this.affixer.affixTo(caller.nativeElement, config);
-      this.animationState = 'visible';
-      this.changeDetector.markForCheck();
-
-      this.windowRef.getWindow().setTimeout(() => {
-        this.updateArrowOffset();
-        this.changeDetector.markForCheck();
-      });
+      this.affixer.affixTo(this.caller.nativeElement, config);
+      this.updateArrowOffset();
     });
   }
 
@@ -311,6 +313,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.arrowTop = top;
     this.arrowLeft = left;
+    this.changeDetector.markForCheck();
   }
 
   private createOverlay(): SkyOverlayInstance {
@@ -396,12 +399,13 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
+    this.affixer.offsetChange
+      .takeUntil(this.idled)
+      .subscribe(() => this.updateArrowOffset());
+
     this.affixer.overflowScroll
       .takeUntil(this.idled)
-      .subscribe(() => {
-        this.updateArrowOffset();
-        this.changeDetector.markForCheck();
-      });
+      .subscribe(() => this.updateArrowOffset());
 
     this.affixer.placementChange
       .takeUntil(this.idled)
@@ -414,8 +418,9 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.placement = change.placement;
         this.isVisible = true;
-        this.updateArrowOffset();
         this.changeDetector.markForCheck();
+
+        this.updateArrowOffset();
       });
   }
 

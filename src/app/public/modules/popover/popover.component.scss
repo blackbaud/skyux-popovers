@@ -35,9 +35,9 @@ $popover-max-width: 276px;
 .sky-popover-header {
   padding-bottom: 0;
 
-  // & + .sky-popover-body {
-  //   // padding-top: 2px;
-  // }
+  & + .sky-popover-body {
+    padding-top: 2px;
+  }
 }
 
 .sky-popover-title {
