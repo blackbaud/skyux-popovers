@@ -17,6 +17,14 @@ describe('Popover', () => {
     });
   };
 
+  it('should match previous screenshot', (done) => {
+    SkyHostBrowser.get('visual/popover');
+    SkyHostBrowser.setWindowBreakpoint('lg');
+    expect('#screenshot-all-popovers').toMatchBaselineScreenshot(done, {
+      screenshotName: 'popover-all-popovers'
+    });
+  });
+
   it('should open a popover above the caller', (done) => {
     SkyHostBrowser.get('visual/popover');
     SkyHostBrowser.setWindowBreakpoint('lg');

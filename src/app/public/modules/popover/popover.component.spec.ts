@@ -32,7 +32,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 //   public showPopover() {}
 // }
 
-fdescribe('SkyPopoverComponent', () => {
+describe('SkyPopoverComponent', () => {
   let fixture: ComponentFixture<SkyPopoverComponent>;
   let component: SkyPopoverComponent;
   // let mockAdapterService: MockPopoverAdapterService;
