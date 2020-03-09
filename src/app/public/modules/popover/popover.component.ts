@@ -442,7 +442,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     Observable
       .fromEvent(windowObj.document, 'click')
       .takeUntil(this.idled)
-      .subscribe((event: MouseEvent) => {
+      .subscribe(() => {
         if (!this.isMouseEnter && this.dismissOnBlur) {
           this.close();
         }
@@ -475,7 +475,6 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
         if (key === 'escape') {
           event.stopPropagation();
           event.preventDefault();
-
           this.close();
 
           /* istanbul ignore else */
