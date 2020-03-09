@@ -14,7 +14,8 @@ import {
   OnInit,
   Output,
   TemplateRef,
-  ViewChild
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 
 import {
@@ -85,9 +86,9 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Indicates if the popover element should render as a full screen modal
    * when the content is too large to fit inside its parent.
+   * @internal
    * @deprecated Fullscreen popovers have been deprecated and are not an approved SKY UX design
    * pattern. Use the SKY UX modal component instead.
-   * @internal
    */
   @Input()
   public set allowFullscreen(value: boolean) {
@@ -104,6 +105,16 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   @Input()
   public dismissOnBlur = true;
+
+  /**
+   * Indicates if the popover should be injected in-place as a static HTML element. The default
+   * value of `false` injects the popover in an overlay with a fixed position. This setting is for
+   * internal use only.
+   * @internal
+   * @deprecated Static popovers will be removed in the next major version release.
+   */
+  @Input()
+  public isStatic: boolean = false;
 
   /**
    * Specifies the placement of the popover in relation to the trigger element.
@@ -187,16 +198,29 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private windowRef: SkyWindowRefService,
     private affixService: SkyAffixService,
-    private overlayService: SkyOverlayService
+    private overlayService: SkyOverlayService,
+    private viewContainerRef: ViewContainerRef
   ) { }
 
   public ngOnInit(): void {
     this.preferredPlacement = this.placement;
-    this.overlay = this.createOverlay();
+
+    if (this.isStatic) {
+      this.viewContainerRef.createEmbeddedView(this.popoverTemplate);
+      this.animationState = 'visible';
+      this.isVisible = true;
+      this.changeDetector.markForCheck();
+    } else {
+      this.overlay = this.createOverlay();
+    }
   }
 
   public ngAfterViewInit(): void {
-    this.affixer = this.createAffixer();
+    if (this.isStatic) {
+      this.adapterService.makeStatic(this.popoverContainer);
+    } else {
+      this.affixer = this.createAffixer();
+    }
   }
 
   public ngOnDestroy(): void {
@@ -350,7 +374,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * @deprecated The fullscreen feature should be removed in a breaking change.
+   * @deprecated The fullscreen feature will be removed in the next major version release.
    */
   private activateFullscreen(): void {
     this.placement = 'fullscreen';

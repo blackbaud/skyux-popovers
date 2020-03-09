@@ -30,6 +30,13 @@ export class SkyPopoverAdapterService {
     this.renderer.removeClass(elem.nativeElement, 'sky-popover-hidden');
   }
 
+  /**
+   * @deprecated Static popovers will be removed in the next major version release.
+   */
+  public makeStatic(elem: ElementRef): void {
+    this.renderer.addClass(elem.nativeElement, 'sky-popover-static');
+  }
+
   public isPopoverLargerThanWindow(popover: ElementRef): boolean {
     const windowObj = this.windowRef.getWindow();
     const popoverRect = popover.nativeElement.getBoundingClientRect();

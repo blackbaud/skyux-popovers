@@ -1,46 +1,46 @@
 <div id="screenshot-all-popovers">
   <div class="popover-visual-container">
-    <sky-popover placement="above">
+    <sky-popover placement="above" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="below">
+    <sky-popover placement="below" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="right">
+    <sky-popover placement="right" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="left">
+    <sky-popover placement="left" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover>
+    <sky-popover [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="above" popoverTitle="Did you know?">
+    <sky-popover placement="above" popoverTitle="Did you know?" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="below" popoverTitle="Did you know?">
+    <sky-popover placement="below" popoverTitle="Did you know?" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="right" popoverTitle="Did you know?">
+    <sky-popover placement="right" popoverTitle="Did you know?" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
   <div class="popover-visual-container">
-    <sky-popover placement="left" popoverTitle="Did you know?">
+    <sky-popover placement="left" popoverTitle="Did you know?" [isStatic]="true">
       The content of a popover can be text, HTML, or Angular components.
     </sky-popover>
   </div>
@@ -214,8 +214,8 @@
                 style="float:right;"
                 [skyPopover]="positionedParent2"
                 skyPopoverPlacement="below"
-                skyPopoverAlignment="right">
-                Below, align right
+                skyPopoverAlignment="left">
+                Below, align left
               </button>
 
               <sky-popover #positionedParent2>

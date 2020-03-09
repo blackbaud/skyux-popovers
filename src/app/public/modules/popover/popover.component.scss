@@ -18,6 +18,12 @@ $popover-max-width: 276px;
     left: -9999px !important;
   }
 
+  &.sky-popover-static {
+    .sky-popover-arrow {
+      position: absolute;
+    }
+  }
+
   &:focus {
     outline: none;
   }
