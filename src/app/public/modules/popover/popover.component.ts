@@ -24,6 +24,7 @@ import {
   SkyAffixer,
   SkyAffixPlacementChange,
   SkyAffixService,
+  SkyCoreAdapterService,
   SkyOverlayInstance,
   SkyOverlayService,
   SkyWindowRefService
@@ -199,7 +200,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     private windowRef: SkyWindowRefService,
     private affixService: SkyAffixService,
     private overlayService: SkyOverlayService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private coreAdapterService: SkyCoreAdapterService
   ) { }
 
   public ngOnInit(): void {
@@ -224,8 +226,14 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.affixer.destroy();
-    this.overlay.close();
+    if (this.affixer) {
+      this.affixer.destroy();
+    }
+
+    if (this.overlay) {
+      this.overlay.close();
+    }
+
     this.removeListeners();
   }
 
@@ -339,6 +347,14 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   // TODO: This method is no longer used. Remove it when we decide to make breaking changes.
   public markForCloseOnMouseLeave(): void {
     this.isMarkedForCloseOnMouseLeave = true;
+  }
+
+  public applyFocus(): void {
+    this.coreAdapterService.getFocusableChildrenAndApplyFocus(
+      this.popoverContainer,
+      '.sky-popover',
+      true
+    );
   }
 
   private updateArrowOffset(): void {
@@ -459,6 +475,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
         if (key === 'escape') {
           event.stopPropagation();
           event.preventDefault();
+
           this.close();
 
           /* istanbul ignore else */

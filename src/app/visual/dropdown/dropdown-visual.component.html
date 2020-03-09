@@ -1,9 +1,9 @@
 <h2>Dropdown</h2>
 <div
   id="screenshot-dropdown-button"
-  style="height: 170px; width: 300px;"
+  style="height: 170px; width: 300px;padding-left:50px;"
 >
-  <sky-dropdown>
+  <sky-dropdown [dismissOnBlur]="false" alignment="right" trigger="hover">
     <sky-dropdown-button>
       Show dropdown
     </sky-dropdown-button>
@@ -16,7 +16,7 @@
         </button>
       </sky-dropdown-item>
       <sky-dropdown-item>
-        <a href="">
+        <a href="#">
           Anchor item
         </a>
       </sky-dropdown-item>

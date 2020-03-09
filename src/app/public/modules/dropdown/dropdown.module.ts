@@ -7,16 +7,14 @@ import {
 } from '@angular/core';
 
 import {
+  SkyAffixModule,
+  SkyOverlayModule,
   SkyWindowRefService
 } from '@skyux/core';
 
 import {
   SkyIconModule
 } from '@skyux/indicators';
-
-import {
-  SkyPopoverModule
-} from '../popover/popover.module';
 
 import {
   SkyPopoversResourcesModule
@@ -47,8 +45,9 @@ import {
   ],
   imports: [
     CommonModule,
+    SkyAffixModule,
     SkyIconModule,
-    SkyPopoverModule,
+    SkyOverlayModule,
     SkyPopoversResourcesModule
   ],
   exports: [

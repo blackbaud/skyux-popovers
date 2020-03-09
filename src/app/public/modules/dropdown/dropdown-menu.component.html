@@ -1,9 +1,16 @@
-<div
-  class="sky-dropdown-menu"
-  [attr.aria-labelledby]="ariaLabelledBy"
-  [attr.role]="ariaRole"
-  [id]="dropdownMenuId"
->
-  <ng-content>
-  </ng-content>
-</div>
+<ng-template #dropdownMenuTemplateRef>
+  <div
+    class="sky-dropdown-menu sky-shadow sky-rounded-corners"
+    [attr.aria-labelledby]="ariaLabelledBy"
+    [attr.role]="ariaRole"
+    [id]="dropdownMenuId"
+    [ngClass]="{
+      'hidden': !isOpen
+    }"
+    #dropdownMenuElementRef
+  >
+    <ng-content>
+    </ng-content>
+  </div>
+
+</ng-template>

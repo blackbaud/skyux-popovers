@@ -52,6 +52,7 @@
   </button>
 
   <sky-popover #myPopover5>
+    <input type="text" autofocus />
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elit arcu.
   </sky-popover>
 
@@ -141,7 +142,9 @@
 
   <sky-popover
     popoverTitle="Did you know?"
-    #myPopoverWithDropdown>
+    [dismissOnBlur]="false"
+    #myPopoverWithDropdown
+  >
     The content of a popover can be text, HTML, or Angular components.<br><br>
 
     <sky-dropdown buttonType="context-menu">
@@ -183,7 +186,10 @@
                 Below, align left
               </button>
 
-              <sky-popover #positionedParent1>
+              <sky-popover
+                [dismissOnBlur]="false"
+                #positionedParent1
+              >
                 The content of a popover can be text, HTML, or Angular components.<br>
                 <sky-dropdown buttonType="context-menu">
                   <sky-dropdown-menu>
@@ -218,7 +224,10 @@
                 Below, align left
               </button>
 
-              <sky-popover #positionedParent2>
+              <sky-popover
+                [dismissOnBlur]="false"
+                #positionedParent2
+              >
                 The content of a popover can be text, HTML, or Angular components.<br>
                 <sky-dropdown buttonType="context-menu">
                   <sky-dropdown-menu>

@@ -3,11 +3,11 @@ import {
 } from '@angular/core';
 
 import {
+  async,
   ComponentFixture,
-  TestBed,
-  tick,
   fakeAsync,
-  async
+  TestBed,
+  tick
 } from '@angular/core/testing';
 
 import {
@@ -19,13 +19,13 @@ import {
 } from '@angular/platform-browser/animations';
 
 import {
+  RouterTestingModule
+} from '@angular/router/testing';
+
+import {
   expect,
   SkyAppTestUtility
 } from '@skyux-sdk/testing';
-
-import {
-  SkyWindowRefService
-} from '@skyux/core';
 
 import {
   SkyPopoverTestComponent
@@ -47,20 +47,9 @@ import {
   SkyPopoverAdapterService
 } from './popover-adapter.service';
 
-class MockWindowService {
-  public getWindow(): any {
-    return {
-      setTimeout(callback: Function) {
-        callback();
-      }
-    };
-  }
-}
-
 describe('SkyPopoverDirective', () => {
   let fixture: ComponentFixture<SkyPopoverTestComponent>;
   let directiveElements: DebugElement[];
-  let mockWindowService: MockWindowService;
 
   function validateTriggerOpensPopover(
     elIndex: number,
@@ -76,46 +65,60 @@ describe('SkyPopoverDirective', () => {
     // The popover should only execute hover events if it is set to 'mouseenter'.
     if (openTrigger !== 'mouseenter') {
       SkyAppTestUtility.fireDomEvent(caller.nativeElement, 'mouseenter');
+      fixture.detectChanges();
+      tick();
       expect(positionNextToSpy).not.toHaveBeenCalled();
     }
 
     SkyAppTestUtility.fireDomEvent(caller.nativeElement, openTrigger);
+    fixture.detectChanges();
+    tick();
     expect(positionNextToSpy).toHaveBeenCalled();
 
     callerInstance.skyPopover.isOpen = true;
+    fixture.detectChanges();
+    tick();
 
     // The popover should only execute hover events if it is set to 'mouseenter'.
     if (closeTrigger !== 'mouseleave') {
       SkyAppTestUtility.fireDomEvent(caller.nativeElement, 'mouseleave');
+      fixture.detectChanges();
+      tick();
       expect(closeSpy).not.toHaveBeenCalled();
     }
 
     SkyAppTestUtility.fireDomEvent(caller.nativeElement, closeTrigger);
+    fixture.detectChanges();
+    tick();
     expect(closeSpy).toHaveBeenCalled();
 
     // Make sure close isn't called again when the popover is already closed.
     closeSpy.calls.reset();
     callerInstance.skyPopover.isOpen = false;
+    fixture.detectChanges();
+    tick();
 
     SkyAppTestUtility.fireDomEvent(caller.nativeElement, closeTrigger);
+    fixture.detectChanges();
+    tick();
+
     expect(closeSpy).not.toHaveBeenCalled();
   }
 
   beforeEach(() => {
-    mockWindowService = new MockWindowService();
     let mockAdapterService = {};
 
     TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
-        SkyPopoverModule
+        SkyPopoverModule,
+        RouterTestingModule
       ],
       declarations: [
         SkyPopoverTestComponent
       ],
       providers: [
-        { provide: SkyPopoverAdapterService, useValue: mockAdapterService },
-        { provide: SkyWindowRefService, useValue: mockWindowService }
+        { provide: SkyPopoverAdapterService, useValue: mockAdapterService }
       ]
     })
       .compileComponents();
@@ -150,23 +153,28 @@ describe('SkyPopoverDirective', () => {
     expect(spy).toHaveBeenCalledWith(callerInstance['elementRef'], 'below', undefined);
   });
 
-  it('should allow click to display the popover', () => {
+  it('should allow click to display the popover', fakeAsync(() => {
     validateTriggerOpensPopover(1, 'click', 'click');
-  });
+  }));
 
-  it('should allow mouseenter to display the popover', () => {
+  it('should allow mouseenter to display the popover', fakeAsync(() => {
     validateTriggerOpensPopover(2, 'mouseenter', 'mouseleave');
-  });
+  }));
 
-  it('should mark the popover to close on mouseleave', () => {
+  it('should mark the popover to close on mouseleave', fakeAsync(() => {
     const caller = directiveElements[2];
     const callerInstance = caller.injector.get(SkyPopoverDirective);
     const closeSpy = spyOn((callerInstance as any), 'closePopover').and.callThrough();
     const markForCloseSpy = spyOn((callerInstance as any).skyPopover, 'markForCloseOnMouseLeave').and.callThrough();
 
     callerInstance.skyPopover.isOpen = true;
+    tick();
+    fixture.detectChanges();
 
     SkyAppTestUtility.fireDomEvent(caller.nativeElement, 'mouseleave');
+    tick();
+    fixture.detectChanges();
+
     expect(closeSpy).toHaveBeenCalled();
     expect(markForCloseSpy).not.toHaveBeenCalled();
 
@@ -178,9 +186,12 @@ describe('SkyPopoverDirective', () => {
     SkyAppTestUtility.fireDomEvent(caller.nativeElement, 'mouseleave');
     callerInstance.skyPopover.isMouseEnter = true;
     callerInstance.skyPopover.popoverOpened.emit();
+    tick();
+    fixture.detectChanges();
+
     expect(closeSpy).not.toHaveBeenCalled();
     expect(markForCloseSpy).toHaveBeenCalled();
-  });
+  }));
 
   it('should close the popover when the escape key is pressed', () => {
     const caller = directiveElements[3];

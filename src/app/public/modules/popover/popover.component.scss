@@ -1,5 +1,6 @@
 @import "~@skyux/theme/scss/mixins";
 @import "~@skyux/theme/scss/_compat/mixins";
+@import "../../styles/mixins";
 
 $popover-arrow-size: 20px;
 $popover-border-size: 10px;
@@ -7,7 +8,7 @@ $popover-max-width: 276px;
 
 .sky-popover-container {
   position: fixed;
-  z-index: $sky-dropdown-z-index;
+  // z-index: $sky-dropdown-z-index;
   min-width: $popover-max-width;
   max-width: $popover-max-width;
 
@@ -190,11 +191,6 @@ $popover-max-width: 276px;
 
 .sky-popover-max-height {
   .sky-popover {
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 35px;
-    max-height: -webkit-calc(50vh - 50px);
-    max-height:    -moz-calc(50vh - 50px);
-    max-height:         calc(50vh - 50px);
+    @include popoverMaxHeight();
   }
 }

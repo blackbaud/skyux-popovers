@@ -7,21 +7,16 @@
     type="button"
     [attr.aria-expanded]="isOpen"
     [attr.aria-controls]="menuId"
-    [attr.aria-label]="label"
+    [attr.aria-label]="label || ('skyux_dropdown_context_menu_default_label' | skyLibResources)"
     [attr.title]="title"
     [disabled]="disabled"
     [ngClass]="[
       'sky-dropdown-button-type-' + buttonType,
       'sky-btn-' + buttonStyle
     ]"
-    [skyPopover]="popover"
-    [skyPopoverAlignment]="alignment"
-    [skyPopoverTrigger]="getPopoverTriggerType()"
-    [skyPopoverPlacement]="'below'"
     #triggerButton
   >
-
-    <div [ngSwitch]="buttonType">
+    <ng-container [ngSwitch]="buttonType">
       <ng-template ngSwitchCase="context-menu">
         <sky-icon
           icon="ellipsis-h"
@@ -29,7 +24,7 @@
       </ng-template>
 
       <ng-template ngSwitchDefault>
-        <div *ngIf="buttonType === 'select' || buttonType === 'tab' || !buttonType"
+        <div *ngIf="!buttonType || buttonType === 'select' || buttonType === 'tab'"
           class="sky-dropdown-button-container"
         >
           <div
@@ -50,28 +45,22 @@
             </sky-icon>
           </div>
         </div>
-        <div *ngIf="buttonType !== 'select' && buttonType !== 'tab' && buttonType">
+        <div *ngIf="buttonType && buttonType !== 'select' && buttonType !== 'tab'">
           <sky-icon
             [icon]="buttonType"
             size="lg"
           ></sky-icon>
         </div>
       </ng-template>
-    </div>
+    </ng-container>
   </button>
-  <sky-popover
-    [@.disabled]="true"
-    [alignment]="alignment"
-    [allowFullscreen]="false"
-    [dismissOnBlur]="dismissOnBlur"
-    [placement]="'below'"
-    (popoverClosed)="onPopoverClosed()"
-    (popoverOpened)="onPopoverOpened()"
-    #popover
+  <div
+    class="sky-dropdown-menu-container"
+    #dropdownMenuRef
   >
     <ng-content
       select="sky-dropdown-menu"
     >
     </ng-content>
-  </sky-popover>
+  </div>
 </div>

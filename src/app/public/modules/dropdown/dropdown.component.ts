@@ -1,11 +1,10 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  HostListener,
   Input,
   OnDestroy,
-  OnInit,
   ViewChild
 } from '@angular/core';
 
@@ -14,20 +13,18 @@ import {
 } from '@skyux/core';
 
 import {
-  SkyLibResourcesService
-} from '@skyux/i18n';
-
-import 'rxjs/add/operator/takeUntil';
+  Observable
+} from 'rxjs/Observable';
 
 import {
   Subject
 } from 'rxjs/Subject';
 
+import 'rxjs/add/operator/takeUntil';
+
 import {
-  SkyPopoverAlignment,
-  SkyPopoverComponent,
-  SkyPopoverTrigger
-} from '../popover';
+  SkyPopoverAlignment
+} from '../popover/types/popover-alignment';
 
 import {
   SkyDropdownAdapterService
@@ -46,12 +43,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [SkyDropdownAdapterService]
 })
-export class SkyDropdownComponent implements OnInit, OnDestroy {
+export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
    * Available values are `left`, `right`, and `center`.
    * @default "left"
+   * @deprecated Set the `horizontalAlignment` property on `SkyDropdownMenuComponent` instead.
    */
   @Input()
   public alignment: SkyPopoverAlignment = 'left';
@@ -105,16 +103,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
    * dropdown button has no text.
    */
   @Input()
-  public set label(value: string) {
-    this._label = value;
-  }
-
-  public get label(): string {
-    if (this.buttonType === 'select' || this.buttonType === 'tab') {
-      return this._label;
-    }
-    return this._label || this.getString('skyux_dropdown_context_menu_default_label');
-  }
+  public label: string;
 
   /**
    * Provides an observable to send commands to the dropdown. The commands should respect
@@ -150,6 +139,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   /**
    * @internal
    * Indicates if the dropdown button element or any of its children have focus.
+   * @deprecated This property will be removed in the next major version release.
    */
   public get buttonIsFocused(): boolean {
     return this.adapter.elementHasFocus(this.triggerButton);
@@ -159,21 +149,31 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._isOpen;
   }
 
+  /**
+   * @internal
+   */
+  public isMouseEnter: boolean = false;
+
   public menuId: string;
 
   /**
    * @internal
    * Indicates if the dropdown button menu or any of its children have focus.
+   * @deprecated This property will be removed in the next major version release.
    */
   public get menuIsFocused(): boolean {
-    return this.adapter.elementHasFocus(this.popover.popoverContainer);
+    return this.adapter.elementHasFocus(this.dropdownMenuRef);
   }
 
-  @ViewChild('triggerButton')
-  private triggerButton: ElementRef;
+  @ViewChild('dropdownMenuRef', {
+    read: ElementRef
+  })
+  private dropdownMenuRef: ElementRef;
 
-  @ViewChild(SkyPopoverComponent)
-  private popover: SkyPopoverComponent;
+  @ViewChild('triggerButton', {
+    read: ElementRef
+  })
+  private triggerButton: ElementRef;
 
   private isKeyboardActive = false;
 
@@ -185,90 +185,28 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   private _isOpen = false;
 
-  private _label: string;
-
   private _trigger: SkyDropdownTriggerType;
 
   constructor(
     private windowRef: SkyWindowRefService,
-    private resourcesService: SkyLibResourcesService,
     private adapter: SkyDropdownAdapterService
   ) { }
 
-  public ngOnInit(): void {
-    this.messageStream
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((message: SkyDropdownMessage) => {
-        this.handleIncomingMessages(message);
-      });
+  public ngAfterViewInit(): void {
+    this.addEventListeners();
   }
 
   public ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.ngUnsubscribe = undefined;
   }
 
-  @HostListener('keydown', ['$event'])
-  public onKeyDown(event: KeyboardEvent): void {
-    const key = event.key.toLowerCase();
-
-    if (this._isOpen) {
-      /* tslint:disable-next-line:switch-default */
-      switch (key) {
-        // After an item is selected with the enter key,
-        // wait a moment before returning focus to the dropdown trigger element.
-        case 'enter':
-          this.windowRef.getWindow().setTimeout(() => {
-            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-          });
-          break;
-
-        // Allow the menu to be opened with the arrowdown key
-        // if it is first opened with the mouse.
-        case 'down':
-        case 'arrowdown':
-          if (!this.isKeyboardActive) {
-            this.isKeyboardActive = true;
-            this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
-            event.preventDefault();
-          }
-          break;
-      }
-
-      return;
-    }
-
-    /* tslint:disable-next-line:switch-default */
-    switch (key) {
-      case 'enter':
-        this.isKeyboardActive = true;
-        break;
-
-      case 'down':
-      case 'arrowdown':
-        this.isKeyboardActive = true;
-        this.sendMessage(SkyDropdownMessageType.Open);
-        event.preventDefault();
-        break;
-    }
-  }
-
-  public onPopoverOpened(): void {
-    this._isOpen = true;
-    // Focus the first item if the menu was opened with the keyboard.
-    if (this.isKeyboardActive) {
-      this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
-    }
-  }
-
-  public onPopoverClosed(): void {
-    this._isOpen = false;
-    this.isKeyboardActive = false;
-  }
-
-  public getPopoverTriggerType(): SkyPopoverTrigger {
-    // Map the dropdown trigger type to the popover trigger type.
-    return (this.trigger === 'click') ? 'click' : 'mouseenter';
+  /**
+   * @internal
+   */
+  public getButtonElement(): HTMLElement {
+    return this.triggerButton.nativeElement;
   }
 
   private handleIncomingMessages(message: SkyDropdownMessage): void {
@@ -276,18 +214,14 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
       /* tslint:disable-next-line:switch-default */
       switch (message.type) {
         case SkyDropdownMessageType.Open:
-          this.positionPopover();
+          this._isOpen = true;
           break;
 
         case SkyDropdownMessageType.Close:
-          this.popover.close();
-          break;
-
-        case SkyDropdownMessageType.Reposition:
-          // Only reposition the dropdown if it is already open.
-          if (this._isOpen) {
-            this.windowRef.getWindow().setTimeout(() => {
-              this.popover.reposition();
+          this._isOpen = false;
+          if (this.isKeyboardActive) {
+            setTimeout(() => {
+              this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
             });
           }
           break;
@@ -303,19 +237,96 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     this.messageStream.next({ type });
   }
 
-  private positionPopover(): void {
-    this.popover.positionNextTo(
-      this.triggerButton,
-      'below',
-      this.alignment
-    );
+  private addEventListeners(): void {
+
+    this.messageStream
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(message => this.handleIncomingMessages(message));
+
+    const buttonElement = this.triggerButton.nativeElement;
+
+    Observable
+      .fromEvent(buttonElement, 'click')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: MouseEvent) => {
+        this.isKeyboardActive = false;
+        if (this._isOpen) {
+          this.sendMessage(SkyDropdownMessageType.Close);
+        } else {
+          this.sendMessage(SkyDropdownMessageType.Open);
+        }
+        event.preventDefault();
+      });
+
+    Observable
+      .fromEvent(buttonElement, 'keyup')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        this.isKeyboardActive = true;
+        const key = event.key.toLowerCase();
+
+        /* tslint:disable-next-line:switch-default */
+        switch (key) {
+          case 'enter':
+            this.sendMessage(SkyDropdownMessageType.Open);
+            this.windowRef.getWindow().setTimeout(() => {
+              this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+            });
+            event.stopPropagation();
+            event.preventDefault();
+            break;
+
+          case 'escape':
+            if (this._isOpen) {
+              this.sendMessage(SkyDropdownMessageType.Close);
+              event.stopPropagation();
+              event.preventDefault();
+            }
+            break;
+        }
+      });
+
+    Observable
+      .fromEvent(buttonElement, 'keydown')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        this.isKeyboardActive = true;
+
+        const key = event.key.toLowerCase();
+        if (key === 'down' || key === 'arrowdown') {
+          this.sendMessage(SkyDropdownMessageType.Open);
+          this.windowRef.getWindow().setTimeout(() => {
+            this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+          });
+          event.preventDefault();
+        }
+      });
+
+    Observable
+      .fromEvent(buttonElement, 'mouseenter')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        if (this.trigger === 'hover') {
+          this.isMouseEnter = true;
+          this.sendMessage(SkyDropdownMessageType.Open);
+        }
+      });
+
+    Observable
+      .fromEvent(buttonElement, 'mouseleave')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        if (this.trigger === 'hover') {
+          this.isMouseEnter = false;
+          // Allow the dropdown menu to set isMouseEnter before checking if the close action
+          // should be taken.
+          this.windowRef.getWindow().setTimeout(() => {
+            if (!this.isMouseEnter) {
+              this.sendMessage(SkyDropdownMessageType.Close);
+            }
+          });
+        }
+      });
   }
 
-  private getString(key: string): string {
-    // TODO: Need to implement the async `getString` method in a breaking change.
-    return this.resourcesService.getStringForLocale(
-      { locale: 'en-US' },
-      key
-    );
-  }
 }

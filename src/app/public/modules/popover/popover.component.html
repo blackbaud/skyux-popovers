@@ -1,7 +1,6 @@
 <ng-template #popoverTemplate>
   <div
     class="sky-popover-container"
-    tabindex="-1"
     [class.sky-popover-max-height]="!allowFullscreen"
     [ngClass]="[
       'sky-popover-alignment-' + alignment,
@@ -15,6 +14,7 @@
   >
     <div
       class="sky-popover sky-shadow sky-rounded-corners"
+      tabindex="-1"
     >
       <header *ngIf="popoverTitle || placement === 'fullscreen'"
         class="sky-popover-header sky-padding-even-default"

@@ -146,11 +146,38 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
       });
 
     Observable
+      .fromEvent(element, 'keydown')
+      .takeUntil(this.idled)
+      .subscribe((event: KeyboardEvent) => {
+        if (!this.isPopoverOpen()) {
+          return;
+        }
+
+        const key = event.key.toLowerCase();
+
+        if (
+          key === 'arrowup' || key === 'up' ||
+          key === 'arrowright' || key === 'right' ||
+          key === 'arrowdown' || key === 'down' ||
+          key === 'arrowleft' || key === 'left'
+        ) {
+          event.stopPropagation();
+          event.preventDefault();
+          this.skyPopover.applyFocus();
+        }
+      });
+
+    Observable
       .fromEvent(element, 'keyup')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
+        if (!this.isPopoverOpen()) {
+          return;
+        }
+
         const key = event.key.toLowerCase();
-        if (key === 'escape' && this.isPopoverOpen()) {
+
+        if (key === 'escape') {
           event.stopPropagation();
           event.preventDefault();
           this.sendMessage(SkyPopoverMessageType.Close);

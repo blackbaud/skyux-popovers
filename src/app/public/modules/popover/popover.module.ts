@@ -31,6 +31,7 @@ import {
 import {
   SkyPopoverDirective
 } from './popover.directive';
+import { SkyCoreAdapterModule } from '@skyux/core';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import {
     BrowserAnimationsModule,
     CommonModule,
     SkyAffixModule,
+    SkyCoreAdapterModule,
     SkyIconModule,
     SkyOverlayModule,
     SkyPopoversResourcesModule
