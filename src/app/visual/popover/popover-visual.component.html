@@ -1,25 +1,4 @@
-<div style="height:2000px;width:2000px;display:flex;align-items:center;justify-content:center;">
-  <button
-    class="sky-btn"
-    type="button"
-    [skyPopover]="myPopover"
-    [skyPopoverAlignment]="'right'"
-    [skyPopoverPlacement]="'above'"
-    [skyPopoverTrigger]="'click'"
-  >
-    Open popover
-  </button>
-</div>
-
-<sky-popover
-  [allowFullscreen]="false"
-  #myPopover
->
-  <button type="button">Some button</button>
-</sky-popover>
-
-
-<!-- <div id="screenshot-all-popovers">
+<div id="screenshot-all-popovers">
   <div class="popover-visual-container">
     <sky-popover placement="above">
       The content of a popover can be text, HTML, or Angular components.
@@ -235,8 +214,8 @@
                 style="float:right;"
                 [skyPopover]="positionedParent2"
                 skyPopoverPlacement="below"
-                skyPopoverAlignment="left">
-                Below, align left
+                skyPopoverAlignment="right">
+                Below, align right
               </button>
 
               <sky-popover #positionedParent2>
@@ -277,7 +256,7 @@
       style="display:block;width:100%;"
       [skyPopover]="myPopover5"
       skyPopoverPlacement="below">
-      Open popover
+      Below
     </button>
   </p>
   <p>
@@ -288,7 +267,7 @@
       [skyPopover]="myPopover5"
       skyPopoverPlacement="below"
       skyPopoverAlignment="left">
-      Open popover
+      Below, left
     </button>
   </p>
   <p>
@@ -299,7 +278,7 @@
       [skyPopover]="myPopover5"
       skyPopoverPlacement="below"
       skyPopoverAlignment="right">
-      Open popover
+      Below, right
     </button>
   </p>
   <p>
@@ -309,7 +288,7 @@
       style="display:block;width:100%;"
       [skyPopover]="myPopover5"
       skyPopoverPlacement="above">
-      Open popover
+      Above
     </button>
   </p>
   <p>
@@ -320,7 +299,7 @@
       [skyPopover]="myPopover5"
       skyPopoverPlacement="above"
       skyPopoverAlignment="left">
-      Open popover
+      Above, left
     </button>
   </p>
   <p>
@@ -331,12 +310,12 @@
       [skyPopover]="myPopover5"
       skyPopoverPlacement="above"
       skyPopoverAlignment="right">
-      Open popover
+      Above, right
     </button>
   </p>
 </div>
 <div id="screenshot-popover-fullscreen">
-    <button
+  <button
     id="btn-popover-fullscreen"
     class="sky-btn"
     [skyPopover]="popoverFullscreen"
@@ -410,4 +389,4 @@
       </sky-dropdown-menu>
     </sky-dropdown>
   </sky-popover>
-</div> -->
+</div>

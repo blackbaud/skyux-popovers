@@ -4,9 +4,9 @@ import {
   Renderer2
 } from '@angular/core';
 
-// import {
-//   SkyWindowRefService
-// } from '@skyux/core';
+import {
+  SkyWindowRefService
+} from '@skyux/core';
 
 import {
   SkyPopoverAdapterArrowCoordinates,
@@ -18,8 +18,8 @@ import {
 export class SkyPopoverAdapterService {
 
   constructor(
-    private renderer: Renderer2
-    // private windowRef: SkyWindowRefService
+    private renderer: Renderer2,
+    private windowRef: SkyWindowRefService
   ) { }
 
   public hidePopover(elem: ElementRef): void {
@@ -30,15 +30,15 @@ export class SkyPopoverAdapterService {
     this.renderer.removeClass(elem.nativeElement, 'sky-popover-hidden');
   }
 
-  // public isPopoverLargerThanWindow(popover: ElementRef): boolean {
-  //   const windowObj = this.windowRef.getWindow();
-  //   const popoverRect = popover.nativeElement.getBoundingClientRect();
+  public isPopoverLargerThanWindow(popover: ElementRef): boolean {
+    const windowObj = this.windowRef.getWindow();
+    const popoverRect = popover.nativeElement.getBoundingClientRect();
 
-  //   return (
-  //     popoverRect.height >= windowObj.innerHeight ||
-  //     popoverRect.width >= windowObj.innerWidth
-  //   );
-  // }
+    return (
+      popoverRect.height >= windowObj.innerHeight ||
+      popoverRect.width >= windowObj.innerWidth
+    );
+  }
 
   public getArrowCoordinates(
     elements: SkyPopoverAdapterElements,

@@ -85,6 +85,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Indicates if the popover element should render as a full screen modal
    * when the content is too large to fit inside its parent.
+   * @deprecated Fullscreen popovers have been deprecated and are not an approved SKY UX design
+   * pattern. Use the SKY UX modal component instead.
    * @internal
    */
   @Input()
@@ -221,6 +223,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     this.animationState = 'visible';
     this.changeDetector.markForCheck();
 
+    // Reuse existing infrastructure if caller unchanged.
     if (this.caller === caller) {
       this.addListeners();
       this.reposition();
@@ -228,6 +231,15 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.caller = caller;
+
+    if (this.placement === 'fullscreen') {
+      console.warn([
+        'Fullscreen popovers have been deprecated and are not an approved SKY UX design pattern.',
+        'Use the SKY UX modal component instead.'
+      ].join(' '));
+      return;
+    }
+
     this.addListeners();
 
     // Let the styles render before gauging the dimensions.
@@ -253,6 +265,10 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   public reposition(): void {
     this.placement = this.preferredPlacement;
     this.changeDetector.markForCheck();
+
+    if (this.placement === 'fullscreen') {
+      return;
+    }
 
     this.windowRef.getWindow().setTimeout(() => {
       this.affixer.reaffix();
@@ -333,11 +349,40 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.affixService.createAffixer(this.popoverContainer);
   }
 
+  /**
+   * @deprecated The fullscreen feature should be removed in a breaking change.
+   */
+  private activateFullscreen(): void {
+    this.placement = 'fullscreen';
+    // Listeners should not be active during fullscreen mode.
+    this.removeListeners();
+    this.changeDetector.markForCheck();
+  }
+
   private addListeners(): void {
     const windowObj = this.windowRef.getWindow();
     const popoverElement = this.popoverContainer.nativeElement;
 
     this.idled = new Subject<boolean>();
+
+    Observable
+      .fromEvent(windowObj, 'resize')
+      .takeUntil(this.idled)
+      .subscribe(() => {
+        if (
+          this.isOpen &&
+          this.isVisible &&
+          this.allowFullscreen
+        ) {
+          const isLargerThanWindow = this.adapterService.isPopoverLargerThanWindow(
+            this.popoverContainer
+          );
+
+          if (isLargerThanWindow) {
+            this.activateFullscreen();
+          }
+        }
+      });
 
     Observable
       .fromEvent(windowObj.document, 'focusin')
@@ -411,7 +456,15 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
       .takeUntil(this.idled)
       .subscribe((change: SkyAffixPlacementChange) => {
         if (change.placement === null) {
-          this.isVisible = false;
+          if (
+            this.allowFullscreen &&
+            this.adapterService.isPopoverLargerThanWindow(this.popoverContainer)
+          ) {
+            this.activateFullscreen();
+          } else {
+            this.isVisible = false;
+          }
+
           this.changeDetector.markForCheck();
           return;
         }
