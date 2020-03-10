@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   QueryList,
   ViewChild,
@@ -99,7 +100,30 @@ export class DropdownFixtureComponent {
     { name: 'Option 4', disabled: false }
   ];
 
+  constructor(
+    private changeDetector: ChangeDetectorRef
+  ) { }
+
   public onMenuChanges(): void { }
+
+  public changeItems() {
+    this.items.pop();
+    this.changeDetector.detectChanges();
+  }
+
+  public setManyItems(): void {
+    const items: any[] = [];
+
+    for (let i = 0; i < 50; i++) {
+      items.push({
+        name: `Option ${i}`,
+        disabled: false
+      });
+    }
+
+    this.items = items;
+    this.changeDetector.markForCheck();
+  }
 
   public sendMessage(type: SkyDropdownMessageType) {
     this.messageStream.next({ type });

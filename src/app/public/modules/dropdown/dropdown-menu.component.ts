@@ -209,6 +209,29 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
         .subscribe((message: SkyDropdownMessage) => {
           this.handleIncomingMessage(message);
         });
+
+      this.menuChanges
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((change: SkyDropdownMenuChange) => {
+          // Close the dropdown when a menu item is selected.
+          if (change.selectedItem) {
+            this.sendMessage(SkyDropdownMessageType.Close);
+          }
+
+          if (change.items) {
+            // Update the popover style and position whenever the number of items changes.
+            this.sendMessage(SkyDropdownMessageType.Reposition);
+          }
+        });
+
+      this.menuItems.changes
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((items: QueryList<SkyDropdownItemComponent>) => {
+          this.reset();
+          this.menuChanges.emit({
+            items: items.toArray()
+          });
+        });
     });
   }
 
@@ -386,29 +409,6 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
           this.sendMessage(SkyDropdownMessageType.Close);
           this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
         }
-      });
-
-    this.menuChanges
-      .takeUntil(this.idled)
-      .subscribe((change: SkyDropdownMenuChange) => {
-        // Close the dropdown when a menu item is selected.
-        if (change.selectedItem) {
-          this.sendMessage(SkyDropdownMessageType.Close);
-        }
-
-        if (change.items) {
-          // Update the popover style and position whenever the number of items changes.
-          this.sendMessage(SkyDropdownMessageType.Reposition);
-        }
-      });
-
-    this.menuItems.changes
-      .takeUntil(this.idled)
-      .subscribe((items: QueryList<SkyDropdownItemComponent>) => {
-        this.reset();
-        this.menuChanges.emit({
-          items: items.toArray()
-        });
       });
 
     Observable
