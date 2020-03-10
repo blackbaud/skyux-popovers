@@ -58,7 +58,13 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
    * @deprecated Set the `horizontalAlignment` property on `SkyDropdownMenuComponent` instead.
    */
   @Input()
-  public alignment: SkyPopoverAlignment = 'left';
+  public set alignment(value: SkyPopoverAlignment) {
+    this._alignment = value;
+  }
+
+  public get alignment(): SkyPopoverAlignment {
+    return this._alignment || 'left';
+  }
 
   /**
    * Specifies a background color for the dropdown button. Available values are `default` and
@@ -100,9 +106,20 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Indicates whether to close the dropdown when users click away from the menu.
+   * @default true
    */
   @Input()
-  public dismissOnBlur = true;
+  public set dismissOnBlur(value: boolean) {
+    this._dismissOnBlur = value;
+  }
+
+  public get dismissOnBlur(): boolean {
+    if (this._dismissOnBlur === undefined) {
+      return true;
+    }
+
+    return this._dismissOnBlur;
+  }
 
   /**
    * Specifies an accessibility label to provide a text equivalent for screen readers when the
@@ -186,9 +203,13 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
+  private _alignment: SkyPopoverAlignment;
+
   private _buttonStyle: string;
 
   private _buttonType: string;
+
+  private _dismissOnBlur: boolean;
 
   private _isOpen = false;
 

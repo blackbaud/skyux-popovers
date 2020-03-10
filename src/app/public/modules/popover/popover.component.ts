@@ -106,9 +106,20 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Indicates whether to close the popover when it loses focus.
    * To require users to click a trigger button to close the popover, set this input to false.
+   * @default true
    */
   @Input()
-  public dismissOnBlur = true;
+  public set dismissOnBlur(value: boolean) {
+    this._dismissOnBlur = value;
+  }
+
+  public get dismissOnBlur(): boolean {
+    if (this._dismissOnBlur === undefined) {
+      return true;
+    }
+
+    return this._dismissOnBlur;
+  }
 
   /**
    * Indicates if the popover should be injected in-place as a static HTML element. The default
@@ -194,6 +205,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   private _alignment: SkyPopoverAlignment;
 
   private _allowFullscreen: boolean;
+
+  private _dismissOnBlur: boolean;
 
   private _placement: SkyPopoverPlacement;
 

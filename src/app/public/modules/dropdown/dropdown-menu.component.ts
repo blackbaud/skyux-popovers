@@ -81,25 +81,49 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
    * dropdown menu functions and what it controls. The ARIA role indicates what the dropdown menu
    * represents on the web page. For information about ARIA roles, see the
    * [WAI-ARIA roles model](https://www.w3.org/WAI/PF/aria/roles).
+   * @default "menu"
    */
   @Input()
-  public ariaRole = 'menu';
+  public set ariaRole(value: string) {
+    this._ariaRole = value;
+  }
+
+  public get ariaRole(): string {
+    return this._ariaRole || 'menu';
+  }
 
   /**
    * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
    * @default "left"
    */
   @Input()
-  public horizontalAlignment: SkyDropdownHorizontalAlignment = 'left';
+  public set horizontalAlignment(value: SkyDropdownHorizontalAlignment) {
+    this._horizontalAlignment = value;
+  }
+
+  public get horizontalAlignment(): SkyDropdownHorizontalAlignment {
+    return this._horizontalAlignment || 'left';
+  }
 
   /**
    * Indicates whether to use the browser's native focus function when users navigate through menu
    * items with the keyboard. To disable the native focus function, set this property to `false`.
    * For example, to let users interact with the dropdown menu but keep the keyboard focus on a
    * different element, set this property to `false`.
+   * @default true
    */
   @Input()
-  public useNativeFocus = true;
+  public set useNativeFocus(value: boolean) {
+    this._useNativeFocus = value;
+  }
+
+  public get useNativeFocus(): boolean {
+    if (this._useNativeFocus === undefined) {
+      return true;
+    }
+
+    return this._useNativeFocus;
+  }
 
   /**
    * Fires when the dropdown menu's active index or selected item changes. This event provides an
@@ -110,10 +134,6 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
   public menuChanges = new EventEmitter<SkyDropdownMenuChange>();
 
   public dropdownMenuId: string = `sky-dropdown-menu-${++nextId}`;
-
-  private get hasFocusableItems(): boolean {
-    return this.menuItems.some(item => item.isFocusable());
-  }
 
   public set menuIndex(value: number) {
     if (value < 0) {
@@ -146,6 +166,10 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
   @ContentChildren(SkyDropdownItemComponent)
   private menuItems: QueryList<SkyDropdownItemComponent>;
 
+  private get hasFocusableItems(): boolean {
+    return this.menuItems.some(item => item.isFocusable());
+  }
+
   private affixer: SkyAffixer;
 
   private idled = new Subject();
@@ -154,7 +178,13 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
 
   private overlay: SkyOverlayInstance;
 
+  private _ariaRole: string;
+
+  private _horizontalAlignment: SkyDropdownHorizontalAlignment;
+
   private _menuIndex = 0;
+
+  private _useNativeFocus: boolean;
 
   constructor(
     private changeDetector: ChangeDetectorRef,
