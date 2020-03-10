@@ -6,14 +6,9 @@
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  position: fixed;
 
   ::ng-deep button {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-}
-
-.hidden {
-  visibility: hidden;
 }

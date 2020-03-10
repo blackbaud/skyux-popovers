@@ -54,13 +54,17 @@
       </ng-template>
     </ng-container>
   </button>
+</div>
+
+<ng-template
+  #menuContainerTemplateRef
+>
   <div
     class="sky-dropdown-menu-container"
-    #dropdownMenuRef
+    #menuContainerElementRef
   >
     <ng-content
       select="sky-dropdown-menu"
-    >
-    </ng-content>
+    ></ng-content>
   </div>
-</div>
+</ng-template>

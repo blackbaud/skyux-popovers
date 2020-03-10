@@ -9,6 +9,7 @@ import {
 import {
   SkyAffixModule,
   SkyAppWindowRef,
+  SkyCoreAdapterModule,
   SkyOverlayModule
 } from '@skyux/core';
 
@@ -19,6 +20,10 @@ import {
 import {
   SkyPopoversResourcesModule
 } from '../shared/popovers-resources.module';
+
+import {
+  SkyDropdownAdapterService
+} from './dropdown-adapter.service';
 
 import {
   SkyDropdownButtonComponent
@@ -46,6 +51,7 @@ import {
   imports: [
     CommonModule,
     SkyAffixModule,
+    SkyCoreAdapterModule,
     SkyIconModule,
     SkyOverlayModule,
     SkyPopoversResourcesModule
@@ -57,7 +63,8 @@ import {
     SkyDropdownMenuComponent
   ],
   providers: [
-    SkyAppWindowRef
+    SkyAppWindowRef,
+    SkyDropdownAdapterService
   ]
 })
 export class SkyDropdownModule { }

@@ -492,6 +492,30 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
     Observable
+      .fromEvent(popoverElement, 'keydown')
+      .takeUntil(this.idled)
+      .subscribe((event: KeyboardEvent) => {
+        const key = event.key.toLowerCase();
+        // Since the popover now lives in an overlay at the bottom of the document body, we need to
+        // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
+        // search bar.
+        if (key === 'tab') {
+
+          const focusableItems = this.coreAdapterService.getFocusableChildren(popoverElement);
+          const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
+          const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
+
+          if (isFirstItem || isLastItem) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            this.close();
+            this.caller.nativeElement.focus();
+          }
+        }
+      });
+
+    Observable
       .fromEvent(popoverElement, 'keyup')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
