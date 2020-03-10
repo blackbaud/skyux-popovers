@@ -26,10 +26,16 @@ import {
 } from 'rxjs/Subject';
 
 import {
-  SkyPopoverAlignment,
-  SkyPopoverPlacement,
+  SkyPopoverAlignment
+} from './types/popover-alignment';
+
+import {
+  SkyPopoverPlacement
+} from './types/popover-placement';
+
+import {
   SkyPopoverTrigger
-} from './types';
+} from './types/popover-trigger';
 
 import {
   SkyPopoverComponent
@@ -79,7 +85,15 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
    * Specifies the user action that displays the popover.
    */
   @Input()
-  public skyPopoverTrigger: SkyPopoverTrigger = 'click';
+  public set skyPopoverTrigger(value: SkyPopoverTrigger) {
+    this._trigger = value;
+  }
+
+  public get skyPopoverTrigger(): SkyPopoverTrigger {
+    return this._trigger || 'click';
+  }
+
+  private _trigger: SkyPopoverTrigger;
 
   private idled = new Subject<boolean>();
 

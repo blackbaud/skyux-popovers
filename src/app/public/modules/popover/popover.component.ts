@@ -127,9 +127,16 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
    * internal use only.
    * @internal
    * @deprecated Static popovers will be removed in the next major version release.
+   * @default false
    */
   @Input()
-  public isStatic: boolean = false;
+  public set isStatic(value: boolean) {
+    this._isStatic = value;
+  }
+
+  public get isStatic(): boolean {
+    return this._isStatic || false;
+  }
 
   /**
    * Specifies the placement of the popover in relation to the trigger element.
@@ -207,6 +214,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   private _allowFullscreen: boolean;
 
   private _dismissOnBlur: boolean;
+
+  private _isStatic: boolean;
 
   private _placement: SkyPopoverPlacement;
 

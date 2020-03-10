@@ -8,38 +8,74 @@ import {
 } from 'rxjs/Subject';
 
 import {
+  SkyPopoverAlignment
+} from '../types/popover-alignment';
+
+import {
+  SkyPopoverMessage
+} from '../types/popover-message';
+
+import {
+  SkyPopoverMessageType
+} from '../types/popover-message-type';
+
+import {
+  SkyPopoverPlacement
+} from '../types/popover-placement';
+
+import {
+  SkyPopoverTrigger
+} from '../types/popover-trigger';
+
+import {
   SkyPopoverComponent
 } from '../popover.component';
 
 import {
-  SkyPopoverMessage,
-  SkyPopoverMessageType
-} from '../types';
+  SkyPopoverDirective
+} from '../popover.directive';
 
 @Component({
   selector: 'sky-test-component',
   templateUrl: './popover.component.fixture.html'
 })
-export class SkyPopoverTestComponent {
+export class PopoverFixtureComponent {
+
+  public alignment: SkyPopoverAlignment;
+
+  public allowFullscreen: boolean;
+
+  public dismissOnBlur: boolean;
+
+  public isStatic: boolean;
 
   public messageStream = new Subject<SkyPopoverMessage>();
-  public asyncPopoverRef: SkyPopoverComponent;
 
-  @ViewChild('asyncPopover')
-  public asyncPopover: SkyPopoverComponent;
+  public placement: SkyPopoverPlacement;
 
-  @ViewChild('anotherAsyncPopover')
-  public anotherAsyncPopover: SkyPopoverComponent;
+  public popoverAlignment: SkyPopoverAlignment;
 
-  public attachAsyncPopover() {
-    this.asyncPopoverRef = this.asyncPopover;
-  }
+  public popoverPlacement: SkyPopoverPlacement;
 
-  public attachAnotherAsyncPopover() {
-    this.asyncPopoverRef = this.anotherAsyncPopover;
-  }
+  public popoverTitle: string;
 
-  public sendMessage(messageType: SkyPopoverMessageType) {
+  public trigger: SkyPopoverTrigger;
+
+  @ViewChild('directiveRef', {
+    read: SkyPopoverDirective
+  })
+  public directiveRef: SkyPopoverDirective;
+
+  @ViewChild('popoverRef', {
+    read: SkyPopoverComponent
+  })
+  public popoverRef: SkyPopoverComponent;
+
+  public onPopoverClosed(): void { }
+
+  public onPopoverOpened(): void { }
+
+  public sendMessage(messageType: SkyPopoverMessageType): void {
     this.messageStream.next({ type: messageType });
   }
 
