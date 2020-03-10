@@ -23,6 +23,10 @@ import {
   SkyDropdownMessageType
 } from './types/dropdown-message-type';
 
+import {
+  SkyDropdownItemComponent
+} from './dropdown-item.component';
+
 describe('Dropdown component', () => {
 
   let fixture: ComponentFixture<DropdownFixtureComponent>;
@@ -36,8 +40,38 @@ describe('Dropdown component', () => {
   }
 
   function getFirstMenuItem(): Element {
-    const menu = getMenuElement();
-    return menu.querySelectorAll('.sky-dropdown-item').item(0);
+    return getMenuElement().querySelectorAll('.sky-dropdown-item').item(0);
+  }
+
+  function verifyActiveMenuItemByIndex(index: number): void {
+    const menuItems = fixture.componentInstance.dropdownItemRefs.toArray();
+
+    menuItems.forEach((item: SkyDropdownItemComponent, i: number) => {
+      if (i === index) {
+        expect(item.isActive).toEqual(true);
+        expect(item.elementRef.nativeElement
+          .querySelector('.sky-dropdown-item'))
+          .toHaveCssClass('sky-dropdown-item-active');
+      } else {
+        expect(item.isActive).toEqual(false);
+        expect(item.elementRef.nativeElement
+          .querySelector('.sky-dropdown-item'))
+          .not.toHaveCssClass('sky-dropdown-item-active');
+      }
+    });
+  }
+
+  function isMenuItemFocused(index: number): boolean {
+    const menuItemButtons = document.querySelectorAll('.sky-dropdown-item button');
+    return isElementFocused(menuItemButtons[index]);
+  }
+
+  function isElementFocused(elem: Element): boolean {
+    return (elem === document.activeElement);
+  }
+
+  function isElementVisible(elem: Element): boolean {
+    return (getComputedStyle(elem).visibility !== 'hidden');
   }
 
   beforeEach(() => {
@@ -103,13 +137,13 @@ describe('Dropdown component', () => {
     tick();
 
     const dropdownMenu = getMenuElement();
-    expect(dropdownMenu).not.toHaveCssClass('hidden');
+    expect(isElementVisible(dropdownMenu)).toEqual(true);
 
     button.click();
     fixture.detectChanges();
     tick();
 
-    expect(dropdownMenu).toHaveCssClass('hidden');
+    expect(isElementVisible(dropdownMenu)).toEqual(false);
   }));
 
   it('should open and close menu via mouse hover', fakeAsync(() => {
@@ -124,7 +158,7 @@ describe('Dropdown component', () => {
     tick();
 
     const dropdownMenu = getMenuElement();
-    expect(dropdownMenu).not.toHaveCssClass('hidden');
+    expect(isElementVisible(dropdownMenu)).toEqual(true);
 
     SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
 
@@ -133,7 +167,7 @@ describe('Dropdown component', () => {
     fixture.detectChanges();
     tick();
 
-    expect(dropdownMenu).toHaveCssClass('hidden');
+    expect(isElementVisible(dropdownMenu)).toEqual(false);
   }));
 
   it('should reposition the menu when number of menu items change', fakeAsync(() => {
@@ -185,68 +219,159 @@ describe('Dropdown component', () => {
     expect(menu.scrollHeight > menu.clientHeight).toEqual(true);
   }));
 
-  it('should set ARIA attributes', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
+  describe('accessibility', function () {
+    it('should set ARIA attributes', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
 
-    const button = getButtonElement();
+      const button = getButtonElement();
 
-    button.click();
-    fixture.detectChanges();
-    tick();
+      button.click();
+      fixture.detectChanges();
+      tick();
 
-    const menu = getMenuElement();
-    const item = getFirstMenuItem();
+      const menu = getMenuElement();
+      const item = getFirstMenuItem();
 
-    // First, confirm defaults.
-    expect(button.getAttribute('aria-label')).toEqual('Context menu');
-    expect(menu.getAttribute('role')).toEqual('menu');
-    expect(menu.getAttribute('aria-labelledby')).toBeNull();
-    expect(item.getAttribute('role')).toEqual('menuitem');
+      // First, confirm defaults.
+      expect(button.getAttribute('aria-label')).toEqual('Context menu');
+      expect(menu.getAttribute('role')).toEqual('menu');
+      expect(menu.getAttribute('aria-labelledby')).toBeNull();
+      expect(item.getAttribute('role')).toEqual('menuitem');
 
-    // Finally, confirm overrides.
-    fixture.componentInstance.menuAriaRole = 'menu-role-override';
-    fixture.componentInstance.menuAriaLabelledBy = 'menu-labelled-by-override';
-    fixture.componentInstance.itemAriaRole = 'item-role-override';
-    fixture.componentInstance.label = 'button-label-override';
+      // Finally, confirm overrides.
+      fixture.componentInstance.menuAriaRole = 'menu-role-override';
+      fixture.componentInstance.menuAriaLabelledBy = 'menu-labelled-by-override';
+      fixture.componentInstance.itemAriaRole = 'item-role-override';
+      fixture.componentInstance.label = 'button-label-override';
 
-    fixture.detectChanges();
-    tick();
+      fixture.detectChanges();
+      tick();
 
-    expect(button.getAttribute('aria-label')).toEqual('button-label-override');
-    expect(menu.getAttribute('role')).toEqual('menu-role-override');
-    expect(menu.getAttribute('aria-labelledby')).toEqual('menu-labelled-by-override');
-    expect(item.getAttribute('role')).toEqual('item-role-override');
-  }));
+      expect(button.getAttribute('aria-label')).toEqual('button-label-override');
+      expect(menu.getAttribute('role')).toEqual('menu-role-override');
+      expect(menu.getAttribute('aria-labelledby')).toEqual('menu-labelled-by-override');
+      expect(item.getAttribute('role')).toEqual('item-role-override');
+    }));
 
-  it('should set the title attribute', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
+    it('should set the title attribute', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
 
-    const button = getButtonElement();
+      const button = getButtonElement();
 
-    button.click();
-    fixture.detectChanges();
-    tick();
+      button.click();
+      fixture.detectChanges();
+      tick();
 
-    expect(button.getAttribute('title')).toBeNull();
+      expect(button.getAttribute('title')).toBeNull();
 
-    fixture.componentInstance.title = 'dropdown-title-override';
-    fixture.detectChanges();
-    tick();
+      fixture.componentInstance.title = 'dropdown-title-override';
+      fixture.detectChanges();
+      tick();
 
-    expect(button.getAttribute('title')).toEqual('dropdown-title-override');
-  }));
+      expect(button.getAttribute('title')).toEqual('dropdown-title-override');
+    }));
 
-  it('should be accessible', async(() => {
-    fixture.detectChanges();
+    it('should be accessible', async(() => {
+      fixture.detectChanges();
 
-    const button = getButtonElement();
+      const button = getButtonElement();
 
-    button.click();
-    fixture.detectChanges();
+      button.click();
+      fixture.detectChanges();
 
-    expect(window.document.body).toBeAccessible();
-  }));
+      expect(window.document.body).toBeAccessible();
+    }));
+  });
+
+  describe('message stream', function () {
+    it('should open and close the menu', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const dropdownMenu = getMenuElement();
+
+      // Verify the menu is closed on startup.
+      expect(isElementVisible(dropdownMenu)).toEqual(false);
+
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Open);
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(dropdownMenu)).toEqual(true);
+
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Close);
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(dropdownMenu)).toEqual(false);
+    }));
+
+    it('should focus the trigger button', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+
+      expect(isElementFocused(button)).toEqual(false);
+
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementFocused(button)).toEqual(true);
+    }));
+
+    it('should allow navigating the menu', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      // Open the menu.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Open);
+      fixture.detectChanges();
+      tick();
+
+      // Focus the first item.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+      fixture.detectChanges();
+      tick();
+
+      verifyActiveMenuItemByIndex(0);
+      expect(isMenuItemFocused(0)).toEqual(true);
+
+      // Focus the next item.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.FocusNextItem);
+      fixture.detectChanges();
+      tick();
+
+      // It should skip the second item because it is disabled.
+      verifyActiveMenuItemByIndex(2);
+      expect(isMenuItemFocused(2)).toEqual(true);
+
+      // Focus the previous item.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.FocusPreviousItem);
+      fixture.detectChanges();
+      tick();
+
+      verifyActiveMenuItemByIndex(0);
+      expect(isMenuItemFocused(0)).toEqual(true);
+    }));
+
+    it('should not open the menu if disabled', fakeAsync(() => {
+      fixture.componentInstance.disabled = true;
+      fixture.detectChanges();
+      tick();
+
+      // Attempt to open the menu.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Open);
+      fixture.detectChanges();
+      tick();
+
+      const menu = getMenuElement();
+
+      expect(isElementVisible(menu)).toEqual(false);
+    }));
+  });
 
 });
