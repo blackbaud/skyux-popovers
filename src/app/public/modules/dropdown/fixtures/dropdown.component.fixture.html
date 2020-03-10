@@ -4,6 +4,7 @@
   [buttonType]="buttonType"
   [disabled]="disabled"
   [dismissOnBlur]="dismissOnBlur"
+  [horizontalAlignment]="horizontalAlignment"
   [label]="label"
   [messageStream]="messageStream"
   [title]="title"
@@ -18,7 +19,6 @@
   <sky-dropdown-menu
     [ariaLabelledBy]="menuAriaLabelledBy"
     [ariaRole]="menuAriaRole"
-    [horizontalAlignment]="horizontalAlignment"
     [useNativeFocus]="useNativeFocus"
     (menuChanges)="onMenuChanges()"
     #dropdownMenuRef

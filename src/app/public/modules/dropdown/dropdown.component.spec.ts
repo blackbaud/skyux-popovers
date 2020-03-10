@@ -35,8 +35,12 @@ describe('Dropdown component', () => {
     return fixture.nativeElement.querySelector('.sky-dropdown-button');
   }
 
+  function getMenuContainerElement(): HTMLElement {
+    return document.querySelector('.sky-dropdown-menu-container');
+  }
+
   function getMenuElement(): Element {
-    return document.querySelector('.sky-dropdown-menu');
+    return getMenuContainerElement().querySelector('.sky-dropdown-menu');
   }
 
   function getFirstMenuItem(): Element {
@@ -97,6 +101,7 @@ describe('Dropdown component', () => {
     expect(dropdownRef.buttonType).toEqual('select');
     expect(dropdownRef.disabled).toEqual(false);
     expect(dropdownRef.dismissOnBlur).toEqual(true);
+    expect(dropdownRef.horizontalAlignment).toEqual('left');
     expect(dropdownRef.label).toBeUndefined();
     expect(dropdownRef.title).toBeUndefined();
     expect(dropdownRef.trigger).toEqual('click');
@@ -104,7 +109,6 @@ describe('Dropdown component', () => {
     const menuRef = fixture.componentInstance.dropdownMenuRef;
     expect(menuRef.ariaLabelledBy).toBeUndefined();
     expect(menuRef.ariaRole).toEqual('menu');
-    expect(menuRef.horizontalAlignment).toEqual('left');
     expect(menuRef.useNativeFocus).toEqual(true);
 
     const itemRefs = fixture.componentInstance.dropdownItemRefs;
@@ -157,7 +161,7 @@ describe('Dropdown component', () => {
     fixture.detectChanges();
     tick();
 
-    const dropdownMenu = getMenuElement();
+    const dropdownMenu = getMenuContainerElement();
     expect(isElementVisible(dropdownMenu)).toEqual(true);
 
     SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
@@ -290,7 +294,7 @@ describe('Dropdown component', () => {
       fixture.detectChanges();
       tick();
 
-      const dropdownMenu = getMenuElement();
+      const dropdownMenu = getMenuContainerElement();
 
       // Verify the menu is closed on startup.
       expect(isElementVisible(dropdownMenu)).toEqual(false);
@@ -368,7 +372,7 @@ describe('Dropdown component', () => {
       fixture.detectChanges();
       tick();
 
-      const menu = getMenuElement();
+      const menu = getMenuContainerElement();
 
       expect(isElementVisible(menu)).toEqual(false);
     }));

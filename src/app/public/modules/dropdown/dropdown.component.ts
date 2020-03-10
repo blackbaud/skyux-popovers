@@ -207,8 +207,12 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.adapter.elementHasFocus(this.triggerButton);
   }
 
+  public set isOpen(value: boolean) {
+    this._isOpen = value;
+  }
+
   public get isOpen(): boolean {
-    return this._isOpen;
+    return this._isOpen || false;
   }
 
   /**
@@ -277,12 +281,9 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.sendMessage(SkyDropdownMessageType.Close);
-
-    this.windowRef.nativeWindow.setTimeout(() => {
-      this.createAffixer();
-    });
-
+    this.isOpen = false;
+    this.adapter.hideElement(this.menuContainerElementRef);
+    this.createAffixer();
     this.addEventListeners();
   }
 
@@ -303,35 +304,37 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private handleIncomingMessages(message: SkyDropdownMessage): void {
-    if (!this.disabled) {
-      /* tslint:disable-next-line:switch-default */
-      switch (message.type) {
-        case SkyDropdownMessageType.Open:
-          this._isOpen = true;
-          this.adapter.showElement(this.menuContainerElementRef);
-          break;
+    if (this.disabled) {
+      return;
+    }
 
-        case SkyDropdownMessageType.Close:
-          this._isOpen = false;
-          this.adapter.hideElement(this.menuContainerElementRef);
-          if (this.isKeyboardActive) {
-            this.windowRef.nativeWindow.setTimeout(() => {
-              this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-            });
-          }
-          break;
+    /* tslint:disable-next-line:switch-default */
+    switch (message.type) {
+      case SkyDropdownMessageType.Open:
+        this.isOpen = true;
+        this.adapter.showElement(this.menuContainerElementRef);
+        break;
 
-        case SkyDropdownMessageType.FocusTriggerButton:
-          this.triggerButton.nativeElement.focus();
-          break;
+      case SkyDropdownMessageType.Close:
+        this.isOpen = false;
+        this.adapter.hideElement(this.menuContainerElementRef);
+        if (this.isKeyboardActive) {
+          this.windowRef.nativeWindow.setTimeout(() => {
+            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+          });
+        }
+        break;
 
-        case SkyDropdownMessageType.Reposition:
-          // Only reposition the dropdown if it is already open.
-          if (this.isOpen) {
-            this.affixer.reaffix();
-          }
-          break;
-      }
+      case SkyDropdownMessageType.FocusTriggerButton:
+        this.triggerButton.nativeElement.focus();
+        break;
+
+      case SkyDropdownMessageType.Reposition:
+        // Only reposition the dropdown if it is already open.
+        if (this.isOpen) {
+          this.affixer.reaffix();
+        }
+        break;
     }
   }
 
@@ -347,12 +350,13 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: MouseEvent) => {
         this.isKeyboardActive = false;
-        if (this._isOpen) {
+        if (this.isOpen) {
           this.sendMessage(SkyDropdownMessageType.Close);
         } else {
           this.sendMessage(SkyDropdownMessageType.Open);
         }
         event.preventDefault();
+        event.stopPropagation();
       });
 
     Observable
