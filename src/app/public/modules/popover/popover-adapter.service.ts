@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -14,12 +14,15 @@ import {
   SkyPopoverPlacement
 } from './types';
 
+/**
+ * @internal
+ */
 @Injectable()
 export class SkyPopoverAdapterService {
 
   constructor(
     private renderer: Renderer2,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyAppWindowRef
   ) { }
 
   public hidePopover(elem: ElementRef): void {
@@ -38,7 +41,7 @@ export class SkyPopoverAdapterService {
   }
 
   public isPopoverLargerThanWindow(popover: ElementRef): boolean {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const popoverRect = popover.nativeElement.getBoundingClientRect();
 
     return (

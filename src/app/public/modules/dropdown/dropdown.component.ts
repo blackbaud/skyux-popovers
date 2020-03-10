@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
+  SkyAppWindowRef
 } from '@skyux/core';
 
 import {
@@ -27,14 +27,20 @@ import {
 } from '../popover/types/popover-alignment';
 
 import {
-  SkyDropdownAdapterService
-} from './dropdown-adapter.service';
+  SkyDropdownMessage
+} from './types/dropdown-message';
 
 import {
-  SkyDropdownMessage,
-  SkyDropdownMessageType,
+  SkyDropdownMessageType
+} from './types/dropdown-message-type';
+
+import {
   SkyDropdownTriggerType
-} from './types';
+} from './types/dropdown-trigger-type';
+
+import {
+  SkyDropdownAdapterService
+} from './dropdown-adapter.service';
 
 @Component({
   selector: 'sky-dropdown',
@@ -120,11 +126,12 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
   public title: string;
 
   /**
-   * Specifies how users interact with the dropdown button to expose the dropdown menu. The
-   * available values are `click` and `hover`. We recommend the default `click` value because the
-   * `hover` value can pose accessibility issues for users on touch devices such as phones and tablets.
-   * @deprecated We recommend against using this property. If you choose to use the deprecated `hover` value
-   * anyway, we recommend that you not use it in combination with the `title` property.
+   * Specifies how users interact with the dropdown button to expose the dropdown menu. We
+   * recommend the default `click` value because the `hover` value can pose accessibility issues
+   * for users on touch devices such as phones and tablets.
+   * @deprecated We recommend against using this property. If you choose to use the deprecated
+   * `hover` value anyway, we recommend that you not use it in combination with the `title`
+   * property.
    * @default "click"
    */
   @Input()
@@ -188,7 +195,7 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
   private _trigger: SkyDropdownTriggerType;
 
   constructor(
-    private windowRef: SkyWindowRefService,
+    private windowRef: SkyAppWindowRef,
     private adapter: SkyDropdownAdapterService
   ) { }
 
@@ -220,7 +227,7 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
         case SkyDropdownMessageType.Close:
           this._isOpen = false;
           if (this.isKeyboardActive) {
-            setTimeout(() => {
+            this.windowRef.nativeWindow.setTimeout(() => {
               this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
             });
           }
@@ -269,7 +276,7 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
         switch (key) {
           case 'enter':
             this.sendMessage(SkyDropdownMessageType.Open);
-            this.windowRef.getWindow().setTimeout(() => {
+            this.windowRef.nativeWindow.setTimeout(() => {
               this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
             });
             event.stopPropagation();
@@ -295,7 +302,7 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
         const key = event.key.toLowerCase();
         if (key === 'down' || key === 'arrowdown') {
           this.sendMessage(SkyDropdownMessageType.Open);
-          this.windowRef.getWindow().setTimeout(() => {
+          this.windowRef.nativeWindow.setTimeout(() => {
             this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
           });
           event.preventDefault();
@@ -320,7 +327,7 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
           this.isMouseEnter = false;
           // Allow the dropdown menu to set isMouseEnter before checking if the close action
           // should be taken.
-          this.windowRef.getWindow().setTimeout(() => {
+          this.windowRef.nativeWindow.setTimeout(() => {
             if (!this.isMouseEnter) {
               this.sendMessage(SkyDropdownMessageType.Close);
             }

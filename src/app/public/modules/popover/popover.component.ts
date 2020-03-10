@@ -24,10 +24,10 @@ import {
   SkyAffixer,
   SkyAffixPlacementChange,
   SkyAffixService,
+  SkyAppWindowRef,
   SkyCoreAdapterService,
   SkyOverlayInstance,
-  SkyOverlayService,
-  SkyWindowRefService
+  SkyOverlayService
 } from '@skyux/core';
 
 import {
@@ -43,9 +43,12 @@ import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/takeUntil';
 
 import {
-  SkyPopoverAlignment,
+  SkyPopoverAlignment
+} from './types/popover-alignment';
+
+import {
   SkyPopoverPlacement
-} from './types';
+} from './types/popover-placement';
 
 import {
   SkyPopoverAdapterService
@@ -197,7 +200,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private adapterService: SkyPopoverAdapterService,
     private changeDetector: ChangeDetectorRef,
-    private windowRef: SkyWindowRefService,
+    private windowRef: SkyAppWindowRef,
     private affixService: SkyAffixService,
     private overlayService: SkyOverlayService,
     private viewContainerRef: ViewContainerRef,
@@ -275,7 +278,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     this.addListeners();
 
     // Let the styles render before gauging the dimensions.
-    this.windowRef.getWindow().setTimeout(() => {
+    this.windowRef.nativeWindow.setTimeout(() => {
       const config: SkyAffixConfig = {
         placement: parseAffixPlacement(this.placement),
         horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
@@ -302,7 +305,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.windowRef.getWindow().setTimeout(() => {
+    this.windowRef.nativeWindow.setTimeout(() => {
       this.affixer.reaffix();
       this.updateArrowOffset();
       this.changeDetector.markForCheck();
@@ -374,7 +377,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private createOverlay(): SkyOverlayInstance {
     const overlay = this.overlayService.create({
-      closeOnNavigation: true,
+      closeOnNavigation: false,
       showBackdrop: false,
       enableClose: false,
       enableScroll: true
@@ -400,7 +403,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private addListeners(): void {
-    const windowObj = this.windowRef.getWindow();
+    const windowObj = this.windowRef.nativeWindow;
     const popoverElement = this.popoverContainer.nativeElement;
 
     this.idled = new Subject<boolean>();

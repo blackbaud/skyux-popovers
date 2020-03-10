@@ -1,5 +1,5 @@
 import {
-  AfterContentInit,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -8,6 +8,7 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
+  OnInit,
   Optional,
   Output,
   QueryList,
@@ -17,12 +18,11 @@ import {
 
 import {
   SkyAffixAutoFitContext,
-  SkyAffixHorizontalAlignment,
   SkyAffixer,
   SkyAffixService,
+  SkyAppWindowRef,
   SkyOverlayInstance,
-  SkyOverlayService,
-  SkyWindowRefService
+  SkyOverlayService
 } from '@skyux/core';
 
 import {
@@ -44,10 +44,20 @@ import {
 } from './dropdown-item.component';
 
 import {
-  SkyDropdownMenuChange,
-  SkyDropdownMessage,
+  SkyDropdownHorizontalAlignment
+} from './types/dropdown-horizontal-alignment';
+
+import {
+  SkyDropdownMenuChange
+} from './types/dropdown-menu-change';
+
+import {
+  SkyDropdownMessage
+} from './types/dropdown-message';
+
+import {
   SkyDropdownMessageType
-} from './types';
+} from './types/dropdown-message-type';
 
 let nextId = 0;
 
@@ -57,7 +67,7 @@ let nextId = 0;
   styleUrls: ['./dropdown-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
+export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Sets the dropdown menu's `aria-labelledby` attribute to support accessibility. The value should
@@ -80,7 +90,7 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
    * @default "left"
    */
   @Input()
-  public horizontalAlignment: SkyAffixHorizontalAlignment = 'left';
+  public horizontalAlignment: SkyDropdownHorizontalAlignment = 'left';
 
   /**
    * Indicates whether to use the browser's native focus function when users navigate through menu
@@ -102,8 +112,7 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
   public dropdownMenuId: string = `sky-dropdown-menu-${++nextId}`;
 
   private get hasFocusableItems(): boolean {
-    const found = this.menuItems.find(item => item.isFocusable());
-    return (found !== undefined);
+    return this.menuItems.some(item => item.isFocusable());
   }
 
   public set menuIndex(value: number) {
@@ -124,9 +133,6 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
 
   public isOpen: boolean = false;
 
-  @ContentChildren(SkyDropdownItemComponent)
-  public menuItems: QueryList<SkyDropdownItemComponent>;
-
   @ViewChild('dropdownMenuElementRef', {
     read: ElementRef
   })
@@ -136,6 +142,9 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
     read: TemplateRef
   })
   private dropdownMenuTemplateRef: TemplateRef<any>;
+
+  @ContentChildren(SkyDropdownItemComponent)
+  private menuItems: QueryList<SkyDropdownItemComponent>;
 
   private affixer: SkyAffixer;
 
@@ -150,78 +159,27 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
+    private windowRef: SkyAppWindowRef,
     private overlayService: SkyOverlayService,
-    private windowRef: SkyWindowRefService,
     @Optional() private dropdownComponent: SkyDropdownComponent
   ) { }
 
-  public ngAfterContentInit(): void {
+  public ngOnInit(): void {
+    this.createOverlay();
+  }
 
-    this.overlay = this.overlayService.create({
-      enableClose: false,
-      enableScroll: true,
-      showBackdrop: false
-    });
+  public ngAfterViewInit(): void {
+    this.dropdownComponent.menuId = this.dropdownMenuId;
 
-    this.overlay.attachTemplate(this.dropdownMenuTemplateRef);
+    this.windowRef.nativeWindow.setTimeout(() => {
+      this.createAffixer();
 
-    /* istanbul ignore else */
-    if (this.dropdownComponent) {
-      this.dropdownComponent.menuId = this.dropdownMenuId;
-
-      // Setup affixer.
-      this.windowRef.getWindow().setTimeout(() => {
-        this.affixer = this.affixService.createAffixer(this.dropdownMenuElementRef);
-        this.affixer.affixTo(this.dropdownComponent.getButtonElement(), {
-          autoFitContext: SkyAffixAutoFitContext.Viewport,
-          enableAutoFit: true,
-          horizontalAlignment: this.dropdownComponent.alignment || this.horizontalAlignment,
-          isSticky: true,
-          placement: 'below'
+      this.dropdownComponent.messageStream
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((message: SkyDropdownMessage) => {
+          this.handleIncomingMessage(message);
         });
-
-        this.dropdownComponent.messageStream
-          .takeUntil(this.ngUnsubscribe)
-          .subscribe((message: SkyDropdownMessage) => {
-            /* tslint:disable-next-line:switch-default */
-            switch (message.type) {
-              case SkyDropdownMessageType.Open:
-                this.isOpen = true;
-                this.removeEventListeners();
-                this.addEventListeners();
-                this.reset();
-                break;
-
-              case SkyDropdownMessageType.Close:
-                this.isOpen = false;
-                this.removeEventListeners();
-                this.reset();
-                break;
-
-              case SkyDropdownMessageType.Reposition:
-                // Only reposition the dropdown if it is already open.
-                if (this.isOpen) {
-                  this.windowRef.getWindow().setTimeout(() => {
-                    this.affixer.reaffix();
-                  });
-                }
-                break;
-
-              case SkyDropdownMessageType.FocusFirstItem:
-                this.focusFirstItem();
-                break;
-
-              case SkyDropdownMessageType.FocusNextItem:
-                this.focusNextItem();
-                break;
-
-              case SkyDropdownMessageType.FocusPreviousItem:
-                this.focusPreviousItem();
-                break;
-            }
-          });
-      });
-    }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -308,12 +266,74 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
     });
   }
 
+  private handleIncomingMessage(message: SkyDropdownMessage): void {
+    /* tslint:disable-next-line:switch-default */
+    switch (message.type) {
+      case SkyDropdownMessageType.Open:
+        this.isOpen = true;
+        this.addEventListeners();
+        this.reset();
+        break;
+
+      case SkyDropdownMessageType.Close:
+        this.isOpen = false;
+        this.removeEventListeners();
+        this.reset();
+        break;
+
+      case SkyDropdownMessageType.Reposition:
+        // Only reposition the dropdown if it is already open.
+        if (this.isOpen) {
+          this.affixer.reaffix();
+        }
+        break;
+
+      case SkyDropdownMessageType.FocusFirstItem:
+        this.focusFirstItem();
+        break;
+
+      case SkyDropdownMessageType.FocusNextItem:
+        this.focusNextItem();
+        break;
+
+      case SkyDropdownMessageType.FocusPreviousItem:
+        this.focusPreviousItem();
+        break;
+    }
+  }
+
   private sendMessage(type: SkyDropdownMessageType): void {
     this.dropdownComponent.messageStream.next({ type });
   }
 
+  private createOverlay(): void {
+    this.overlay = this.overlayService.create({
+      closeOnNavigation: false,
+      showBackdrop: false,
+      enableClose: false,
+      enableScroll: true
+    });
+
+    this.overlay.attachTemplate(this.dropdownMenuTemplateRef);
+  }
+
+  private createAffixer(): void {
+    this.affixer = this.affixService.createAffixer(this.dropdownMenuElementRef);
+    this.affixer.affixTo(this.dropdownComponent.getButtonElement(), {
+      autoFitContext: SkyAffixAutoFitContext.Viewport,
+      enableAutoFit: true,
+      horizontalAlignment: this.dropdownComponent.alignment || this.horizontalAlignment,
+      isSticky: true,
+      placement: 'below'
+    });
+  }
+
   private addEventListeners(): void {
-    const windowObj = this.windowRef.getWindow();
+    if (this.idled !== undefined) {
+      return;
+    }
+
+    const windowObj = this.windowRef.nativeWindow;
     const dropdownMenuElement = this.dropdownMenuElementRef.nativeElement;
 
     this.idled = new Subject();
@@ -428,7 +448,7 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
         this.dropdownComponent.isMouseEnter = false;
         // Allow the dropdown component to set isMouseEnter before checking if the close action
         // should be taken.
-        this.windowRef.getWindow().setTimeout(() => {
+        this.windowRef.nativeWindow.setTimeout(() => {
           if (
             this.dropdownComponent.trigger === 'hover' &&
             this.dropdownComponent.isMouseEnter === false

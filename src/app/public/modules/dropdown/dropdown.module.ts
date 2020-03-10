@@ -8,8 +8,8 @@ import {
 
 import {
   SkyAffixModule,
-  SkyOverlayModule,
-  SkyWindowRefService
+  SkyAppWindowRef,
+  SkyOverlayModule
 } from '@skyux/core';
 
 import {
@@ -57,7 +57,7 @@ import {
     SkyDropdownMenuComponent
   ],
   providers: [
-    SkyWindowRefService
+    SkyAppWindowRef
   ]
 })
 export class SkyDropdownModule { }
