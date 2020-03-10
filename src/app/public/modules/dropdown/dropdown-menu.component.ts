@@ -213,12 +213,18 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   public ngOnDestroy(): void {
+    if (this.affixer) {
+      this.affixer.destroy();
+    }
+
+    if (this.overlay) {
+      this.overlay.close();
+    }
+
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.removeEventListeners();
 
-    this.affixer.destroy();
-    this.overlay.close();
+    this.removeEventListeners();
 
     this.affixer =
       this.ngUnsubscribe =

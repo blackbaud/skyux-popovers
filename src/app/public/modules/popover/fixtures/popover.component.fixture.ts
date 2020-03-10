@@ -41,6 +41,8 @@ import {
 })
 export class PopoverFixtureComponent {
 
+  //#region directive properties
+
   public alignment: SkyPopoverAlignment;
 
   public allowFullscreen: boolean;
@@ -60,6 +62,8 @@ export class PopoverFixtureComponent {
   public popoverTitle: string;
 
   public trigger: SkyPopoverTrigger;
+
+  //#endregion directive properties
 
   @ViewChild('directiveRef', {
     read: SkyPopoverDirective

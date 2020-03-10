@@ -100,9 +100,16 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Indicates whether to disable the dropdown button.
+   * @default false
    */
   @Input()
-  public disabled = false;
+  public set disabled(value: boolean) {
+    this._disabled = value;
+  }
+
+  public get disabled(): boolean {
+    return this._disabled || false;
+  }
 
   /**
    * Indicates whether to close the dropdown when users click away from the menu.
@@ -208,6 +215,8 @@ export class SkyDropdownComponent implements AfterViewInit, OnDestroy {
   private _buttonStyle: string;
 
   private _buttonType: string;
+
+  private _disabled: boolean;
 
   private _dismissOnBlur: boolean;
 
