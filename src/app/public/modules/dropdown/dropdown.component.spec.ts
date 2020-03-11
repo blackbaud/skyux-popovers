@@ -228,6 +228,30 @@ describe('Dropdown component', function () {
   }));
 
   it('should emit when a menu item is selected', fakeAsync(() => {
+    const menuChangesSpy = spyOn(fixture.componentInstance, 'onMenuChanges').and.callThrough();
+    fixture.detectChanges();
+    tick();
+
+    const button = getButtonElement();
+
+    // Open the menu.
+    button.click();
+    fixture.detectChanges();
+    tick();
+
+    // Click third item button.
+    const buttonIndex = 2;
+    const firstItemButton = getMenuItems().item(buttonIndex).querySelector('button');
+    firstItemButton.click();
+    fixture.detectChanges();
+    tick();
+
+    const selectedItem = fixture.componentInstance.dropdownItemRefs.find((item, i) => {
+      return (i === buttonIndex);
+    });
+
+    expect(menuChangesSpy).toHaveBeenCalledWith({ activeIndex: buttonIndex });
+    expect(menuChangesSpy).toHaveBeenCalledWith({ selectedItem });
   }));
 
   describe('accessibility', function () {

@@ -8,6 +8,7 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
+  OnInit,
   Optional,
   Output,
   QueryList
@@ -56,7 +57,7 @@ let nextId = 0;
   styleUrls: ['./dropdown-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
+export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Sets the dropdown menu's `aria-labelledby` attribute to support accessibility. The value should
@@ -150,8 +151,39 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
     @Optional() private dropdownComponent: SkyDropdownComponent
   ) { }
 
+  public ngOnInit(): void {
+    this.dropdownComponent.messageStream
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((message: SkyDropdownMessage) => {
+        this.handleIncomingMessage(message);
+      });
+
+    this.menuChanges
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((change: SkyDropdownMenuChange) => {
+        // Close the dropdown when a menu item is selected.
+        if (change.selectedItem) {
+          this.sendMessage(SkyDropdownMessageType.Close);
+        }
+
+        if (change.items) {
+          // Update the popover style and position whenever the number of items changes.
+          this.sendMessage(SkyDropdownMessageType.Reposition);
+        }
+      });
+  }
+
   public ngAfterViewInit(): void {
     this.dropdownComponent.menuId = this.dropdownMenuId;
+
+    this.menuItems.changes
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((items: QueryList<SkyDropdownItemComponent>) => {
+        this.reset();
+        this.menuChanges.emit({
+          items: items.toArray()
+        });
+      });
 
     this.addEventListeners();
   }
@@ -261,35 +293,6 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
 
   private addEventListeners(): void {
     const dropdownMenuElement = this.elementRef.nativeElement;
-
-    this.dropdownComponent.messageStream
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((message: SkyDropdownMessage) => {
-        this.handleIncomingMessage(message);
-      });
-
-    this.menuChanges
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((change: SkyDropdownMenuChange) => {
-        // Close the dropdown when a menu item is selected.
-        if (change.selectedItem) {
-          this.sendMessage(SkyDropdownMessageType.Close);
-        }
-
-        if (change.items) {
-          // Update the popover style and position whenever the number of items changes.
-          this.sendMessage(SkyDropdownMessageType.Reposition);
-        }
-      });
-
-    this.menuItems.changes
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((items: QueryList<SkyDropdownItemComponent>) => {
-        this.reset();
-        this.menuChanges.emit({
-          items: items.toArray()
-        });
-      });
 
     Observable
       .fromEvent(dropdownMenuElement, 'click')
