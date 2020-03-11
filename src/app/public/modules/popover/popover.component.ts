@@ -91,8 +91,8 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
    * Indicates if the popover element should render as a full screen modal
    * when the content is too large to fit inside its parent.
    * @internal
-   * @deprecated Fullscreen popovers have been deprecated and are not an approved SKY UX design
-   * pattern. Use the SKY UX modal component instead.
+   * @deprecated Fullscreen popovers are not an approved SKY UX design pattern. Use the SKY UX
+   * modal component instead.
    */
   @Input()
   public set allowFullscreen(value: boolean) {
@@ -291,7 +291,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.placement === 'fullscreen') {
       console.warn([
-        'Fullscreen popovers have been deprecated and are not an approved SKY UX design pattern.',
+        'Fullscreen popovers are not an approved SKY UX design pattern.',
         'Use the SKY UX modal component instead.'
       ].join(' '));
       return;

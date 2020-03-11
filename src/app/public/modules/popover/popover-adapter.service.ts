@@ -40,6 +40,10 @@ export class SkyPopoverAdapterService {
     this.renderer.addClass(elem.nativeElement, 'sky-popover-static');
   }
 
+  /**
+   * Used by the popover component to determine if fullscreen mode should be used.
+   * @deprecated This method will be removed in the next major version.
+   */
   public isPopoverLargerThanWindow(popover: ElementRef): boolean {
     const windowObj = this.windowRef.nativeWindow;
     const popoverRect = popover.nativeElement.getBoundingClientRect();
