@@ -243,8 +243,6 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private affixer: SkyAffixer;
 
-  private isKeyboardActive = false;
-
   private ngUnsubscribe = new Subject();
 
   private overlay: SkyOverlayInstance;
@@ -318,11 +316,6 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
       case SkyDropdownMessageType.Close:
         this.isOpen = false;
         this.adapter.hideElement(this.menuContainerElementRef);
-        if (this.isKeyboardActive) {
-          this.windowRef.nativeWindow.setTimeout(() => {
-            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-          });
-        }
         break;
 
       case SkyDropdownMessageType.FocusTriggerButton:
@@ -349,7 +342,6 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
       .fromEvent(buttonElement, 'click')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: MouseEvent) => {
-        this.isKeyboardActive = false;
         if (this.isOpen) {
           this.sendMessage(SkyDropdownMessageType.Close);
         } else {
@@ -372,28 +364,12 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
       .fromEvent(buttonElement, 'keyup')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        this.isKeyboardActive = true;
-
         const key = event.key.toLowerCase();
-
-        /* tslint:disable-next-line:switch-default */
-        switch (key) {
-          case 'enter':
-            if (!this.isOpen) {
-              this.sendMessage(SkyDropdownMessageType.Open);
-              this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
-              event.stopPropagation();
-              event.preventDefault();
-            }
-            break;
-
-          case 'escape':
-            if (this.isOpen) {
-              this.sendMessage(SkyDropdownMessageType.Close);
-              event.stopPropagation();
-              event.preventDefault();
-            }
-            break;
+        if (this.isOpen && key === 'escape') {
+          this.sendMessage(SkyDropdownMessageType.Close);
+          this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+          event.stopPropagation();
+          event.preventDefault();
         }
       });
 
@@ -401,14 +377,27 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
       .fromEvent(buttonElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        this.isKeyboardActive = true;
+        if (this.isOpen) {
+          return;
+        }
 
         const key = event.key.toLowerCase();
 
-        if (key === 'down' || key === 'arrowdown') {
-          this.sendMessage(SkyDropdownMessageType.Open);
-          this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
-          event.preventDefault();
+        /* tslint:disable-next-line:switch-default */
+        switch (key) {
+          case 'enter':
+            this.sendMessage(SkyDropdownMessageType.Open);
+            this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+            event.stopPropagation();
+            event.preventDefault();
+            break;
+
+          case 'arrowdown':
+          case 'down':
+            this.sendMessage(SkyDropdownMessageType.Open);
+            this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+            event.preventDefault();
+            break;
         }
       });
 
