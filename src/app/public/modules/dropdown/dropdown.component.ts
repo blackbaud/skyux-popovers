@@ -286,19 +286,15 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.affixer) {
-      this.affixer.destroy();
-      this.affixer = undefined;
-    }
-
-    if (this.overlay) {
-      this.overlay.close();
-      this.overlay = undefined;
-    }
+    this.affixer.destroy();
+    this.overlay.close();
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.ngUnsubscribe = undefined;
+
+    this.affixer =
+      this.ngUnsubscribe =
+      this.overlay = undefined;
   }
 
   private handleIncomingMessages(message: SkyDropdownMessage): void {
@@ -445,7 +441,7 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
     this.affixer.affixTo(this.triggerButton.nativeElement, {
       autoFitContext: SkyAffixAutoFitContext.Viewport,
       enableAutoFit: true,
-      horizontalAlignment: this.alignment || this.horizontalAlignment,
+      horizontalAlignment: this._alignment || this.horizontalAlignment,
       isSticky: true,
       placement: 'below'
     });

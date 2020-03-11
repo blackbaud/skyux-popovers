@@ -2,9 +2,15 @@ import {
   async,
   ComponentFixture,
   fakeAsync,
+  inject,
   TestBed,
   tick
 } from '@angular/core/testing';
+
+import {
+  SkyAffixConfig,
+  SkyAffixService
+} from '@skyux/core';
 
 import {
   expect,
@@ -122,6 +128,41 @@ describe('Dropdown component', function () {
     expect(button).toHaveCssClass('sky-btn-default');
   });
 
+  it('should use horizontalAlignment if alignment is undefined', fakeAsync(inject(
+    [SkyAffixService],
+    (affixService: SkyAffixService) => {
+      const expectedAlignment = 'right';
+
+      fixture.componentInstance.alignment = undefined;
+      fixture.componentInstance.horizontalAlignment = expectedAlignment;
+
+      let actualConfig: SkyAffixConfig;
+
+      const mockAffixer = {
+        affixTo(elem: any, config: SkyAffixConfig ) {
+          actualConfig = config;
+        },
+        destroy() {},
+        reaffix() {}
+      };
+
+      const createAffixerSpy = spyOn(affixService, 'createAffixer').and.returnValue(mockAffixer);
+
+      fixture.detectChanges();
+
+      // Make sure the set alignment in our test doesn't match the default alignment.
+      // (We need to confirm that a change has occurred.)
+      expect(fixture.componentInstance.dropdownRef.alignment).not.toEqual(expectedAlignment);
+
+      tick();
+
+      expect(actualConfig.horizontalAlignment).toEqual(expectedAlignment);
+
+      // Clear the spy to return the service to normal.
+      createAffixerSpy.and.callThrough();
+    }
+  )));
+
   it('should allow setting button style and type', () => {
     fixture.componentInstance.buttonStyle = 'danger';
     fixture.componentInstance.buttonType = 'context-menu';
@@ -132,51 +173,6 @@ describe('Dropdown component', function () {
     expect(button).toHaveCssClass('sky-btn-danger');
     expect(button).toHaveCssClass('sky-dropdown-button-type-context-menu');
   });
-
-  it('should open and close menu via click', fakeAsync(() => {
-    fixture.componentInstance.trigger = 'click';
-    fixture.detectChanges();
-    tick();
-
-    const button = getButtonElement();
-
-    button.click();
-    fixture.detectChanges();
-    tick();
-
-    const dropdownMenu = getMenuElement();
-    expect(isElementVisible(dropdownMenu)).toEqual(true);
-
-    button.click();
-    fixture.detectChanges();
-    tick();
-
-    expect(isElementVisible(dropdownMenu)).toEqual(false);
-  }));
-
-  it('should open and close menu via mouse hover', fakeAsync(() => {
-    fixture.componentInstance.trigger = 'hover';
-    fixture.detectChanges();
-    tick();
-
-    const button = getButtonElement();
-
-    SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
-    fixture.detectChanges();
-    tick();
-
-    const container = getMenuContainerElement();
-    expect(isElementVisible(container)).toEqual(true);
-
-    SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
-
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-    tick();
-
-    expect(isElementVisible(container)).toEqual(false);
-  }));
 
   it('should reposition the menu when number of menu items change', fakeAsync(() => {
     fixture.detectChanges();
@@ -253,6 +249,141 @@ describe('Dropdown component', function () {
     expect(menuChangesSpy).toHaveBeenCalledWith({ activeIndex: buttonIndex });
     expect(menuChangesSpy).toHaveBeenCalledWith({ selectedItem });
   }));
+
+  describe('mouse events', function () {
+    it('should open and close menu via mouse click', fakeAsync(() => {
+      fixture.componentInstance.trigger = 'click';
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+
+      button.click();
+      // Simulate mouse movement as well.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
+      fixture.detectChanges();
+      tick();
+
+      const dropdownMenu = getMenuElement();
+      expect(isElementVisible(dropdownMenu)).toEqual(true);
+
+      button.click();
+      // Simulate mouse movement as well.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(dropdownMenu)).toEqual(false);
+    }));
+
+    it('should open and close menu via mouse hover', fakeAsync(() => {
+      fixture.componentInstance.trigger = 'hover';
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      const container = getMenuContainerElement();
+      const menu = getMenuElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Simulate moving the mouse to the menu.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
+      SkyAppTestUtility.fireDomEvent(menu, 'mouseenter');
+      fixture.detectChanges();
+      tick();
+
+      // Confirm menu is still open.
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Simulate moving the mouse from the menu to the trigger button.
+      SkyAppTestUtility.fireDomEvent(menu, 'mouseleave');
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
+      fixture.detectChanges();
+      tick();
+
+      // Confirm menu is still open.
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Simulate mouse leaving the trigger button.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
+      fixture.detectChanges();
+      tick();
+
+      // Menu should now be closed.
+      expect(isElementVisible(container)).toEqual(false);
+
+      // Re-open the menu.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Simulate moving the mouse to the menu.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
+      SkyAppTestUtility.fireDomEvent(menu, 'mouseenter');
+      fixture.detectChanges();
+      tick();
+
+      // Confirm menu is still open.
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Simulate mouse leaving the menu completely.
+      SkyAppTestUtility.fireDomEvent(menu, 'mouseleave');
+      fixture.detectChanges();
+      tick();
+
+      // Menu should now be closed.
+      expect(isElementVisible(container)).toEqual(false);
+    }));
+
+    it('should close menu when clicking outside', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      const container = getMenuContainerElement();
+
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      SkyAppTestUtility.fireDomEvent(window.document, 'click');
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(false);
+    }));
+
+    it('should allow preventing menu close on window click', fakeAsync(() => {
+      fixture.componentInstance.dismissOnBlur = false;
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      const container = getMenuContainerElement();
+
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      SkyAppTestUtility.fireDomEvent(window.document, 'click');
+      fixture.detectChanges();
+      tick();
+
+      // Menu should still be open.
+      expect(isElementVisible(container)).toEqual(true);
+    }));
+  });
 
   describe('accessibility', function () {
     it('should set ARIA attributes', fakeAsync(() => {
@@ -359,7 +490,32 @@ describe('Dropdown component', function () {
       expect(isElementVisible(container)).toEqual(true);
     }));
 
-    it('should close menu with escape key and focus trigger button', fakeAsync(() => {
+    it('should close menu with escape key while trigger button is focused', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      const container = getMenuContainerElement();
+
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      SkyAppTestUtility.fireDomEvent(button, 'keyup', {
+        keyboardEventInit: {
+          key: 'escape'
+        }
+      });
+
+      fixture.detectChanges();
+      tick();
+
+      expect(isElementVisible(container)).toEqual(false);
+    }));
+
+    it('should close menu with escape key while menu is focused', fakeAsync(() => {
       fixture.detectChanges();
       tick();
 
@@ -404,6 +560,28 @@ describe('Dropdown component', function () {
 
       expect(isElementVisible(container)).toEqual(true);
       expect(isMenuItemFocused(0)).toEqual(true);
+    }));
+
+    it('should allow disabling native focus', fakeAsync(() => {
+      fixture.componentInstance.useNativeFocus = false;
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      const container = getMenuContainerElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'enter'
+        }
+      });
+
+      fixture.detectChanges();
+      tick();
+
+      // The menu should be open, but the first item should not be focused.
+      expect(isElementVisible(container)).toEqual(true);
+      expect(isMenuItemFocused(0)).toEqual(false);
     }));
 
     it('should not focus the first item if it is disabled', fakeAsync(() => {
@@ -666,13 +844,13 @@ describe('Dropdown component', function () {
       expect(isElementFocused(button)).toEqual(true);
     }));
 
-    it('should not handle keyboard events if menu is closed', fakeAsync(() => {
+    it('should ignore menu keyboard events if menu is closed', fakeAsync(() => {
       fixture.detectChanges();
       tick();
 
       const menu = getMenuElement();
 
-      // Test 'keydown'.
+      // Test menu 'keydown'.
       SkyAppTestUtility.fireDomEvent(menu, 'keydown', {
         keyboardEventInit: {
           key: 'arrowdown'
@@ -686,7 +864,7 @@ describe('Dropdown component', function () {
 
       const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
 
-      // Test 'keyup'.
+      // Test menu 'keyup'.
       SkyAppTestUtility.fireDomEvent(menu, 'keyup', {
         keyboardEventInit: {
           key: 'escape'
@@ -697,6 +875,59 @@ describe('Dropdown component', function () {
       tick();
 
       expect(messageSpy).not.toHaveBeenCalled();
+    }));
+
+    it('should ignore button keyboard events depending on menu visibility', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      // const container = getMenuContainerElement();
+
+      // Open the menu.
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
+
+      // Test trigger button 'keydown'.
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'arrowdown'
+        }
+      });
+
+      fixture.detectChanges();
+      tick();
+
+      // Keydown events should be ignored if menu is open.
+      expect(messageSpy).not.toHaveBeenCalledWith({
+        type: SkyDropdownMessageType.Open
+      });
+
+      // Close the menu.
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      // Reset spy.
+      messageSpy.calls.reset();
+
+      // Test trigger button 'keyup'.
+      SkyAppTestUtility.fireDomEvent(button, 'keyup', {
+        keyboardEventInit: {
+          key: 'escape'
+        }
+      });
+
+      fixture.detectChanges();
+      tick();
+
+      // Keyup events should be ignored if menu is closed.
+      expect(messageSpy).not.toHaveBeenCalledWith({
+        type: SkyDropdownMessageType.Close
+      });
     }));
   });
 
@@ -787,6 +1018,70 @@ describe('Dropdown component', function () {
 
       expect(isElementVisible(container)).toEqual(false);
     }));
+
+    it('should allow repositioning the menu', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const affixer = fixture.componentInstance.dropdownRef['affixer'];
+      const affixSpy = spyOn(affixer, 'reaffix').and.callThrough();
+
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Reposition);
+      fixture.detectChanges();
+      tick();
+
+      // Repositioning should only happen if menu is open.
+      expect(affixSpy).not.toHaveBeenCalledWith();
+      affixSpy.calls.reset();
+
+      // Open the menu.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Open);
+      fixture.detectChanges();
+      tick();
+
+      // Reposition the menu.
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Reposition);
+      fixture.detectChanges();
+      tick();
+
+      // The affixing method should be called now.
+      expect(affixSpy).toHaveBeenCalledWith();
+    }));
   });
 
+  describe('focus properties', () => {
+
+    it('should reflect the state of focus', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+      const firstItemButton = getFirstMenuItem().querySelector('button');
+
+      const dropdownRef = fixture.componentInstance.dropdownRef;
+
+      expect(dropdownRef.buttonIsFocused).toEqual(false);
+      expect(dropdownRef.menuIsFocused).toEqual(false);
+
+      button.focus();
+      fixture.detectChanges();
+      tick();
+
+      expect(dropdownRef.buttonIsFocused).toEqual(true);
+      expect(dropdownRef.menuIsFocused).toEqual(false);
+
+      // Open the menu.
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      // Move focus to first item.
+      firstItemButton.focus();
+      fixture.detectChanges();
+      tick();
+
+      expect(dropdownRef.buttonIsFocused).toEqual(false);
+      expect(dropdownRef.menuIsFocused).toEqual(true);
+    }));
+  });
 });
