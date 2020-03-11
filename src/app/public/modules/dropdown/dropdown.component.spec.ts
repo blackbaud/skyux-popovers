@@ -250,7 +250,7 @@ describe('Dropdown component', function () {
     expect(menuChangesSpy).toHaveBeenCalledWith({ selectedItem });
   }));
 
-  describe('mouse events', function () {
+  describe('mouse interactions', function () {
     it('should open and close menu via mouse click', fakeAsync(() => {
       fixture.componentInstance.trigger = 'click';
       fixture.detectChanges();
@@ -382,72 +382,6 @@ describe('Dropdown component', function () {
 
       // Menu should still be open.
       expect(isElementVisible(container)).toEqual(true);
-    }));
-  });
-
-  describe('accessibility', function () {
-    it('should set ARIA attributes', fakeAsync(() => {
-      fixture.detectChanges();
-      tick();
-
-      const button = getButtonElement();
-
-      button.click();
-      fixture.detectChanges();
-      tick();
-
-      const menu = getMenuElement();
-      const item = getFirstMenuItem();
-
-      // First, confirm defaults.
-      expect(button.getAttribute('aria-label')).toEqual('Context menu');
-      expect(menu.getAttribute('role')).toEqual('menu');
-      expect(menu.getAttribute('aria-labelledby')).toBeNull();
-      expect(item.getAttribute('role')).toEqual('menuitem');
-
-      // Finally, confirm overrides.
-      fixture.componentInstance.menuAriaRole = 'menu-role-override';
-      fixture.componentInstance.menuAriaLabelledBy = 'menu-labelled-by-override';
-      fixture.componentInstance.itemAriaRole = 'item-role-override';
-      fixture.componentInstance.label = 'button-label-override';
-
-      fixture.detectChanges();
-      tick();
-
-      expect(button.getAttribute('aria-label')).toEqual('button-label-override');
-      expect(menu.getAttribute('role')).toEqual('menu-role-override');
-      expect(menu.getAttribute('aria-labelledby')).toEqual('menu-labelled-by-override');
-      expect(item.getAttribute('role')).toEqual('item-role-override');
-    }));
-
-    it('should set the title attribute', fakeAsync(() => {
-      fixture.detectChanges();
-      tick();
-
-      const button = getButtonElement();
-
-      button.click();
-      fixture.detectChanges();
-      tick();
-
-      expect(button.getAttribute('title')).toBeNull();
-
-      fixture.componentInstance.title = 'dropdown-title-override';
-      fixture.detectChanges();
-      tick();
-
-      expect(button.getAttribute('title')).toEqual('dropdown-title-override');
-    }));
-
-    it('should be accessible', async(() => {
-      fixture.detectChanges();
-
-      const button = getButtonElement();
-
-      button.click();
-      fixture.detectChanges();
-
-      expect(window.document.body).toBeAccessible();
     }));
   });
 
@@ -1082,6 +1016,72 @@ describe('Dropdown component', function () {
 
       expect(dropdownRef.buttonIsFocused).toEqual(false);
       expect(dropdownRef.menuIsFocused).toEqual(true);
+    }));
+  });
+
+  describe('accessibility', function () {
+    it('should set ARIA attributes', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      const menu = getMenuElement();
+      const item = getFirstMenuItem();
+
+      // First, confirm defaults.
+      expect(button.getAttribute('aria-label')).toEqual('Context menu');
+      expect(menu.getAttribute('role')).toEqual('menu');
+      expect(menu.getAttribute('aria-labelledby')).toBeNull();
+      expect(item.getAttribute('role')).toEqual('menuitem');
+
+      // Finally, confirm overrides.
+      fixture.componentInstance.menuAriaRole = 'menu-role-override';
+      fixture.componentInstance.menuAriaLabelledBy = 'menu-labelled-by-override';
+      fixture.componentInstance.itemAriaRole = 'item-role-override';
+      fixture.componentInstance.label = 'button-label-override';
+
+      fixture.detectChanges();
+      tick();
+
+      expect(button.getAttribute('aria-label')).toEqual('button-label-override');
+      expect(menu.getAttribute('role')).toEqual('menu-role-override');
+      expect(menu.getAttribute('aria-labelledby')).toEqual('menu-labelled-by-override');
+      expect(item.getAttribute('role')).toEqual('item-role-override');
+    }));
+
+    it('should set the title attribute', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+
+      const button = getButtonElement();
+
+      button.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(button.getAttribute('title')).toBeNull();
+
+      fixture.componentInstance.title = 'dropdown-title-override';
+      fixture.detectChanges();
+      tick();
+
+      expect(button.getAttribute('title')).toEqual('dropdown-title-override');
+    }));
+
+    it('should be accessible', async(() => {
+      fixture.detectChanges();
+
+      const button = getButtonElement();
+
+      button.click();
+      fixture.detectChanges();
+
+      expect(window.document.body).toBeAccessible();
     }));
   });
 });
