@@ -332,6 +332,7 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
             event.stopPropagation();
             event.preventDefault();
             this.sendMessage(SkyDropdownMessageType.Close);
+            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
             break;
         }
       });
@@ -368,14 +369,19 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
               dropdownMenuElement
             );
 
-            const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
-            const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
-
-            if (isFirstItem || isLastItem) {
-              this.sendMessage(SkyDropdownMessageType.Close);
-            } else {
-              if (event.shiftKey) {
+            if (event.shiftKey) {
+              const isFirstItem = (focusableItems[0] === event.target);
+              if (isFirstItem) {
+                this.sendMessage(SkyDropdownMessageType.Close);
+                this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+              } else {
                 this.sendMessage(SkyDropdownMessageType.FocusPreviousItem);
+              }
+            } else {
+              const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
+              if (isLastItem) {
+                this.sendMessage(SkyDropdownMessageType.Close);
+                this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
               } else {
                 this.sendMessage(SkyDropdownMessageType.FocusNextItem);
               }
