@@ -373,17 +373,20 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
       .fromEvent(buttonElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        if (this.isOpen) {
-          return;
-        }
-
         const key = event.key.toLowerCase();
 
         /* tslint:disable-next-line:switch-default */
         switch (key) {
+          case 'tab':
+            if (this.isOpen) {
+              this.sendMessage(SkyDropdownMessageType.Close);
+            }
+            break;
           case 'enter':
-            this.sendMessage(SkyDropdownMessageType.Open);
-            this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+            if (!this.isOpen) {
+              this.sendMessage(SkyDropdownMessageType.Open);
+              this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+            }
             event.stopPropagation();
             event.preventDefault();
             break;
