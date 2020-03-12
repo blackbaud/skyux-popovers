@@ -1,10 +1,13 @@
 import {
   Directive,
   ElementRef,
-  HostListener,
   Input,
   OnInit
 } from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs/Observable';
 
 import {
   Subject
@@ -98,11 +101,92 @@ export class SkyPopoverDirective implements OnInit {
     this.skyPopoverMessageStream
       .takeUntil(this.ngUnsubscribe)
       .subscribe(message => this.handleIncomingMessages(message));
+
+    this.addEventListeners();
   }
 
-  @HostListener('click')
-  public onClick(): void {
-    this.sendMessage(SkyPopoverMessageType.Toggle);
+  private addEventListeners(): void {
+    const hostElement = this.elementRef.nativeElement;
+
+    // Observable
+    //   .fromEvent(hostElement, 'keydown')
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe((event: KeyboardEvent) => {
+    //     if (!this.isPopoverOpen()) {
+    //       return;
+    //     }
+
+    //     const key = event.key.toLowerCase();
+
+    //     if (
+    //       (key === 'arrowup' || key === 'up') ||
+    //       (key === 'arrowright' || key === 'right') ||
+    //       (key === 'arrowdown' || key === 'down') ||
+    //       (key === 'arrowleft' || key === 'left')
+    //     ) {
+    //       event.stopPropagation();
+    //       event.preventDefault();
+    //       this.skyPopover.applyFocus();
+    //     }
+    //   });
+
+    // Observable
+    //   .fromEvent(hostElement, 'keyup')
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe((event: KeyboardEvent) => {
+    //     const key = event.key.toLowerCase();
+    //     if (key === 'escape') {
+    //       event.stopPropagation();
+    //       event.preventDefault();
+
+    //       if (this.isPopoverOpen()) {
+    //         this.sendMessage(SkyPopoverMessageType.Close);
+    //         hostElement.focus();
+    //       }
+    //     }
+    //   });
+
+    Observable
+      .fromEvent(hostElement, 'click')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: MouseEvent) => {
+        event.stopPropagation();
+        event.preventDefault();
+        this.sendMessage(SkyPopoverMessageType.Toggle);
+      });
+
+    // Observable
+    //   .fromEvent(hostElement, 'mouseenter')
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe(() => {
+    //     this.skyPopover.isMouseEnter = true;
+    //     if (this.skyPopoverTrigger === 'mouseenter') {
+    //       this.sendMessage(SkyPopoverMessageType.Open);
+    //     }
+    //   });
+
+    // Observable
+    //   .fromEvent(hostElement, 'mouseleave')
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe(() => {
+    //     this.skyPopover.isMouseEnter = false;
+
+    //     if (this.skyPopoverTrigger === 'mouseenter') {
+    //       if (this.isPopoverOpen()) {
+    //         // Give the popover a chance to set its isMouseEnter flag before checking to see
+    //         // if it should be closed.
+    //         this.windowRef.nativeWindow.setTimeout(() => {
+    //           this.closePopoverOrMarkForClose();
+    //         });
+    //       } else {
+    //         // If the mouse leaves before the popover is open,
+    //         // wait for the transition to complete before closing it.
+    //         this.skyPopover.popoverOpened.take(1).subscribe(() => {
+    //           this.closePopoverOrMarkForClose();
+    //         });
+    //       }
+    //     }
+    //   });
   }
 
   private handleIncomingMessages(message: SkyPopoverMessage): void {
