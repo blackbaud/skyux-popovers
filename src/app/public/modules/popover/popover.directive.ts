@@ -13,6 +13,8 @@ import {
   Subject
 } from 'rxjs/Subject';
 
+import 'rxjs/add/observable/fromEvent';
+
 import 'rxjs/add/operator/takeUntil';
 
 import {
@@ -105,6 +107,14 @@ export class SkyPopoverDirective implements OnInit {
     this.addEventListeners();
   }
 
+  private closePopoverOrMarkForClose(): void {
+    if (this._popover.isMouseEnter) {
+      this._popover.markForCloseOnMouseLeave();
+    } else {
+      this.sendMessage(SkyPopoverMessageType.Close);
+    }
+  }
+
   private addEventListeners(): void {
     const hostElement = this.elementRef.nativeElement;
 
@@ -155,38 +165,39 @@ export class SkyPopoverDirective implements OnInit {
         this.sendMessage(SkyPopoverMessageType.Toggle);
       });
 
-    // Observable
-    //   .fromEvent(hostElement, 'mouseenter')
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(() => {
-    //     this.skyPopover.isMouseEnter = true;
-    //     if (this.skyPopoverTrigger === 'mouseenter') {
-    //       this.sendMessage(SkyPopoverMessageType.Open);
-    //     }
-    //   });
+    Observable
+      .fromEvent(hostElement, 'mouseenter')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this._popover.isMouseEnter = true;
+        if (this.skyPopoverTrigger === 'mouseenter') {
+          this.sendMessage(SkyPopoverMessageType.Open);
+        }
+      });
 
-    // Observable
-    //   .fromEvent(hostElement, 'mouseleave')
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(() => {
-    //     this.skyPopover.isMouseEnter = false;
-
-    //     if (this.skyPopoverTrigger === 'mouseenter') {
-    //       if (this.isPopoverOpen()) {
-    //         // Give the popover a chance to set its isMouseEnter flag before checking to see
-    //         // if it should be closed.
-    //         this.windowRef.nativeWindow.setTimeout(() => {
-    //           this.closePopoverOrMarkForClose();
-    //         });
-    //       } else {
-    //         // If the mouse leaves before the popover is open,
-    //         // wait for the transition to complete before closing it.
-    //         this.skyPopover.popoverOpened.take(1).subscribe(() => {
-    //           this.closePopoverOrMarkForClose();
-    //         });
-    //       }
-    //     }
-    //   });
+    Observable
+      .fromEvent(hostElement, 'mouseleave')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this._popover.isMouseEnter = false;
+        if (this.skyPopoverTrigger === 'mouseenter') {
+          setTimeout(() => {
+            if (this._popover.isOpen) {
+              // Give the popover a chance to set its isMouseEnter flag before checking to see
+              // if it should be closed.
+              setTimeout(() => {
+                this.closePopoverOrMarkForClose();
+              });
+            } else {
+              // If the mouse leaves before the popover is open,
+              // wait for the transition to complete before closing it.
+              this._popover.popoverOpened.take(1).subscribe(() => {
+                this.closePopoverOrMarkForClose();
+              });
+            }
+          });
+        }
+      });
   }
 
   private handleIncomingMessages(message: SkyPopoverMessage): void {

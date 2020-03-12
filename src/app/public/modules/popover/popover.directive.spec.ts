@@ -22,7 +22,7 @@ import {
 
 import { SkyPopoverMessageType } from './types';
 
-fdescribe('Popover directive', () => {
+describe('Popover directive', () => {
 
   let fixture: ComponentFixture<PopoverFixtureComponent>;
 
@@ -106,73 +106,72 @@ fdescribe('Popover directive', () => {
       expect(isElementVisible(popover)).toEqual(false);
     }));
 
-    // it('should open and close menu via mouse hover', fakeAsync(() => {
-    //   fixture.componentInstance.trigger = 'hover';
-    //   fixture.detectChanges();
-    //   tick();
+    it('should open and close popover via mouse hover', fakeAsync(() => {
+      fixture.componentInstance.trigger = 'mouseenter';
 
-    //   const button = getButtonElement();
-    //   const container = getMenuContainerElement();
-    //   const menu = getMenuElement();
+      detectChanges();
 
-    //   SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
-    //   fixture.detectChanges();
-    //   tick();
+      const button = getCallerElement();
+      const popover = getPopoverElement();
 
-    //   expect(isElementVisible(container)).toEqual(true);
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-    //   // Simulate moving the mouse to the menu.
-    //   SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
-    //   SkyAppTestUtility.fireDomEvent(menu, 'mouseenter');
-    //   fixture.detectChanges();
-    //   tick();
+      detectChanges();
 
-    //   // Confirm menu is still open.
-    //   expect(isElementVisible(container)).toEqual(true);
+      expect(isElementVisible(popover)).toEqual(true);
 
-    //   // Simulate moving the mouse from the menu to the trigger button.
-    //   SkyAppTestUtility.fireDomEvent(menu, 'mouseleave');
-    //   SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
-    //   fixture.detectChanges();
-    //   tick();
+      // Simulate moving the mouse to the popover.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
+      SkyAppTestUtility.fireDomEvent(popover, 'mouseenter');
 
-    //   // Confirm menu is still open.
-    //   expect(isElementVisible(container)).toEqual(true);
+      detectChanges();
 
-    //   // Simulate mouse leaving the trigger button.
-    //   SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
-    //   fixture.detectChanges();
-    //   tick();
+      // Confirm popover is still open.
+      expect(isElementVisible(popover)).toEqual(true);
 
-    //   // Menu should now be closed.
-    //   expect(isElementVisible(container)).toEqual(false);
+      // Simulate moving the mouse from the popover to the trigger button.
+      SkyAppTestUtility.fireDomEvent(popover, 'mouseleave');
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-    //   // Re-open the menu.
-    //   SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
-    //   fixture.detectChanges();
-    //   tick();
+      detectChanges();
 
-    //   expect(isElementVisible(container)).toEqual(true);
+      // Confirm popover is still open.
+      expect(isElementVisible(popover)).toEqual(true);
 
-    //   // Simulate moving the mouse to the menu.
-    //   SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
-    //   SkyAppTestUtility.fireDomEvent(menu, 'mouseenter');
-    //   fixture.detectChanges();
-    //   tick();
+      // Simulate mouse leaving the trigger button.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
 
-    //   // Confirm menu is still open.
-    //   expect(isElementVisible(container)).toEqual(true);
+      detectChanges();
 
-    //   // Simulate mouse leaving the menu completely.
-    //   SkyAppTestUtility.fireDomEvent(menu, 'mouseleave');
-    //   fixture.detectChanges();
-    //   tick();
+      // Menu should now be closed.
+      expect(isElementVisible(popover)).toEqual(false);
 
-    //   // Menu should now be closed.
-    //   expect(isElementVisible(container)).toEqual(false);
-    // }));
+      // Re-open the popover.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-    // it('should close menu when clicking outside', fakeAsync(() => {
+      detectChanges();
+
+      expect(isElementVisible(popover)).toEqual(true);
+
+      // Simulate moving the mouse to the popover.
+      SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
+      SkyAppTestUtility.fireDomEvent(popover, 'mouseenter');
+
+      detectChanges();
+
+      // Confirm popover is still open.
+      expect(isElementVisible(popover)).toEqual(true);
+
+      // Simulate mouse leaving the popover completely.
+      SkyAppTestUtility.fireDomEvent(popover, 'mouseleave');
+
+      detectChanges();
+
+      // Menu should now be closed.
+      expect(isElementVisible(popover)).toEqual(false);
+    }));
+
+    // it('should close popover when clicking outside', fakeAsync(() => {
     //   fixture.detectChanges();
     //   tick();
 
@@ -192,7 +191,7 @@ fdescribe('Popover directive', () => {
     //   expect(isElementVisible(container)).toEqual(false);
     // }));
 
-    // it('should allow preventing menu close on window click', fakeAsync(() => {
+    // it('should allow preventing popover close on window click', fakeAsync(() => {
     //   fixture.componentInstance.dismissOnBlur = false;
     //   fixture.detectChanges();
     //   tick();

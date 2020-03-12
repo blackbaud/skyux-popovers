@@ -816,7 +816,6 @@ describe('Dropdown component', function () {
       tick();
 
       const button = getButtonElement();
-      // const container = getMenuContainerElement();
 
       // Open the menu.
       button.click();
@@ -828,14 +827,14 @@ describe('Dropdown component', function () {
       // Test trigger button 'keydown'.
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
-          key: 'arrowdown'
+          key: 'enter'
         }
       });
 
       fixture.detectChanges();
       tick();
 
-      // Keydown events should be ignored if menu is open.
+      // Enter key should be ignored if menu is open.
       expect(messageSpy).not.toHaveBeenCalledWith({
         type: SkyDropdownMessageType.Open
       });
@@ -858,7 +857,7 @@ describe('Dropdown component', function () {
       fixture.detectChanges();
       tick();
 
-      // Keyup events should be ignored if menu is closed.
+      // Escape key should be ignored if menu is closed.
       expect(messageSpy).not.toHaveBeenCalledWith({
         type: SkyDropdownMessageType.Close
       });

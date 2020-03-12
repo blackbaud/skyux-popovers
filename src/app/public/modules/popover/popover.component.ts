@@ -31,8 +31,14 @@ import {
 } from '@skyux/core';
 
 import {
+  Observable
+} from 'rxjs/Observable';
+
+import {
   Subject
 } from 'rxjs/Subject';
+
+import 'rxjs/add/observable/fromEvent';
 
 import 'rxjs/add/operator/takeUntil';
 
@@ -178,6 +184,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   public cssClassNames: string[] = [];
 
+  public isMouseEnter: boolean = false;
+
   public isOpen: boolean = false;
 
   @ViewChild('popoverArrow', {
@@ -201,6 +209,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     if (value) {
       this._popoverContainer = value;
       this.setupAffixer();
+      this.addEventListeners();
       this.changeDetector.markForCheck();
     }
   }
@@ -217,6 +226,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   private affixer: SkyAffixer;
 
   private caller: ElementRef;
+
+  private isMarkedForCloseOnMouseLeave = false;
 
   private ngUnsubscribe = new Subject<void>();
 
@@ -360,6 +371,14 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Adds a flag to the popover to close when the mouse leaves the popover's bounds.
+   * @internal
+   */
+  public markForCloseOnMouseLeave(): void {
+    this.isMarkedForCloseOnMouseLeave = true;
+  }
+
   private setupAffixer(): void {
     this.affixer = this.affixService.createAffixer(this.popoverContainer);
 
@@ -418,6 +437,28 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
     this.arrowTop = top;
     this.arrowLeft = left;
+  }
+
+  private addEventListeners(): void {
+    const popoverElement = this._popoverContainer.nativeElement;
+
+    Observable
+      .fromEvent(popoverElement, 'mouseenter')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this.isMouseEnter = true;
+      });
+
+    Observable
+      .fromEvent(popoverElement, 'mouseleave')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this.isMouseEnter = false;
+        if (this.isMarkedForCloseOnMouseLeave) {
+          this.close();
+          this.isMarkedForCloseOnMouseLeave = false;
+        }
+      });
   }
 
 }
