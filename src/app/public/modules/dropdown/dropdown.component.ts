@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -59,7 +60,7 @@ import {
   styleUrls: ['./dropdown.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   /**
    * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
@@ -234,7 +235,20 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('menuContainerElementRef', {
     read: ElementRef
   })
-  private menuContainerElementRef: ElementRef;
+  public set menuContainerElementRef(value: ElementRef) {
+    if (value) {
+      this._menuContainerElementRef = value;
+      this.isOpen = false;
+      this.adapter.hideElement(this.menuContainerElementRef);
+      this.createAffixer();
+      this.addEventListeners();
+      this.changeDetector.markForCheck();
+    }
+  }
+
+  public get menuContainerElementRef(): ElementRef {
+    return this._menuContainerElementRef;
+  }
 
   @ViewChild('menuContainerTemplateRef', {
     read: TemplateRef
@@ -261,9 +275,12 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _isOpen = false;
 
+  private _menuContainerElementRef: ElementRef;
+
   private _trigger: SkyDropdownTriggerType;
 
   constructor(
+    private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
     private windowRef: SkyAppWindowRef,
     private adapter: SkyDropdownAdapterService,
@@ -271,23 +288,19 @@ export class SkyDropdownComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.createOverlay();
+    setTimeout(() => {
+      this.createOverlay();
+      this.changeDetector.markForCheck();
+    });
 
     this.messageStream
       .takeUntil(this.ngUnsubscribe)
       .subscribe(message => this.handleIncomingMessages(message));
   }
 
-  public ngAfterViewInit(): void {
-    this.isOpen = false;
-    this.adapter.hideElement(this.menuContainerElementRef);
-    this.createAffixer();
-    this.addEventListeners();
-  }
-
   public ngOnDestroy(): void {
     this.affixer.destroy();
-    this.overlay.close();
+    this.overlayService.destroy(this.overlay);
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

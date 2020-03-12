@@ -3,7 +3,6 @@ import {
 } from '@angular/animations';
 
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -20,9 +19,7 @@ import {
 
 import {
   SkyAffixAutoFitContext,
-  SkyAffixConfig,
   SkyAffixer,
-  SkyAffixPlacementChange,
   SkyAffixService,
   SkyAppWindowRef,
   SkyCoreAdapterService,
