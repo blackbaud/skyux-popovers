@@ -1,7 +1,8 @@
 import {
   Component,
-  ViewChild,
-  ElementRef
+  ElementRef,
+  OnInit,
+  ViewChild
 } from '@angular/core';
 
 import {
@@ -40,7 +41,7 @@ import {
   selector: 'sky-test-component',
   templateUrl: './popover.component.fixture.html'
 })
-export class PopoverFixtureComponent {
+export class PopoverFixtureComponent implements OnInit {
 
   //#region directive properties
 
@@ -80,6 +81,10 @@ export class PopoverFixtureComponent {
     read: SkyPopoverComponent
   })
   public popoverRef: SkyPopoverComponent;
+
+  public ngOnInit(): void {
+    this.popoverRef.enableAnimations = false;
+  }
 
   public onPopoverClosed(): void { }
 

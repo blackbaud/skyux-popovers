@@ -49,6 +49,10 @@ import {
 } from './popover-adapter.service';
 
 import {
+  skyPopoverAnimation
+} from './popover-animation';
+
+import {
   parseAffixHorizontalAlignment,
   parseAffixPlacement
 } from './popover-extensions';
@@ -57,6 +61,7 @@ import {
   selector: 'sky-popover',
   templateUrl: './popover.component.html',
   styleUrls: ['./popover.component.scss'],
+  animations: [skyPopoverAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkyPopoverComponent implements OnInit, OnDestroy {
@@ -158,9 +163,18 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
+  public animationState: 'hidden' | 'visible' = 'hidden';
+
   public arrowLeft: number;
 
   public arrowTop: number;
+
+  /**
+   * Used by unit tests to disable animations since the component is injected at the bottom of the
+   * document body.
+   * @internal
+   */
+  public enableAnimations: boolean = true;
 
   public cssClassNames: string[] = [];
 
@@ -254,8 +268,37 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe = undefined;
   }
 
+  public onAnimationStart(event: AnimationEvent): void {
+    if (event.fromState === 'void') {
+      return;
+    }
+
+    if (event.toState === 'visible') {
+      this.isOpen = true;
+      this.updateCssClassNames();
+      this.changeDetector.markForCheck();
+    }
+  }
+
+  public onAnimationDone(event: AnimationEvent): void {
+    if (event.fromState === 'void') {
+      return;
+    }
+
+    if (event.toState === 'hidden') {
+      this.isOpen = false;
+      this.popoverClosed.emit(this);
+    } else {
+      this.isOpen = true;
+      this.popoverOpened.emit(this);
+    }
+
+    this.updateCssClassNames();
+    this.changeDetector.markForCheck();
+  }
+
   public toggleVisibility(caller: ElementRef): void {
-    this.isOpen = !this.isOpen;
+    this.animationState = (this.isOpen) ? 'hidden' : 'visible';
 
     if (this.caller !== caller) {
       this.caller = caller;
@@ -276,26 +319,13 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.changeDetector.markForCheck();
   }
 
-  private updateCssClassNames(): void {
-    this.cssClassNames = [
-      `sky-popover-alignment-${this.alignment}`,
-      `sky-popover-placement-${this.placement}`
-    ];
-
-    if (!this.isOpen) {
-      this.cssClassNames.push('sky-popover-hidden');
-    }
-  }
-
-  private updateArrowOffset(): void {
-    const { top, left } = this.adapterService.getArrowCoordinates({
-      caller: this.caller,
-      popover: this.popoverContainer,
-      popoverArrow: this.popoverArrow
-    }, this.placement);
-
-    this.arrowTop = top;
-    this.arrowLeft = left;
+  /**
+   * Closes the popover.
+   * @internal
+   */
+  public close(): void {
+    this.animationState = 'hidden';
+    this.changeDetector.markForCheck();
   }
 
   private setupAffixer(): void {
@@ -327,6 +357,35 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         this.updateArrowOffset();
         this.changeDetector.markForCheck();
       });
+  }
+
+  private updateCssClassNames(): void {
+    this.cssClassNames = [
+      `sky-popover-alignment-${this.alignment}`,
+      `sky-popover-placement-${this.placement}`
+    ];
+
+    if (!this.isOpen) {
+      this.cssClassNames.push('sky-popover-hidden');
+    }
+
+    if (!this.allowFullscreen) {
+      this.cssClassNames.push('sky-popover-max-height');
+    }
+  }
+
+  private updateArrowOffset(): void {
+    const { top, left } = this.adapterService.getArrowCoordinates(
+      {
+        caller: this.caller,
+        popover: this.popoverContainer,
+        popoverArrow: this.popoverArrow
+      },
+      this.placement
+    );
+
+    this.arrowTop = top;
+    this.arrowLeft = left;
   }
 
 }

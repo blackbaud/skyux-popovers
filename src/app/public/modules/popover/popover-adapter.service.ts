@@ -1,8 +1,6 @@
 import {
   ElementRef,
-  Injectable,
-  Renderer2,
-  RendererFactory2
+  Injectable
 } from '@angular/core';
 
 import {
@@ -21,29 +19,9 @@ import {
 @Injectable()
 export class SkyPopoverAdapterService {
 
-  private renderer: Renderer2;
-
   constructor(
-    rendererFactory: RendererFactory2,
     private windowRef: SkyAppWindowRef
-  ) {
-    this.renderer = rendererFactory.createRenderer(undefined, undefined);
-  }
-
-  public hidePopover(elem: ElementRef): void {
-    this.renderer.addClass(elem.nativeElement, 'sky-popover-hidden');
-  }
-
-  public showPopover(elem: ElementRef): void {
-    this.renderer.removeClass(elem.nativeElement, 'sky-popover-hidden');
-  }
-
-  /**
-   * @deprecated Static popovers will be removed in the next major version release.
-   */
-  public makeStatic(elem: ElementRef): void {
-    this.renderer.addClass(elem.nativeElement, 'sky-popover-static');
-  }
+  ) { }
 
   /**
    * Used by the popover component to determine if fullscreen mode should be used.
