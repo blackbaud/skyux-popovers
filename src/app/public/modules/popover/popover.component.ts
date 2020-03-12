@@ -176,6 +176,13 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public arrowLeft: number;
 
+  /**
+   * Used by unit tests to disable animations since the component is injected at the bottom of the
+   * document body.
+   * @internal
+   */
+  public enableAnimations: boolean = false;
+
   public isMouseEnter = false;
 
   public isOpen = false;
@@ -256,7 +263,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (this.overlay) {
-      this.overlay.close();
+      this.overlayService.destroy(this.overlay);
     }
 
     this.removeListeners();
@@ -276,8 +283,6 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
     this.placement = placement;
     this.alignment = alignment;
     this.preferredPlacement = this.placement;
-    this.isVisible = true;
-    this.animationState = 'visible';
     this.changeDetector.markForCheck();
 
     // Reuse existing infrastructure if caller unchanged.
@@ -312,6 +317,9 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.affixer.affixTo(this.caller.nativeElement, config);
       this.updateArrowOffset();
+
+      this.animationState = 'visible';
+      this.changeDetector.markForCheck();
     });
   }
 
@@ -321,6 +329,7 @@ export class SkyPopoverComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public reposition(): void {
     this.placement = this.preferredPlacement;
+    this.animationState = 'visible';
     this.changeDetector.markForCheck();
 
     if (this.placement === 'fullscreen') {

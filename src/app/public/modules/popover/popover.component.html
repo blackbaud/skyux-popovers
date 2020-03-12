@@ -6,6 +6,7 @@
       'sky-popover-alignment-' + alignment,
       'sky-popover-placement-' + placement
     ]"
+    [@.disabled]="!enableAnimations"
     [@popoverState]="animationState"
     [style.visibility]="(isVisible) ? 'visible': 'hidden'"
     (@popoverState.done)="onAnimationDone($event)"

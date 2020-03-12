@@ -15,8 +15,6 @@ $popover-max-width: 276px;
   &.sky-popover-hidden {
     visibility: hidden;
     opacity: 0;
-    top: -9999px !important;
-    left: -9999px !important;
   }
 
   &.sky-popover-static {

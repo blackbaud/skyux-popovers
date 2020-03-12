@@ -151,7 +151,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
   }
 
   private addEventListeners(): void {
-    const element = this.elementRef.nativeElement;
+    const hostElement = this.elementRef.nativeElement;
 
     this.skyPopoverMessageStream
       .takeUntil(this.idled)
@@ -160,7 +160,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
       });
 
     Observable
-      .fromEvent(element, 'keydown')
+      .fromEvent(hostElement, 'keydown')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
         if (!this.isPopoverOpen()) {
@@ -182,7 +182,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
       });
 
     Observable
-      .fromEvent(element, 'keyup')
+      .fromEvent(hostElement, 'keyup')
       .takeUntil(this.idled)
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
@@ -192,13 +192,13 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
           if (this.isPopoverOpen()) {
             this.sendMessage(SkyPopoverMessageType.Close);
-            this.elementRef.nativeElement.focus();
+            hostElement.focus();
           }
         }
       });
 
     Observable
-      .fromEvent(element, 'click')
+      .fromEvent(hostElement, 'click')
       .takeUntil(this.idled)
       .subscribe((event: MouseEvent) => {
         event.stopPropagation();
@@ -207,25 +207,22 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
       });
 
     Observable
-      .fromEvent(element, 'mouseenter')
+      .fromEvent(hostElement, 'mouseenter')
       .takeUntil(this.idled)
-      .subscribe((event: MouseEvent) => {
+      .subscribe(() => {
         this.skyPopover.isMouseEnter = true;
         if (this.skyPopoverTrigger === 'mouseenter') {
-          event.preventDefault();
           this.sendMessage(SkyPopoverMessageType.Open);
         }
       });
 
     Observable
-      .fromEvent(element, 'mouseleave')
+      .fromEvent(hostElement, 'mouseleave')
       .takeUntil(this.idled)
-      .subscribe((event: MouseEvent) => {
+      .subscribe(() => {
         this.skyPopover.isMouseEnter = false;
 
         if (this.skyPopoverTrigger === 'mouseenter') {
-          event.preventDefault();
-
           if (this.isPopoverOpen()) {
             // Give the popover a chance to set its isMouseEnter flag before checking to see
             // if it should be closed.
