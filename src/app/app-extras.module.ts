@@ -17,7 +17,8 @@ import {
 
 import {
   SkyDropdownModule,
-  SkyPopoverModule
+  SkyPopoverModule,
+  SkyDummyModule
 } from './public';
 
 @NgModule({
@@ -26,6 +27,7 @@ import {
     SkyCodeModule,
     SkyDropdownModule,
     SkyPopoverModule,
+    SkyDummyModule,
     SkyDocsToolsModule
   ],
   providers: [

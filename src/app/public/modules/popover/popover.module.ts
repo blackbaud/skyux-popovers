@@ -32,6 +32,7 @@ import {
   SkyPopoverDirective
 } from './popover.directive';
 import { SkyCoreAdapterModule } from '@skyux/core';
+import { SkyPopoverAdapterService } from './popover-adapter.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { SkyCoreAdapterModule } from '@skyux/core';
     SkyPopoverDirective
   ],
   providers: [
-    SkyAppWindowRef
+    SkyAppWindowRef,
+    SkyPopoverAdapterService
   ]
 })
 export class SkyPopoverModule { }

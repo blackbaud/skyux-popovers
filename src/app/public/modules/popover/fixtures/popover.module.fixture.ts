@@ -7,6 +7,10 @@ import {
 } from '@angular/core';
 
 import {
+  NoopAnimationsModule
+} from '@angular/platform-browser/animations';
+
+import {
   SkyPopoverModule
 } from '../popover.module';
 
@@ -17,6 +21,7 @@ import {
 @NgModule({
   imports: [
     CommonModule,
+    NoopAnimationsModule,
     SkyPopoverModule
   ],
   exports: [
@@ -26,4 +31,4 @@ import {
     PopoverFixtureComponent
   ]
 })
-export class PopoverFixturesModule {}
+export class PopoverFixturesModule { }

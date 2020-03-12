@@ -1,25 +1,9 @@
 import {
   Directive,
   ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges
+  HostListener,
+  Input
 } from '@angular/core';
-
-import {
-  SkyAppWindowRef
-} from '@skyux/core';
-
-import 'rxjs/add/observable/fromEvent';
-
-import 'rxjs/add/operator/takeUntil';
-
-import 'rxjs/add/operator/take';
-
-import {
-  Observable
-} from 'rxjs/Observable';
 
 import {
   Subject
@@ -52,14 +36,18 @@ import {
 @Directive({
   selector: '[skyPopover]'
 })
-export class SkyPopoverDirective implements OnChanges, OnDestroy {
+export class SkyPopoverDirective {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
    * @required
    */
   @Input()
-  public skyPopover: SkyPopoverComponent;
+  public set skyPopover(value: SkyPopoverComponent) {
+    if (value) {
+      this._popover = value;
+    }
+  }
 
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
@@ -93,180 +81,17 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     return this._trigger || 'click';
   }
 
+  private _popover: SkyPopoverComponent;
+
   private _trigger: SkyPopoverTrigger;
 
-  private idled = new Subject<boolean>();
-
   constructor(
-    private elementRef: ElementRef,
-    private windowRef: SkyAppWindowRef
+    private elementRef: ElementRef
   ) { }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    /* istanbul ignore else */
-    if (changes.skyPopover) {
-      this.removeEventListeners();
-      if (changes.skyPopover.currentValue !== undefined) {
-        this.addEventListeners();
-      }
-    }
+  @HostListener('click')
+  public onClick(): void {
+    this._popover.toggleVisibility(this.elementRef);
   }
 
-  public ngOnDestroy(): void {
-    this.removeEventListeners();
-    this.idled.complete();
-  }
-
-  public togglePopover(): void {
-    if (this.isPopoverOpen()) {
-      this.sendMessage(SkyPopoverMessageType.Close);
-      return;
-    }
-
-    this.sendMessage(SkyPopoverMessageType.Open);
-  }
-
-  private positionPopover(): void {
-    this.skyPopover.positionNextTo(
-      this.elementRef,
-      this.skyPopoverPlacement,
-      this.skyPopoverAlignment
-    );
-  }
-
-  private closePopover(): void {
-    this.skyPopover.close();
-  }
-
-  private closePopoverOrMarkForClose(): void {
-    if (this.skyPopover.isMouseEnter) {
-      this.skyPopover.markForCloseOnMouseLeave();
-    } else {
-      this.sendMessage(SkyPopoverMessageType.Close);
-    }
-  }
-
-  private isPopoverOpen(): boolean {
-    return (this.skyPopover && this.skyPopover.isOpen);
-  }
-
-  private addEventListeners(): void {
-    const hostElement = this.elementRef.nativeElement;
-
-    this.skyPopoverMessageStream
-      .takeUntil(this.idled)
-      .subscribe(message => {
-        this.handleIncomingMessages(message);
-      });
-
-    Observable
-      .fromEvent(hostElement, 'keydown')
-      .takeUntil(this.idled)
-      .subscribe((event: KeyboardEvent) => {
-        if (!this.isPopoverOpen()) {
-          return;
-        }
-
-        const key = event.key.toLowerCase();
-
-        if (
-          (key === 'arrowup' || key === 'up') ||
-          (key === 'arrowright' || key === 'right') ||
-          (key === 'arrowdown' || key === 'down') ||
-          (key === 'arrowleft' || key === 'left')
-        ) {
-          event.stopPropagation();
-          event.preventDefault();
-          this.skyPopover.applyFocus();
-        }
-      });
-
-    Observable
-      .fromEvent(hostElement, 'keyup')
-      .takeUntil(this.idled)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-        if (key === 'escape') {
-          event.stopPropagation();
-          event.preventDefault();
-
-          if (this.isPopoverOpen()) {
-            this.sendMessage(SkyPopoverMessageType.Close);
-            hostElement.focus();
-          }
-        }
-      });
-
-    Observable
-      .fromEvent(hostElement, 'click')
-      .takeUntil(this.idled)
-      .subscribe((event: MouseEvent) => {
-        event.stopPropagation();
-        event.preventDefault();
-        this.togglePopover();
-      });
-
-    Observable
-      .fromEvent(hostElement, 'mouseenter')
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.skyPopover.isMouseEnter = true;
-        if (this.skyPopoverTrigger === 'mouseenter') {
-          this.sendMessage(SkyPopoverMessageType.Open);
-        }
-      });
-
-    Observable
-      .fromEvent(hostElement, 'mouseleave')
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.skyPopover.isMouseEnter = false;
-
-        if (this.skyPopoverTrigger === 'mouseenter') {
-          if (this.isPopoverOpen()) {
-            // Give the popover a chance to set its isMouseEnter flag before checking to see
-            // if it should be closed.
-            this.windowRef.nativeWindow.setTimeout(() => {
-              this.closePopoverOrMarkForClose();
-            });
-          } else {
-            // If the mouse leaves before the popover is open,
-            // wait for the transition to complete before closing it.
-            this.skyPopover.popoverOpened.take(1).subscribe(() => {
-              this.closePopoverOrMarkForClose();
-            });
-          }
-        }
-      });
-  }
-
-  private removeEventListeners(): void {
-    this.idled.next(true);
-    this.idled.unsubscribe();
-    this.idled = new Subject<boolean>();
-  }
-
-  private handleIncomingMessages(message: SkyPopoverMessage): void {
-    /* tslint:disable-next-line:switch-default */
-    switch (message.type) {
-      case SkyPopoverMessageType.Open:
-        this.positionPopover();
-        break;
-
-      case SkyPopoverMessageType.Close:
-        this.closePopover();
-        break;
-
-      case SkyPopoverMessageType.Reposition:
-        // Only reposition the popover if it is already open.
-        if (this.isPopoverOpen()) {
-          this.skyPopover.reposition();
-        }
-        break;
-    }
-  }
-
-  private sendMessage(messageType: SkyPopoverMessageType): void {
-    this.skyPopoverMessageStream.next({ type: messageType });
-  }
 }

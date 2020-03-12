@@ -1,6 +1,7 @@
 import {
   Component,
-  ViewChild
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 
 import {
@@ -64,6 +65,11 @@ export class PopoverFixtureComponent {
   public trigger: SkyPopoverTrigger;
 
   //#endregion directive properties
+
+  @ViewChild('directiveRef', {
+    read: ElementRef
+  })
+  public callerElementRef: ElementRef;
 
   @ViewChild('directiveRef', {
     read: SkyPopoverDirective
