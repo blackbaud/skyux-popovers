@@ -256,11 +256,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private _isStatic: boolean;
 
+  private _placement: SkyPopoverPlacement;
+
   private _popoverArrow: ElementRef;
 
   private _popoverContainer: ElementRef;
-
-  private _placement: SkyPopoverPlacement;
 
   constructor(
     private changeDetector: ChangeDetectorRef,
