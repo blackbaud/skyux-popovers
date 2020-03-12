@@ -4,13 +4,14 @@
     [@.disabled]="!enableAnimations"
     [@popoverState]="animationState"
     [ngClass]="cssClassNames"
+    [style.visibility]="(isVisible) ? 'visible': 'hidden'"
     (@popoverState.done)="onAnimationDone($event)"
     (@popoverState.start)="onAnimationStart($event)"
     #popoverContainer
   >
     <div
       class="sky-popover sky-shadow sky-rounded-corners"
-      tabindex="0"
+      tabindex="-1"
     >
       <header *ngIf="popoverTitle || placement === 'fullscreen'"
         class="sky-popover-header sky-padding-even-default"

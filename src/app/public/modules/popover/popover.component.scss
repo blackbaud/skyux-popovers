@@ -8,13 +8,13 @@ $popover-max-width: 276px;
 
 .sky-popover-container {
   position: fixed;
-  // z-index: $sky-dropdown-z-index;
   min-width: $popover-max-width;
   max-width: $popover-max-width;
 
   &.sky-popover-hidden {
     visibility: hidden;
     opacity: 0;
+    pointer-events: none !important;
   }
 
   &.sky-popover-static {

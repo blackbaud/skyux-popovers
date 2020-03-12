@@ -114,6 +114,41 @@ export class SkyPopoverDirective implements OnInit {
     this.addEventListeners();
   }
 
+  private handleIncomingMessages(message: SkyPopoverMessage): void {
+    /* tslint:disable-next-line:switch-default */
+    switch (message.type) {
+      case SkyPopoverMessageType.Open:
+        this._popover.open(this.elementRef, {
+          alignment: this.skyPopoverAlignment,
+          placement: this.skyPopoverPlacement
+        });
+        break;
+
+      case SkyPopoverMessageType.Close:
+        this._popover.close();
+        break;
+
+      case SkyPopoverMessageType.Toggle:
+        this._popover.toggle(this.elementRef, {
+          alignment: this.skyPopoverAlignment,
+          placement: this.skyPopoverPlacement
+        });
+        break;
+
+      case SkyPopoverMessageType.Reposition:
+        this._popover.reposition();
+        break;
+
+      case SkyPopoverMessageType.Focus:
+        this._popover.applyFocus();
+        break;
+    }
+  }
+
+  private sendMessage(messageType: SkyPopoverMessageType): void {
+    this.skyPopoverMessageStream.next({ type: messageType });
+  }
+
   private closePopoverOrMarkForClose(): void {
     if (this._popover.isMouseEnter) {
       this._popover.markForCloseOnMouseLeave();
@@ -125,43 +160,42 @@ export class SkyPopoverDirective implements OnInit {
   private addEventListeners(): void {
     const hostElement = this.elementRef.nativeElement;
 
-    // Observable
-    //   .fromEvent(hostElement, 'keydown')
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe((event: KeyboardEvent) => {
-    //     if (!this.isPopoverOpen()) {
-    //       return;
-    //     }
+    Observable
+      .fromEvent(hostElement, 'keydown')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        if (!this._popover.isOpen) {
+          return;
+        }
 
-    //     const key = event.key.toLowerCase();
+        const key = event.key.toLowerCase();
+        if (
+          (key === 'arrowup' || key === 'up') ||
+          (key === 'arrowright' || key === 'right') ||
+          (key === 'arrowdown' || key === 'down') ||
+          (key === 'arrowleft' || key === 'left')
+        ) {
+          event.stopPropagation();
+          event.preventDefault();
+          this.sendMessage(SkyPopoverMessageType.Focus);
+        }
+      });
 
-    //     if (
-    //       (key === 'arrowup' || key === 'up') ||
-    //       (key === 'arrowright' || key === 'right') ||
-    //       (key === 'arrowdown' || key === 'down') ||
-    //       (key === 'arrowleft' || key === 'left')
-    //     ) {
-    //       event.stopPropagation();
-    //       event.preventDefault();
-    //       this.skyPopover.applyFocus();
-    //     }
-    //   });
+    Observable
+      .fromEvent(hostElement, 'keyup')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        const key = event.key.toLowerCase();
+        if (key === 'escape') {
+          event.stopPropagation();
+          event.preventDefault();
 
-    // Observable
-    //   .fromEvent(hostElement, 'keyup')
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe((event: KeyboardEvent) => {
-    //     const key = event.key.toLowerCase();
-    //     if (key === 'escape') {
-    //       event.stopPropagation();
-    //       event.preventDefault();
-
-    //       if (this.isPopoverOpen()) {
-    //         this.sendMessage(SkyPopoverMessageType.Close);
-    //         hostElement.focus();
-    //       }
-    //     }
-    //   });
+          if (this._popover.isOpen) {
+            this.sendMessage(SkyPopoverMessageType.Close);
+            hostElement.focus();
+          }
+        }
+      });
 
     Observable
       .fromEvent(hostElement, 'click')
@@ -203,31 +237,6 @@ export class SkyPopoverDirective implements OnInit {
           }
         }
       });
-  }
-
-  private handleIncomingMessages(message: SkyPopoverMessage): void {
-    /* tslint:disable-next-line:switch-default */
-    switch (message.type) {
-      case SkyPopoverMessageType.Open:
-        this._popover.open(this.elementRef);
-        break;
-
-      case SkyPopoverMessageType.Close:
-        this._popover.close();
-        break;
-
-      case SkyPopoverMessageType.Toggle:
-        this._popover.toggle(this.elementRef);
-        break;
-
-      case SkyPopoverMessageType.Reposition:
-        this._popover.reposition();
-        break;
-    }
-  }
-
-  private sendMessage(messageType: SkyPopoverMessageType): void {
-    this.skyPopoverMessageStream.next({ type: messageType });
   }
 
 }
