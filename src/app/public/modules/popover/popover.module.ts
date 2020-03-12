@@ -13,6 +13,7 @@ import {
 import {
   SkyAffixModule,
   SkyAppWindowRef,
+  SkyCoreAdapterModule,
   SkyOverlayModule
 } from '@skyux/core';
 
@@ -25,14 +26,16 @@ import {
 } from '../shared';
 
 import {
+  SkyPopoverAdapterService
+} from './popover-adapter.service';
+
+import {
   SkyPopoverComponent
 } from './popover.component';
 
 import {
   SkyPopoverDirective
 } from './popover.directive';
-import { SkyCoreAdapterModule } from '@skyux/core';
-import { SkyPopoverAdapterService } from './popover-adapter.service';
 
 @NgModule({
   declarations: [

@@ -2,12 +2,15 @@ import {
   Directive,
   ElementRef,
   HostListener,
-  Input
+  Input,
+  OnInit
 } from '@angular/core';
 
 import {
   Subject
 } from 'rxjs/Subject';
+
+import 'rxjs/add/operator/takeUntil';
 
 import {
   SkyPopoverAlignment
@@ -36,7 +39,7 @@ import {
 @Directive({
   selector: '[skyPopover]'
 })
-export class SkyPopoverDirective {
+export class SkyPopoverDirective implements OnInit {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
@@ -81,6 +84,8 @@ export class SkyPopoverDirective {
     return this._trigger || 'click';
   }
 
+  private ngUnsubscribe = new Subject<void>();
+
   private _popover: SkyPopoverComponent;
 
   private _trigger: SkyPopoverTrigger;
@@ -89,9 +94,40 @@ export class SkyPopoverDirective {
     private elementRef: ElementRef
   ) { }
 
+  public ngOnInit(): void {
+    this.skyPopoverMessageStream
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(message => this.handleIncomingMessages(message));
+  }
+
   @HostListener('click')
   public onClick(): void {
-    this._popover.toggleVisibility(this.elementRef);
+    this.sendMessage(SkyPopoverMessageType.Toggle);
+  }
+
+  private handleIncomingMessages(message: SkyPopoverMessage): void {
+    /* tslint:disable-next-line:switch-default */
+    switch (message.type) {
+      case SkyPopoverMessageType.Open:
+        this._popover.open(this.elementRef);
+        break;
+
+      case SkyPopoverMessageType.Close:
+        this._popover.close();
+        break;
+
+      case SkyPopoverMessageType.Toggle:
+        this._popover.toggle(this.elementRef);
+        break;
+
+      case SkyPopoverMessageType.Reposition:
+        this._popover.reposition();
+        break;
+    }
+  }
+
+  private sendMessage(messageType: SkyPopoverMessageType): void {
+    this.skyPopoverMessageStream.next({ type: messageType });
   }
 
 }

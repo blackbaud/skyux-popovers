@@ -17,5 +17,10 @@ export enum SkyPopoverMessageType {
    * Repositions the popover to the appropriate position.
    * This is useful for when the popover's width and height change while it is open.
    */
-  Reposition = 2
+  Reposition = 2,
+
+  /**
+   * Toggles the popover.
+   */
+  Toggle = 3
 }

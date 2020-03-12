@@ -222,6 +222,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private overlay: SkyOverlayInstance;
 
+  private preferredPlacement: SkyPopoverPlacement;
+
   private _alignment: SkyPopoverAlignment;
 
   private _allowFullscreen: boolean;
@@ -297,10 +299,16 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.changeDetector.markForCheck();
   }
 
-  public toggleVisibility(caller: ElementRef): void {
-    this.animationState = (this.isOpen) ? 'hidden' : 'visible';
+  /**
+   * Opens the popover.
+   * @internal
+   * @param caller The element that triggered the popover.
+   */
+  public open(caller?: ElementRef): void {
+    this.animationState = 'visible';
 
-    if (this.caller !== caller) {
+    const isNewCaller = (caller && this.caller !== caller);
+    if (isNewCaller) {
       this.caller = caller;
       this.affixer.affixTo(this.caller.nativeElement, {
         placement: parseAffixPlacement(this.placement),
@@ -326,6 +334,30 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   public close(): void {
     this.animationState = 'hidden';
     this.changeDetector.markForCheck();
+  }
+
+  /**
+   * Repositions an open popover.
+   * @internal
+   */
+  public reposition(): void {
+    if (this.isOpen) {
+      this.placement = this.preferredPlacement;
+      this.open();
+    }
+  }
+
+  /**
+   * Toggles the popover.
+   * @internal
+   * @param caller The element that triggered the popover.
+   */
+  public toggle(caller?: ElementRef): void {
+    if (this.isOpen) {
+      this.close();
+    } else {
+      this.open(caller);
+    }
   }
 
   private setupAffixer(): void {
