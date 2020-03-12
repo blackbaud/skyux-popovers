@@ -6,6 +6,10 @@ import {
 } from '@angular/core';
 
 import {
+  SkyAppWindowRef
+} from '@skyux/core';
+
+import {
   Observable
 } from 'rxjs/Observable';
 
@@ -14,6 +18,8 @@ import {
 } from 'rxjs/Subject';
 
 import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/take';
 
 import 'rxjs/add/operator/takeUntil';
 
@@ -96,7 +102,8 @@ export class SkyPopoverDirective implements OnInit {
   private _trigger: SkyPopoverTrigger;
 
   constructor(
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private windowRef: SkyAppWindowRef
   ) { }
 
   public ngOnInit(): void {
@@ -181,21 +188,19 @@ export class SkyPopoverDirective implements OnInit {
       .subscribe(() => {
         this._popover.isMouseEnter = false;
         if (this.skyPopoverTrigger === 'mouseenter') {
-          setTimeout(() => {
-            if (this._popover.isOpen) {
-              // Give the popover a chance to set its isMouseEnter flag before checking to see
-              // if it should be closed.
-              setTimeout(() => {
-                this.closePopoverOrMarkForClose();
-              });
-            } else {
-              // If the mouse leaves before the popover is open,
-              // wait for the transition to complete before closing it.
-              this._popover.popoverOpened.take(1).subscribe(() => {
-                this.closePopoverOrMarkForClose();
-              });
-            }
-          });
+          if (this._popover.isOpen) {
+            // Give the popover a chance to set its isMouseEnter flag before checking to see
+            // if it should be closed.
+            this.windowRef.nativeWindow.setTimeout(() => {
+              this.closePopoverOrMarkForClose();
+            });
+          } else {
+            // If the mouse leaves before the popover is open,
+            // wait for the transition to complete before closing it.
+            this._popover.popoverOpened.take(1).subscribe(() => {
+              this.closePopoverOrMarkForClose();
+            });
+          }
         }
       });
   }

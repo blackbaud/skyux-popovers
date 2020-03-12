@@ -252,15 +252,17 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
+    private windowRef: SkyAppWindowRef,
     private overlayService: SkyOverlayService,
     private adapterService: SkyPopoverAdapterService
   ) { }
 
   public ngOnInit(): void {
+    this.preferredPlacement = this.placement;
     this.updateCssClassNames();
     this.changeDetector.markForCheck();
 
-    setTimeout(() => {
+    this.windowRef.nativeWindow.setTimeout(() => {
       this.overlay = this.overlayService.create();
       this.overlay.attachTemplate(this.popoverTemplate);
       this.changeDetector.markForCheck();
