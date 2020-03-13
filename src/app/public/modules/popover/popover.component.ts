@@ -547,7 +547,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
         // search bar.
         if (key === 'tab') {
-
           const focusableItems = this.coreAdapterService.getFocusableChildren(popoverElement);
           const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
           const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);

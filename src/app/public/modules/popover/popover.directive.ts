@@ -2,7 +2,9 @@ import {
   Directive,
   ElementRef,
   Input,
-  OnInit
+  OnChanges,
+  OnInit,
+  SimpleChanges
 } from '@angular/core';
 
 import {
@@ -50,7 +52,7 @@ import {
 @Directive({
   selector: '[skyPopover]'
 })
-export class SkyPopoverDirective implements OnInit {
+export class SkyPopoverDirective implements OnInit, OnChanges {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
@@ -58,6 +60,7 @@ export class SkyPopoverDirective implements OnInit {
    */
   @Input()
   public set skyPopover(value: SkyPopoverComponent) {
+    /* istanbul ignore else */
     if (value) {
       this._popover = value;
     }
@@ -112,6 +115,21 @@ export class SkyPopoverDirective implements OnInit {
       .subscribe(message => this.handleIncomingMessages(message));
 
     this.addEventListeners();
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    // if (changes.skyPopoverPlacement) {
+    //   this._popover.placement = changes.skyPopoverPlacement.currentValue;
+    // }
+    // if (
+    //   changes.skyPopoverPlacement ||
+    //   changes.skyPopoverAlignment
+    // ) {
+    //   if (this._popover.isOpen) {
+    //     // Re-call the open method if any of the properties change.
+    //     this.sendMessage(SkyPopoverMessageType.Open);
+    //   }
+    // }
   }
 
   private handleIncomingMessages(message: SkyPopoverMessage): void {
@@ -169,6 +187,7 @@ export class SkyPopoverDirective implements OnInit {
         }
 
         const key = event.key.toLowerCase();
+        /* istanbul ignore else */
         if (
           (key === 'arrowup' || key === 'up') ||
           (key === 'arrowright' || key === 'right') ||
@@ -186,13 +205,13 @@ export class SkyPopoverDirective implements OnInit {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
+        /* istanbul ignore else */
         if (key === 'escape') {
           event.stopPropagation();
           event.preventDefault();
 
           if (this._popover.isOpen) {
             this.sendMessage(SkyPopoverMessageType.Close);
-            hostElement.focus();
           }
         }
       });

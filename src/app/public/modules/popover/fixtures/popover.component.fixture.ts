@@ -39,7 +39,8 @@ import {
 
 @Component({
   selector: 'sky-test-component',
-  templateUrl: './popover.component.fixture.html'
+  templateUrl: './popover.component.fixture.html',
+  styleUrls: ['./popover.component.fixture.scss']
 })
 export class PopoverFixtureComponent implements OnInit {
 
@@ -81,6 +82,8 @@ export class PopoverFixtureComponent implements OnInit {
     read: SkyPopoverComponent
   })
   public popoverRef: SkyPopoverComponent;
+
+  public showFocusableChildren: boolean = false;
 
   public ngOnInit(): void {
     this.popoverRef.enableAnimations = false;
