@@ -300,7 +300,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.affixer.destroy();
-    this.overlayService.destroy(this.overlay);
+    this.overlayService.close(this.overlay);
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

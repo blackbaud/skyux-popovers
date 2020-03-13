@@ -295,7 +295,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     }
 
     if (this.overlay) {
-      this.overlayService.destroy(this.overlay);
+      this.overlayService.close(this.overlay);
     }
 
     this.ngUnsubscribe.next();
