@@ -340,27 +340,25 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
     this.alignment = config.alignment;
     this.animationState = 'visible';
+    this.caller = caller;
+
+    if (this.isOpen) {
+      this.updateCssClassNames();
+    }
 
     if (this.placement === 'fullscreen') {
       this.changeDetector.markForCheck();
       return;
     }
 
-    const isNewCaller = (caller && this.caller !== caller);
-    if (isNewCaller) {
-      this.caller = caller;
-
-      this.affixer.affixTo(this.caller.nativeElement, {
-        placement: parseAffixPlacement(this.placement),
-        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
-        isSticky: true,
-        enableAutoFit: true,
-        verticalAlignment: 'middle',
-        autoFitContext: SkyAffixAutoFitContext.Viewport
-      });
-    } else {
-      this.affixer.reaffix();
-    }
+    this.affixer.affixTo(this.caller.nativeElement, {
+      placement: parseAffixPlacement(this.placement),
+      horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
+      isSticky: true,
+      enableAutoFit: true,
+      verticalAlignment: 'middle',
+      autoFitContext: SkyAffixAutoFitContext.Viewport
+    });
 
     this.updateArrowOffset();
     this.changeDetector.markForCheck();
@@ -452,6 +450,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.affixer.placementChange
       .takeUntil(this.ngUnsubscribe)
       .subscribe((change) => {
+        console.log('change:', change);
         if (change.placement === null) {
           if (
             this.allowFullscreen &&
@@ -459,6 +458,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
           ) {
             this.activateFullscreen();
           } else {
+            console.log('NOT VISIBLE');
             this.isVisible = false;
           }
 

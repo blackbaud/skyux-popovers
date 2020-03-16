@@ -2,15 +2,21 @@ import {
   ComponentFixture,
   TestBed,
   fakeAsync,
-  tick
+  inject,
+  tick,
+  async
 } from '@angular/core/testing';
 
 import {
-  expect, SkyAppTestUtility
+  expect,
+  SkyAppTestUtility
 } from '@skyux-sdk/testing';
+
 import {
-  SkyOverlayService
+  SkyAffixService, SkyAffixer
 } from '@skyux/core';
+
+import { Subject } from 'rxjs/Subject';
 
 import {
   PopoverFixtureComponent
@@ -25,6 +31,7 @@ import { SkyPopoverMessageType } from './types';
 describe('Popover directive', () => {
 
   let fixture: ComponentFixture<PopoverFixtureComponent>;
+  let mockAffixService: any;
 
   function getCallerElement(): HTMLButtonElement {
     return fixture.componentInstance.callerElementRef.nativeElement;
@@ -32,6 +39,10 @@ describe('Popover directive', () => {
 
   function getPopoverElement(): HTMLElement {
     return fixture.componentInstance.popoverRef['popoverContainer'].nativeElement;
+  }
+
+  function getAffixer(): SkyAffixer {
+    return fixture.componentInstance.popoverRef['affixer'];
   }
 
   function isElementFocused(elem: Element): boolean {
@@ -54,9 +65,29 @@ describe('Popover directive', () => {
   }
 
   beforeEach(() => {
+    const mockAffixer = {
+      offsetChange: new Subject(),
+      overflowScroll: new Subject(),
+      placementChange: new Subject<any>(),
+      affixTo: () => {},
+      destroy() {}
+    };
+
+    mockAffixService = {
+      createAffixer: () => {
+        return mockAffixer;
+      }
+    };
+
     TestBed.configureTestingModule({
       imports: [
         PopoverFixturesModule
+      ],
+      providers: [
+        {
+          provide: SkyAffixService,
+          useValue: mockAffixService
+        }
       ]
     });
 
@@ -64,7 +95,7 @@ describe('Popover directive', () => {
   });
 
   afterEach(() => {
-    // fixture.destroy();
+    fixture.destroy();
   });
 
   it('should set defaults', fakeAsync(() => {
@@ -89,36 +120,74 @@ describe('Popover directive', () => {
     detectChanges();
 
     const button = getCallerElement();
+    const popover = getPopoverElement();
+
     button.click();
     detectChanges();
 
-    let popover = getPopoverElement();
-
     expect(popover).toHaveCssClass('sky-popover-placement-above');
+
+    button.click();
+    detectChanges();
 
     fixture.componentInstance.placement = 'right';
     detectChanges();
 
-    popover = getPopoverElement();
+    button.click();
+    detectChanges();
 
     expect(popover).toHaveCssClass('sky-popover-placement-right');
+
+    button.click();
+    detectChanges();
 
     fixture.componentInstance.placement = 'below';
     detectChanges();
 
-    popover = getPopoverElement();
+    button.click();
+    detectChanges();
 
     expect(popover).toHaveCssClass('sky-popover-placement-below');
+
+    button.click();
+    detectChanges();
 
     fixture.componentInstance.placement = 'left';
     detectChanges();
 
-    popover = getPopoverElement();
+    button.click();
+    detectChanges();
 
     expect(popover).toHaveCssClass('sky-popover-placement-left');
   }));
 
-  it('should display popovers as fullscreen', fakeAsync(() => {}));
+  // fit('should hide the popover if a valid placement cannot be found', () => {
+  //   fixture.detectChanges();
+  //   fixture.detectChanges();
+  //   fixture.detectChanges();
+  //   fixture.detectChanges();
+
+  //   const button = getCallerElement();
+  //   const popover = getPopoverElement();
+  //   const affixer = getAffixer();
+
+  //   button.click();
+
+  //   fixture.detectChanges();
+
+  //   expect(isElementVisible(popover)).toEqual(true);
+
+  //   // Trigger a null placement change.
+  //   /*tslint:disable:no-null-keyword*/
+  //   (affixer.placementChange as any).next({
+  //     placement: null
+  //   });
+  //   /*tslint:enable:no-null-keyword*/
+
+  //   fixture.detectChanges();
+
+  //   expect(isElementVisible(popover)).toEqual(false);
+  // });
 
   describe('mouse interactions', function () {
     it('should open and close the popover via mouse click', fakeAsync(() => {
@@ -487,28 +556,56 @@ describe('Popover directive', () => {
     }));
 
     it('should allow repositioning the popover', fakeAsync(() => {
+      fixture.componentInstance.placement = 'below';
       detectChanges();
 
-      const affixer = fixture.componentInstance.popoverRef['affixer'];
-      const affixSpy = spyOn(affixer, 'reaffix').and.callThrough();
+      const popover = getPopoverElement();
+      const affixer = getAffixer();
+      const affixSpy = spyOn(affixer, 'affixTo').and.callThrough();
 
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
       detectChanges();
 
       // Repositioning should only happen if popover is open.
-      expect(affixSpy).not.toHaveBeenCalledWith();
-      affixSpy.calls.reset();
+      expect(affixSpy).not.toHaveBeenCalled();
 
       // Open the popover.
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
       detectChanges();
 
-      // Reposition the popover.
+      // Trigger a temporary placement change.
+      (affixer.placementChange as any).next({
+        placement: 'above'
+      });
+      detectChanges();
+
+      // Confirm that the new temporary placement was recognized.
+      expect(popover).toHaveCssClass('sky-popover-placement-above');
+
+      affixSpy.calls.reset();
+
+      // Make a call to reposition the popover.
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
       detectChanges();
 
-      // The affixing method should be called now.
-      expect(affixSpy).toHaveBeenCalled();
+      // The original, preferred placement should be re-applied.
+      expect(affixSpy.calls.argsFor(0)[1].placement).toEqual('below');
+      expect(popover).toHaveCssClass('sky-popover-placement-below');
+    }));
+  });
+
+  describe('fullscreen mode', function () {
+    it('should display popovers as fullscreen', fakeAsync(() => {
+      fixture.componentInstance.placement = 'fullscreen';
+      detectChanges();
+
+      const button = getCallerElement();
+      const popover = getPopoverElement();
+
+      button.click();
+      detectChanges();
+
+      expect(popover).toHaveCssClass('sky-popover-placement-fullscreen');
     }));
   });
 
