@@ -53,11 +53,21 @@ describe('Popover directive', () => {
     return (getComputedStyle(elem).visibility !== 'hidden');
   }
 
-  function detectChanges(): void {
+  function detectChangesFakeAsync(): void {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
     tick();
+  }
+
+  async function detectChangesAsync(): Promise<any> {
+    fixture.detectChanges();
+    await fixture.whenRenderingDone();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await fixture.whenRenderingDone();
+    fixture.detectChanges();
   }
 
   function getFocusableItems(): NodeListOf<Element> {
@@ -94,12 +104,14 @@ describe('Popover directive', () => {
     fixture = TestBed.createComponent(PopoverFixtureComponent);
   });
 
-  afterEach(() => {
+  afterEach(async(async () => {
+    await detectChangesAsync();
+
     fixture.destroy();
-  });
+  }));
 
   it('should set defaults', fakeAsync(() => {
-    detectChanges();
+    detectChangesFakeAsync();
 
     const directiveRef = fixture.componentInstance.directiveRef;
     expect(directiveRef.skyPopoverAlignment).toBeUndefined();
@@ -117,83 +129,55 @@ describe('Popover directive', () => {
 
   it('should place the popover on all four sides of the caller', fakeAsync(() => {
     fixture.componentInstance.placement = 'above';
-    detectChanges();
+    detectChangesFakeAsync();
 
     const button = getCallerElement();
     const popover = getPopoverElement();
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     expect(popover).toHaveCssClass('sky-popover-placement-above');
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     fixture.componentInstance.placement = 'right';
-    detectChanges();
+    detectChangesFakeAsync();
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     expect(popover).toHaveCssClass('sky-popover-placement-right');
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     fixture.componentInstance.placement = 'below';
-    detectChanges();
+    detectChangesFakeAsync();
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     expect(popover).toHaveCssClass('sky-popover-placement-below');
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     fixture.componentInstance.placement = 'left';
-    detectChanges();
+    detectChangesFakeAsync();
 
     button.click();
-    detectChanges();
+    detectChangesFakeAsync();
 
     expect(popover).toHaveCssClass('sky-popover-placement-left');
   }));
-
-  // fit('should hide the popover if a valid placement cannot be found', () => {
-  //   fixture.detectChanges();
-  //   fixture.detectChanges();
-  //   fixture.detectChanges();
-  //   fixture.detectChanges();
-
-  //   const button = getCallerElement();
-  //   const popover = getPopoverElement();
-  //   const affixer = getAffixer();
-
-  //   button.click();
-
-  //   fixture.detectChanges();
-
-  //   expect(isElementVisible(popover)).toEqual(true);
-
-  //   // Trigger a null placement change.
-  //   /*tslint:disable:no-null-keyword*/
-  //   (affixer.placementChange as any).next({
-  //     placement: null
-  //   });
-  //   /*tslint:enable:no-null-keyword*/
-
-  //   fixture.detectChanges();
-
-  //   expect(isElementVisible(popover)).toEqual(false);
-  // });
 
   describe('mouse interactions', function () {
     it('should open and close the popover via mouse click', fakeAsync(() => {
       fixture.componentInstance.trigger = 'click';
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
 
@@ -201,16 +185,16 @@ describe('Popover directive', () => {
       // Simulate mouse movement as well.
       SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       const popover = getPopoverElement();
       expect(isElementVisible(popover)).toEqual(true);
 
       button.click();
-      // // Simulate mouse movement as well.
+      // Simulate mouse movement as well.
       SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(false);
     }));
@@ -218,14 +202,14 @@ describe('Popover directive', () => {
     it('should open and close popover via mouse hover', fakeAsync(() => {
       fixture.componentInstance.trigger = 'mouseenter';
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
 
       SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
@@ -233,7 +217,7 @@ describe('Popover directive', () => {
       SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
       SkyAppTestUtility.fireDomEvent(popover, 'mouseenter');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Confirm popover is still open.
       expect(isElementVisible(popover)).toEqual(true);
@@ -242,7 +226,7 @@ describe('Popover directive', () => {
       SkyAppTestUtility.fireDomEvent(popover, 'mouseleave');
       SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Confirm popover is still open.
       expect(isElementVisible(popover)).toEqual(true);
@@ -250,7 +234,7 @@ describe('Popover directive', () => {
       // Simulate mouse leaving the trigger button.
       SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Menu should now be closed.
       expect(isElementVisible(popover)).toEqual(false);
@@ -258,7 +242,7 @@ describe('Popover directive', () => {
       // Re-open the popover.
       SkyAppTestUtility.fireDomEvent(button, 'mouseenter');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
@@ -266,7 +250,7 @@ describe('Popover directive', () => {
       SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
       SkyAppTestUtility.fireDomEvent(popover, 'mouseenter');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Confirm popover is still open.
       expect(isElementVisible(popover)).toEqual(true);
@@ -274,7 +258,7 @@ describe('Popover directive', () => {
       // Simulate mouse leaving the popover completely.
       SkyAppTestUtility.fireDomEvent(popover, 'mouseleave');
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Menu should now be closed.
       expect(isElementVisible(popover)).toEqual(false);
@@ -284,43 +268,43 @@ describe('Popover directive', () => {
       // Simulate mouse leaving trigger button before entering the popover.
       SkyAppTestUtility.fireDomEvent(button, 'mouseleave');
 
-      detectChanges();
-      detectChanges();
+      detectChangesFakeAsync();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(false);
     }));
 
     it('should close popover when clicking outside', fakeAsync(() => {
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
 
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
       SkyAppTestUtility.fireDomEvent(window.document, 'click');
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(false);
     }));
 
     it('should allow preventing popover close on window click', fakeAsync(() => {
       fixture.componentInstance.dismissOnBlur = false;
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
 
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
       SkyAppTestUtility.fireDomEvent(window.document, 'click');
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Menu should still be open.
       expect(isElementVisible(popover)).toEqual(true);
@@ -329,13 +313,13 @@ describe('Popover directive', () => {
 
   describe('keyboard interactions', function () {
     it('should close popover with escape key while trigger button is focused', fakeAsync(() => {
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
 
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
@@ -345,7 +329,7 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(false);
 
@@ -358,19 +342,19 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(messageSpy).not.toHaveBeenCalled();
     }));
 
     it('should close popover with escape key while popover is focused', fakeAsync(() => {
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
 
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
@@ -380,21 +364,21 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(false);
       expect(isElementFocused(button)).toEqual(true);
     }));
 
     it('should focus popover with arrow keys', fakeAsync(() => {
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement().querySelector('.sky-popover');
 
       // Open the popover.
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
@@ -402,7 +386,7 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementFocused(popover)).toEqual(true);
 
@@ -418,13 +402,13 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementFocused(popover)).toEqual(true);
 
       // Close the popover.
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
 
@@ -434,7 +418,7 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // The arrow key event listeners should have no effect when the popover is closed.
       expect(messageSpy).not.toHaveBeenCalled();
@@ -442,7 +426,7 @@ describe('Popover directive', () => {
 
     it('should close the popover after popover loses focus', fakeAsync(() => {
       fixture.componentInstance.showFocusableChildren = true;
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
@@ -450,7 +434,7 @@ describe('Popover directive', () => {
 
       // Open and bring focus to the popover.
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
@@ -458,7 +442,7 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Confirm the first focusable item has focus.
       expect(isElementFocused(focusableItems.item(0))).toEqual(true);
@@ -471,7 +455,7 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // The popover should be closed and trigger button focused.
       expect(isElementVisible(popover)).toEqual(false);
@@ -479,7 +463,7 @@ describe('Popover directive', () => {
 
       // Re-open and bring focus to the popover.
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
@@ -487,11 +471,11 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Focus the last item and press 'tab' to close the popover.
       (focusableItems.item(1) as HTMLElement).focus();
-      detectChanges();
+      detectChangesFakeAsync();
 
       SkyAppTestUtility.fireDomEvent(focusableItems.item(1), 'keydown', {
         keyboardEventInit: {
@@ -499,7 +483,7 @@ describe('Popover directive', () => {
         }
       });
 
-      detectChanges();
+      detectChangesFakeAsync();
 
       // The popover should be closed and trigger button focused.
       expect(isElementVisible(popover)).toEqual(false);
@@ -509,7 +493,7 @@ describe('Popover directive', () => {
 
   describe('message stream', function () {
     it('should open and close the popover', fakeAsync(() => {
-      detectChanges();
+      detectChangesFakeAsync();
 
       const popover = getPopoverElement();
 
@@ -517,28 +501,28 @@ describe('Popover directive', () => {
       expect(isElementVisible(popover)).toEqual(false);
 
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Close);
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(false);
     }));
 
     it('should focus the popover', fakeAsync(() => {
-      detectChanges();
+      detectChangesFakeAsync();
 
       const popover = getPopoverElement().querySelector('.sky-popover');
 
       expect(isElementFocused(popover)).toEqual(false);
 
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
-      detectChanges();
+      detectChangesFakeAsync();
 
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Focus);
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(isElementFocused(popover)).toEqual(true);
 
@@ -549,35 +533,35 @@ describe('Popover directive', () => {
 
       // The focus message shouldn't register when the popover is closed.
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Close);
-      detectChanges();
+      detectChangesFakeAsync();
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Focus);
-      detectChanges();
+      detectChangesFakeAsync();
       expect(applyFocusSpy).not.toHaveBeenCalled();
     }));
 
     it('should allow repositioning the popover', fakeAsync(() => {
       fixture.componentInstance.placement = 'below';
-      detectChanges();
+      detectChangesFakeAsync();
 
       const popover = getPopoverElement();
       const affixer = getAffixer();
       const affixSpy = spyOn(affixer, 'affixTo').and.callThrough();
 
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Repositioning should only happen if popover is open.
       expect(affixSpy).not.toHaveBeenCalled();
 
       // Open the popover.
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Trigger a temporary placement change.
       (affixer.placementChange as any).next({
         placement: 'above'
       });
-      detectChanges();
+      detectChangesFakeAsync();
 
       // Confirm that the new temporary placement was recognized.
       expect(popover).toHaveCssClass('sky-popover-placement-above');
@@ -586,7 +570,7 @@ describe('Popover directive', () => {
 
       // Make a call to reposition the popover.
       fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
-      detectChanges();
+      detectChangesFakeAsync();
 
       // The original, preferred placement should be re-applied.
       expect(affixSpy.calls.argsFor(0)[1].placement).toEqual('below');
@@ -597,15 +581,48 @@ describe('Popover directive', () => {
   describe('fullscreen mode', function () {
     it('should display popovers as fullscreen', fakeAsync(() => {
       fixture.componentInstance.placement = 'fullscreen';
-      detectChanges();
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
 
       button.click();
-      detectChanges();
+      detectChangesFakeAsync();
 
       expect(popover).toHaveCssClass('sky-popover-placement-fullscreen');
+    }));
+  });
+
+  describe('affixer events', function () {
+
+    beforeEach(() => {
+      fixture.detectChanges();
+      fixture.componentInstance.popoverRef.enableAnimations = true;
+    });
+
+    it('should hide the popover if a valid placement cannot be found', async(async () => {
+      await detectChangesAsync();
+
+      const button = getCallerElement();
+      const popover = getPopoverElement();
+      const affixer = getAffixer();
+
+      button.click();
+
+      await detectChangesAsync();
+
+      expect(isElementVisible(popover)).toEqual(true);
+
+      // Trigger a null placement change.
+      /*tslint:disable:no-null-keyword*/
+      (affixer.placementChange as any).next({
+        placement: null
+      });
+      /*tslint:enable:no-null-keyword*/
+
+      await detectChangesAsync();
+
+      expect(isElementVisible(popover)).toEqual(false);
     }));
   });
 
