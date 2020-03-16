@@ -21,10 +21,10 @@ import {
   SkyAffixAutoFitContext,
   SkyAffixer,
   SkyAffixService,
-  SkyAppWindowRef,
   SkyCoreAdapterService,
   SkyOverlayInstance,
-  SkyOverlayService
+  SkyOverlayService,
+  SkyWindowRefService
 } from '@skyux/core';
 
 import {
@@ -265,7 +265,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
-    private windowRef: SkyAppWindowRef,
+    private windowRef: SkyWindowRefService,
     private coreAdapterService: SkyCoreAdapterService,
     private overlayService: SkyOverlayService,
     private adapterService: SkyPopoverAdapterService,
@@ -283,7 +283,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.windowRef.nativeWindow.setTimeout(() => {
+    this.windowRef.getWindow().setTimeout(() => {
       this.setupOverlay();
       this.isOpen = false;
     });
@@ -471,7 +471,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   private addEventListeners(): void {
-    const windowObj = this.windowRef.nativeWindow;
+    const windowObj = this.windowRef.getWindow();
     const popoverElement = this._popoverContainer.nativeElement;
 
     Observable

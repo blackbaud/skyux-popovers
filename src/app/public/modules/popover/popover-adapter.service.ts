@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import {
-  SkyAppWindowRef
+  SkyWindowRefService
 } from '@skyux/core';
 
 import {
@@ -20,7 +20,7 @@ import {
 export class SkyPopoverAdapterService {
 
   constructor(
-    private windowRef: SkyAppWindowRef
+    private windowRef: SkyWindowRefService
   ) { }
 
   /**
@@ -28,7 +28,7 @@ export class SkyPopoverAdapterService {
    * @deprecated This method will be removed in the next major version.
    */
   public isPopoverLargerThanWindow(popover: ElementRef): boolean {
-    const windowObj = this.windowRef.nativeWindow;
+    const windowObj = this.windowRef.getWindow();
     const popoverRect = popover.nativeElement.getBoundingClientRect();
 
     return (

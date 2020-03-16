@@ -2,13 +2,11 @@ import {
   Directive,
   ElementRef,
   Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges
+  OnInit
 } from '@angular/core';
 
 import {
-  SkyAppWindowRef
+  SkyWindowRefService
 } from '@skyux/core';
 
 import {
@@ -52,7 +50,7 @@ import {
 @Directive({
   selector: '[skyPopover]'
 })
-export class SkyPopoverDirective implements OnInit, OnChanges {
+export class SkyPopoverDirective implements OnInit {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
@@ -106,7 +104,7 @@ export class SkyPopoverDirective implements OnInit, OnChanges {
 
   constructor(
     private elementRef: ElementRef,
-    private windowRef: SkyAppWindowRef
+    private windowRef: SkyWindowRefService
   ) { }
 
   public ngOnInit(): void {
@@ -115,21 +113,6 @@ export class SkyPopoverDirective implements OnInit, OnChanges {
       .subscribe(message => this.handleIncomingMessages(message));
 
     this.addEventListeners();
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    // if (changes.skyPopoverPlacement) {
-    //   this._popover.placement = changes.skyPopoverPlacement.currentValue;
-    // }
-    // if (
-    //   changes.skyPopoverPlacement ||
-    //   changes.skyPopoverAlignment
-    // ) {
-    //   if (this._popover.isOpen) {
-    //     // Re-call the open method if any of the properties change.
-    //     this.sendMessage(SkyPopoverMessageType.Open);
-    //   }
-    // }
   }
 
   private handleIncomingMessages(message: SkyPopoverMessage): void {
@@ -244,7 +227,7 @@ export class SkyPopoverDirective implements OnInit, OnChanges {
           if (this._popover.isOpen) {
             // Give the popover a chance to set its isMouseEnter flag before checking to see
             // if it should be closed.
-            this.windowRef.nativeWindow.setTimeout(() => {
+            this.windowRef.getWindow().setTimeout(() => {
               this.closePopoverOrMarkForClose();
             });
           } else {

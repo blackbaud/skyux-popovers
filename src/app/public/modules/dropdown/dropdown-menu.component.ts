@@ -14,8 +14,9 @@ import {
   QueryList
 } from '@angular/core';
 
+import 'rxjs/add/operator/takeUntil';
+
 import {
-  SkyAppWindowRef,
   SkyCoreAdapterService
 } from '@skyux/core';
 
@@ -27,8 +28,6 @@ import {
   Subject
 } from 'rxjs/Subject';
 
-import 'rxjs/add/operator/takeUntil';
-
 import {
   SkyDropdownComponent
 } from './dropdown.component';
@@ -38,16 +37,10 @@ import {
 } from './dropdown-item.component';
 
 import {
-  SkyDropdownMenuChange
-} from './types/dropdown-menu-change';
-
-import {
-  SkyDropdownMessage
-} from './types/dropdown-message';
-
-import {
+  SkyDropdownMenuChange,
+  SkyDropdownMessage,
   SkyDropdownMessageType
-} from './types/dropdown-message-type';
+} from './types';
 
 let nextId = 0;
 
@@ -112,6 +105,11 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
 
   public dropdownMenuId: string = `sky-dropdown-menu-${++nextId}`;
 
+  private get hasFocusableItems(): boolean {
+    const found = this.menuItems.find(item => item.isFocusable());
+    return (found !== undefined);
+  }
+
   public set menuIndex(value: number) {
     if (value < 0) {
       value = this.menuItems.length - 1;
@@ -129,11 +127,7 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   @ContentChildren(SkyDropdownItemComponent)
-  private menuItems: QueryList<SkyDropdownItemComponent>;
-
-  private get hasFocusableItems(): boolean {
-    return this.menuItems.some(item => item.isFocusable());
-  }
+  public menuItems: QueryList<SkyDropdownItemComponent>;
 
   private ngUnsubscribe = new Subject();
 
@@ -146,7 +140,6 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     private changeDetector: ChangeDetectorRef,
     private elementRef: ElementRef,
-    private windowRef: SkyAppWindowRef,
     private coreAdapterService: SkyCoreAdapterService,
     @Optional() private dropdownComponent: SkyDropdownComponent
   ) { }
@@ -409,7 +402,7 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
         this.dropdownComponent.isMouseEnter = false;
         // Allow the dropdown component to set isMouseEnter before checking if the close action
         // should be taken.
-        this.windowRef.nativeWindow.setTimeout(() => {
+        setTimeout(() => {
           if (
             this.dropdownComponent.trigger === 'hover' &&
             this.dropdownComponent.isMouseEnter === false
