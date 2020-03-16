@@ -143,6 +143,42 @@ describe('Popover directive', () => {
     expect(popover).toHaveCssClass('sky-popover-placement-left');
   }));
 
+  it('should set horizontal alignments', fakeAsync(() => {
+    fixture.componentInstance.placement = 'above';
+    fixture.componentInstance.alignment = 'left';
+    detectChangesFakeAsync();
+
+    const button = getCallerElement();
+    const popover = getPopoverElement();
+
+    button.click();
+    detectChangesFakeAsync();
+
+    expect(popover).toHaveCssClass('sky-popover-alignment-left');
+
+    button.click();
+    detectChangesFakeAsync();
+
+    fixture.componentInstance.alignment = 'center';
+    detectChangesFakeAsync();
+
+    button.click();
+    detectChangesFakeAsync();
+
+    expect(popover).toHaveCssClass('sky-popover-alignment-center');
+
+    button.click();
+    detectChangesFakeAsync();
+
+    fixture.componentInstance.alignment = 'right';
+    detectChangesFakeAsync();
+
+    button.click();
+    detectChangesFakeAsync();
+
+    expect(popover).toHaveCssClass('sky-popover-alignment-right');
+  }));
+
   it('should allow static mode', fakeAsync(() => {
     fixture.componentInstance.isStatic = true;
     detectChangesFakeAsync();
@@ -173,6 +209,13 @@ describe('Popover directive', () => {
 
     // Should now have a scrollbar.
     expect(popover.scrollHeight > popover.clientHeight).toEqual(true);
+  }));
+
+  it('should prevent the arrow from leaving the popover', fakeAsync(() => {
+    fixture.componentInstance.placement = 'right';
+    detectChangesFakeAsync();
+
+    // TODO: make the window have a scroll bar and scroll to all ends to check the arrow?
   }));
 
   describe('mouse interactions', function () {
@@ -443,6 +486,8 @@ describe('Popover directive', () => {
           key: 'arrowup'
         }
       });
+      // Also confirm focusin event fires correctly.
+      SkyAppTestUtility.fireDomEvent(focusableItems.item(0), 'focusin');
 
       detectChangesFakeAsync();
 
@@ -490,6 +535,23 @@ describe('Popover directive', () => {
       // The popover should be closed and trigger button focused.
       expect(isElementVisible(popover)).toEqual(false);
       expect(isElementFocused(button)).toEqual(true);
+    }));
+
+    it('should close the popover after trigger loses focus', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getCallerElement();
+      const popover = getPopoverElement();
+
+      button.click();
+      detectChangesFakeAsync();
+
+      expect(isElementVisible(popover)).toEqual(true);
+
+      SkyAppTestUtility.fireDomEvent(window.document, 'focusin');
+      detectChangesFakeAsync();
+
+      expect(isElementVisible(popover)).toEqual(false);
     }));
   });
 

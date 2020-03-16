@@ -728,6 +728,46 @@ describe('Dropdown component', function () {
       expect(isElementFocused(button)).toEqual(true);
     }));
 
+    it('should close the menu after trigger button loses focus', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+      const container = getMenuContainerElement();
+      const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      expect(messageSpy).not.toHaveBeenCalled();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'enter'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Run 'tab' on trigger button.
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      // Tab key should progress to next item.
+      expect(isElementVisible(container)).toEqual(false);
+    }));
+
     it('should ignore menu keyboard events if menu is closed', fakeAsync(() => {
       detectChangesFakeAsync();
 

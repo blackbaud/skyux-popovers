@@ -23,6 +23,7 @@ export function parseAffixPlacement(
       return 'right';
     case 'left':
       return 'left';
+    /* istanbul ignore next */
     default:
       throw `SkyAffixPlacement does not have a matching value for '${placement}'!`;
   }
@@ -38,6 +39,7 @@ export function parseAffixHorizontalAlignment(
       return 'left';
     case 'right':
       return 'right';
+    /* istanbul ignore next */
     default:
       throw `SkyAffixHorizontalAlignment does not have a matching value for '${alignment}'!`;
   }

@@ -498,6 +498,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .fromEvent(windowObj.document, 'focusin')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
+        /*istanbul ignore if*/
+        if (!this.isOpen) {
+          return;
+        }
+
         const targetIsChild = (popoverElement.contains(event.target));
         const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
 
@@ -505,6 +510,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         if (!targetIsChild && !targetIsCaller && this.dismissOnBlur) {
           // The popover is currently being operated by the user, and
           // has just lost keyboard focus. We should close it.
+          console.log('close focusin');
           this.close();
         }
       });
