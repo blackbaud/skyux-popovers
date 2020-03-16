@@ -355,7 +355,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       isSticky: true,
       enableAutoFit: true,
       verticalAlignment: 'middle',
-      autoFitContext: SkyAffixAutoFitContext.Viewport
+      autoFitContext: SkyAffixAutoFitContext.OverflowParent
     });
 
     this.updateArrowOffset();

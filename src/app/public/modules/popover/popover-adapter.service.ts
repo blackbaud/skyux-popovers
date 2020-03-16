@@ -54,9 +54,9 @@ export class SkyPopoverAdapterService {
       left = callerRect.left + (callerRect.width / 2);
 
       // Make sure the arrow never detaches from the popover.
-      if (left + pixelTolerance < popoverRect.left) {
+      if (left - pixelTolerance < popoverRect.left) {
         left = popoverRect.left + pixelTolerance;
-      } else if (left - pixelTolerance > popoverRect.right) {
+      } else if (left + pixelTolerance > popoverRect.right) {
         left = popoverRect.right - pixelTolerance;
       }
 
@@ -69,9 +69,9 @@ export class SkyPopoverAdapterService {
       top = callerRect.top + (callerRect.height / 2);
 
       // Make sure the arrow never detaches from the popover.
-      if (top + pixelTolerance < popoverRect.top) {
+      if (top - pixelTolerance < popoverRect.top) {
         top = popoverRect.top + pixelTolerance;
-      } else if (top - pixelTolerance > popoverRect.bottom) {
+      } else if (top + pixelTolerance > popoverRect.bottom) {
         top = popoverRect.bottom - pixelTolerance;
       }
 
