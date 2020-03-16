@@ -1,10 +1,9 @@
 import {
   ComponentFixture,
-  TestBed,
   fakeAsync,
   inject,
-  tick,
-  async
+  TestBed,
+  tick
 } from '@angular/core/testing';
 
 import {
@@ -13,10 +12,12 @@ import {
 } from '@skyux-sdk/testing';
 
 import {
-  SkyAffixService, SkyAffixer
+  SkyAffixService
 } from '@skyux/core';
 
-import { Subject } from 'rxjs/Subject';
+import {
+  Subject
+} from 'rxjs/Subject';
 
 import {
   PopoverFixtureComponent
@@ -26,12 +27,17 @@ import {
   PopoverFixturesModule
 } from './fixtures/popover.module.fixture';
 
-import { SkyPopoverMessageType } from './types';
+import {
+  SkyPopoverMessageType
+} from './types/popover-message-type';
+
+import {
+  SkyPopoverAdapterService
+} from './popover-adapter.service';
 
 describe('Popover directive', () => {
 
   let fixture: ComponentFixture<PopoverFixtureComponent>;
-  let mockAffixService: any;
 
   function getCallerElement(): HTMLButtonElement {
     return fixture.componentInstance.callerElementRef.nativeElement;
@@ -39,10 +45,6 @@ describe('Popover directive', () => {
 
   function getPopoverElement(): HTMLElement {
     return fixture.componentInstance.popoverRef['popoverContainer'].nativeElement;
-  }
-
-  function getAffixer(): SkyAffixer {
-    return fixture.componentInstance.popoverRef['affixer'];
   }
 
   function isElementFocused(elem: Element): boolean {
@@ -60,55 +62,23 @@ describe('Popover directive', () => {
     tick();
   }
 
-  async function detectChangesAsync(): Promise<any> {
-    fixture.detectChanges();
-    await fixture.whenRenderingDone();
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
-    await fixture.whenRenderingDone();
-    fixture.detectChanges();
-  }
-
   function getFocusableItems(): NodeListOf<Element> {
     return getPopoverElement().querySelectorAll('input, button');
   }
 
   beforeEach(() => {
-    const mockAffixer = {
-      offsetChange: new Subject(),
-      overflowScroll: new Subject(),
-      placementChange: new Subject<any>(),
-      affixTo: () => {},
-      destroy() {}
-    };
-
-    mockAffixService = {
-      createAffixer: () => {
-        return mockAffixer;
-      }
-    };
-
     TestBed.configureTestingModule({
       imports: [
         PopoverFixturesModule
-      ],
-      providers: [
-        {
-          provide: SkyAffixService,
-          useValue: mockAffixService
-        }
       ]
     });
 
     fixture = TestBed.createComponent(PopoverFixtureComponent);
   });
 
-  afterEach(async(async () => {
-    await detectChangesAsync();
-
+  afterEach(() => {
     fixture.destroy();
-  }));
+  });
 
   it('should set defaults', fakeAsync(() => {
     detectChangesFakeAsync();
@@ -539,43 +509,57 @@ describe('Popover directive', () => {
       expect(applyFocusSpy).not.toHaveBeenCalled();
     }));
 
-    it('should allow repositioning the popover', fakeAsync(() => {
-      fixture.componentInstance.placement = 'below';
-      detectChangesFakeAsync();
+    it('should allow repositioning the popover', fakeAsync(inject(
+      [SkyAffixService], (affixService: SkyAffixService) => {
 
-      const popover = getPopoverElement();
-      const affixer = getAffixer();
-      const affixSpy = spyOn(affixer, 'affixTo').and.callThrough();
+        const mockAffixer = {
+          offsetChange: new Subject(),
+          overflowScroll: new Subject(),
+          placementChange: new Subject(),
+          affixTo() {},
+          destroy() {}
+        };
 
-      fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
-      detectChangesFakeAsync();
+        spyOn(affixService, 'createAffixer').and.returnValue(mockAffixer);
 
-      // Repositioning should only happen if popover is open.
-      expect(affixSpy).not.toHaveBeenCalled();
+        fixture.componentInstance.placement = 'below';
+        detectChangesFakeAsync();
 
-      // Open the popover.
-      fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
-      detectChangesFakeAsync();
+        const popover = getPopoverElement();
+        // const affixer = getAffixer();
+        const affixSpy = spyOn(mockAffixer, 'affixTo').and.callThrough();
 
-      // Trigger a temporary placement change.
-      (affixer.placementChange as any).next({
-        placement: 'above'
-      });
-      detectChangesFakeAsync();
+        fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
+        detectChangesFakeAsync();
 
-      // Confirm that the new temporary placement was recognized.
-      expect(popover).toHaveCssClass('sky-popover-placement-above');
+        // Repositioning should only happen if popover is open.
+        expect(affixSpy).not.toHaveBeenCalled();
 
-      affixSpy.calls.reset();
+        // Open the popover.
+        fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
+        detectChangesFakeAsync();
 
-      // Make a call to reposition the popover.
-      fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
-      detectChangesFakeAsync();
+        // Trigger a temporary placement change.
+        mockAffixer.placementChange.next({
+          placement: 'above'
+        });
 
-      // The original, preferred placement should be re-applied.
-      expect(affixSpy.calls.argsFor(0)[1].placement).toEqual('below');
-      expect(popover).toHaveCssClass('sky-popover-placement-below');
-    }));
+        detectChangesFakeAsync();
+
+        // Confirm that the new temporary placement was recognized.
+        expect(popover).toHaveCssClass('sky-popover-placement-above');
+
+        affixSpy.calls.reset();
+
+        // Make a call to reposition the popover.
+        fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
+        detectChangesFakeAsync();
+
+        // The original, preferred placement should be re-applied.
+        expect(affixSpy.calls.argsFor(0)[1].placement).toEqual('below');
+        expect(popover).toHaveCssClass('sky-popover-placement-below');
+      }
+    )));
   });
 
   describe('fullscreen mode', function () {
@@ -591,38 +575,139 @@ describe('Popover directive', () => {
 
       expect(popover).toHaveCssClass('sky-popover-placement-fullscreen');
     }));
+
+    it('should display popovers as fullscreen if the popover is larger than its parent on resize',
+      fakeAsync(inject(
+        [SkyPopoverAdapterService],
+        (adapterService: SkyPopoverAdapterService) => {
+          spyOn(adapterService, 'isPopoverLargerThanWindow').and.returnValue(true);
+
+          fixture.componentInstance.allowFullscreen = true;
+          fixture.componentInstance.placement = 'below';
+          detectChangesFakeAsync();
+
+          const button = getCallerElement();
+          const popover = getPopoverElement();
+
+          button.click();
+          detectChangesFakeAsync();
+
+          expect(popover).toHaveCssClass('sky-popover-placement-below');
+
+          SkyAppTestUtility.fireDomEvent(window, 'resize');
+          detectChangesFakeAsync();
+
+          expect(fixture.componentInstance.popoverRef.placement).toEqual('fullscreen');
+        }
+      ))
+    );
+
   });
 
   describe('affixer events', function () {
+    let mockAffixer: any;
+    let affixService: SkyAffixService;
 
-    beforeEach(() => {
-      fixture.detectChanges();
-      fixture.componentInstance.popoverRef.enableAnimations = true;
-    });
+    beforeEach(inject(
+      [SkyAffixService],
+      (_affixService: SkyAffixService) => {
+        affixService = _affixService;
+        mockAffixer = {
+          offsetChange: new Subject(),
+          overflowScroll: new Subject(),
+          placementChange: new Subject(),
+          affixTo() {},
+          destroy() {}
+        };
 
-    it('should hide the popover if a valid placement cannot be found', async(async () => {
-      await detectChangesAsync();
+        spyOn(affixService, 'createAffixer').and.returnValue(mockAffixer);
+      }
+    ));
+
+    it('should find a new placement if the current one is hidden', fakeAsync(() => {
+      detectChangesFakeAsync();
 
       const button = getCallerElement();
       const popover = getPopoverElement();
-      const affixer = getAffixer();
 
       button.click();
 
-      await detectChangesAsync();
+      detectChangesFakeAsync();
+
+      expect(popover).toHaveCssClass('sky-popover-placement-above');
+
+      mockAffixer.placementChange.next({
+        placement: 'below'
+      });
+
+      detectChangesFakeAsync();
+
+      expect(popover).toHaveCssClass('sky-popover-placement-below');
+    }));
+
+    it('should hide the popover if a valid placement cannot be found', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getCallerElement();
+      const popover = getPopoverElement();
+
+      button.click();
+
+      detectChangesFakeAsync();
 
       expect(isElementVisible(popover)).toEqual(true);
 
       // Trigger a null placement change.
       /*tslint:disable:no-null-keyword*/
-      (affixer.placementChange as any).next({
+      mockAffixer.placementChange.next({
         placement: null
       });
       /*tslint:enable:no-null-keyword*/
 
-      await detectChangesAsync();
+      detectChangesFakeAsync();
 
-      expect(isElementVisible(popover)).toEqual(false);
+      expect(fixture.componentInstance.popoverRef.isVisible).toEqual(false);
+    }));
+
+    it('should display popovers as fullscreen if the popover is larger than its parent',
+      fakeAsync(inject([SkyPopoverAdapterService], (adapterService: SkyPopoverAdapterService) => {
+        spyOn(adapterService, 'isPopoverLargerThanWindow').and.returnValue(true);
+
+        fixture.componentInstance.placement = 'below';
+        detectChangesFakeAsync();
+
+        const button = getCallerElement();
+        const popover = getPopoverElement();
+
+        button.click();
+        // Trigger a null placement change.
+        /*tslint:disable:no-null-keyword*/
+        mockAffixer.placementChange.next({
+          placement: null
+        });
+        /*tslint:enable:no-null-keyword*/
+        detectChangesFakeAsync();
+
+        expect(popover).toHaveCssClass('sky-popover-placement-fullscreen');
+      }))
+    );
+
+    it('should update popover arrow on scroll', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getCallerElement();
+
+      const arrowSpy = spyOn(fixture.componentInstance.popoverRef as any, 'updateArrowOffset')
+        .and.callThrough();
+
+      button.click();
+      detectChangesFakeAsync();
+
+      mockAffixer.overflowScroll.next();
+      detectChangesFakeAsync();
+
+      expect(arrowSpy).toHaveBeenCalled();
+
     }));
   });
 

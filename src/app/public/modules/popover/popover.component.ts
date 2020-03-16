@@ -450,7 +450,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.affixer.placementChange
       .takeUntil(this.ngUnsubscribe)
       .subscribe((change) => {
-        console.log('change:', change);
         if (change.placement === null) {
           if (
             this.allowFullscreen &&
@@ -458,7 +457,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
           ) {
             this.activateFullscreen();
           } else {
-            console.log('NOT VISIBLE');
             this.isVisible = false;
           }
 
