@@ -143,6 +143,38 @@ describe('Popover directive', () => {
     expect(popover).toHaveCssClass('sky-popover-placement-left');
   }));
 
+  it('should allow static mode', fakeAsync(() => {
+    fixture.componentInstance.isStatic = true;
+    detectChangesFakeAsync();
+    const popoverInFixture = fixture.nativeElement.querySelector('sky-popover');
+    expect(popoverInFixture).toBeTruthy();
+  }));
+
+  it('should add scrollbars for tall popover', fakeAsync(() => {
+    detectChangesFakeAsync();
+
+    const button = getCallerElement();
+
+    button.click();
+    detectChangesFakeAsync();
+
+    const popover = getPopoverElement().querySelector('.sky-popover');
+
+    // Should NOT have a scrollbar.
+    expect(popover.scrollHeight > popover.clientHeight).toEqual(false);
+
+    fixture.componentInstance.allowFullscreen = false; // <-- this is important
+    fixture.componentInstance.setHeight(4000);
+    fixture.componentInstance.sendMessage(SkyPopoverMessageType.Close);
+    detectChangesFakeAsync();
+
+    fixture.componentInstance.sendMessage(SkyPopoverMessageType.Open);
+    detectChangesFakeAsync();
+
+    // Should now have a scrollbar.
+    expect(popover.scrollHeight > popover.clientHeight).toEqual(true);
+  }));
+
   describe('mouse interactions', function () {
     it('should open and close the popover via mouse click', fakeAsync(() => {
       fixture.componentInstance.trigger = 'click';

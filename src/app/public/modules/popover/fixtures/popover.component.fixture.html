@@ -24,13 +24,17 @@
     (popoverClosed)="onPopoverClosed()"
     (popoverOpened)="onPopoverOpened()"
     #popoverRef
+  >
+    <div
+      [style.height.px]="height ? height : null"
     >
-    Popover content.
-    <ng-container *ngIf="showFocusableChildren">
-      <input type="text" />
-      <button type="button">
-        Button
-      </button>
-    </ng-container>
+      Popover content.
+      <ng-container *ngIf="showFocusableChildren">
+        <input type="text" />
+        <button type="button">
+          Button
+        </button>
+      </ng-container>
+    </div>
   </sky-popover>
 </div>

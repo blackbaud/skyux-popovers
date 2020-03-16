@@ -83,6 +83,8 @@ export class PopoverFixtureComponent implements OnInit {
   })
   public popoverRef: SkyPopoverComponent;
 
+  public height: number;
+
   public showFocusableChildren: boolean = false;
 
   public ngOnInit(): void {
@@ -95,6 +97,10 @@ export class PopoverFixtureComponent implements OnInit {
 
   public sendMessage(messageType: SkyPopoverMessageType): void {
     this.messageStream.next({ type: messageType });
+  }
+
+  public setHeight(height: number): void {
+    this.height = height;
   }
 
 }

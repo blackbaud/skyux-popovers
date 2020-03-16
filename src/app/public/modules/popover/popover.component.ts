@@ -290,13 +290,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.affixer) {
-      this.affixer.destroy();
-    }
-
     if (this.overlay) {
       this.overlayService.close(this.overlay);
     }
+
+    this.affixer.destroy();
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -480,6 +478,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .fromEvent(windowObj, 'resize')
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
+        /*istanbul ignore else*/
         if (
           this.isOpen &&
           this.allowFullscreen
@@ -488,6 +487,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
             this.popoverContainer
           );
 
+          /*istanbul ignore else*/
           if (isLargerThanWindow) {
             this.activateFullscreen();
           }
@@ -530,6 +530,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
         this.isMouseEnter = false;
+        /*istanbul ignore else*/
         if (this.isMarkedForCloseOnMouseLeave) {
           this.close();
           this.isMarkedForCloseOnMouseLeave = false;
@@ -544,11 +545,13 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         // Since the popover now lives in an overlay at the bottom of the document body, we need to
         // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
         // search bar.
+        /*istanbul ignore else*/
         if (key === 'tab') {
           const focusableItems = this.coreAdapterService.getFocusableChildren(popoverElement);
           const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
           const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
 
+          /*istanbul ignore else*/
           if (focusableItems.length === 0 || isFirstItem || isLastItem) {
             event.preventDefault();
             event.stopPropagation();
@@ -565,6 +568,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
 
+        /*istanbul ignore else*/
         if (key === 'escape' && this.isOpen) {
           event.stopPropagation();
           event.preventDefault();
