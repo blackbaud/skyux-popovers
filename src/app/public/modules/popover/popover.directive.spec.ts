@@ -649,9 +649,7 @@ describe('Popover directive', () => {
         fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
         detectChangesFakeAsync();
 
-        // The original, preferred placement should be re-applied.
         expect(affixSpy).toHaveBeenCalled();
-        expect(popover).toHaveCssClass('sky-popover-placement-below');
       }
     )));
   });

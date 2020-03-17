@@ -20,12 +20,7 @@ export enum SkyPopoverMessageType {
   Reposition = 2,
 
   /**
-   * Toggles the popover.
-   */
-  Toggle = 3,
-
-  /**
    * Brings focus to the popover element.
    */
-  Focus = 4
+  Focus = 3
 }

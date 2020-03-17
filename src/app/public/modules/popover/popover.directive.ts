@@ -2,7 +2,9 @@ import {
   Directive,
   ElementRef,
   Input,
-  OnInit
+  OnChanges,
+  OnInit,
+  SimpleChanges
 } from '@angular/core';
 
 import {
@@ -50,7 +52,7 @@ import {
 @Directive({
   selector: '[skyPopover]'
 })
-export class SkyPopoverDirective implements OnInit {
+export class SkyPopoverDirective implements OnInit, OnChanges {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
@@ -60,7 +62,10 @@ export class SkyPopoverDirective implements OnInit {
   public set skyPopover(value: SkyPopoverComponent) {
     /* istanbul ignore else */
     if (value) {
-      this._popover = value;
+      if (value !== this._popover) {
+        this._popover = value;
+        this.sendMessage(SkyPopoverMessageType.Close);
+      }
     }
   }
 
@@ -115,6 +120,17 @@ export class SkyPopoverDirective implements OnInit {
     this.addEventListeners();
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+  }
+
+  public togglePopover(): void {
+    if (this._popover.isOpen) {
+      this.sendMessage(SkyPopoverMessageType.Close);
+    } else {
+      this.sendMessage(SkyPopoverMessageType.Open);
+    }
+  }
+
   private handleIncomingMessages(message: SkyPopoverMessage): void {
     /* tslint:disable-next-line:switch-default */
     switch (message.type) {
@@ -128,14 +144,6 @@ export class SkyPopoverDirective implements OnInit {
 
       case SkyPopoverMessageType.Close:
         this._popover.close();
-        break;
-
-      case SkyPopoverMessageType.Toggle:
-        this._popover.toggle(
-          this.elementRef,
-          this.skyPopoverPlacement,
-          this.skyPopoverAlignment
-        );
         break;
 
       case SkyPopoverMessageType.Reposition:
@@ -207,7 +215,7 @@ export class SkyPopoverDirective implements OnInit {
       .subscribe((event: MouseEvent) => {
         event.stopPropagation();
         event.preventDefault();
-        this.sendMessage(SkyPopoverMessageType.Toggle);
+        this.togglePopover();
       });
 
     Observable

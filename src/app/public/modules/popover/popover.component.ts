@@ -340,9 +340,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     }
   }
 
-  public positionPopover(): void {
-  }
-
   /**
    * Closes the popover.
    * @internal
@@ -357,25 +354,9 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
    */
   public reposition(): void {
     if (this.isOpen) {
-      this.placement = this.preferredPlacement;
       this.affixer.reaffix();
-    }
-  }
-
-  /**
-   * Toggles the popover.
-   * @internal
-   * @param caller The element that triggered the popover.
-   */
-  public toggle(
-    caller: ElementRef,
-    placement?: SkyPopoverPlacement,
-    alignment?: SkyPopoverAlignment
-  ): void {
-    if (this.isOpen) {
-      this.close();
-    } else {
-      this.positionNextTo(caller, placement, alignment);
+      this.isVisible = true;
+      this.animationState = 'visible';
     }
   }
 
