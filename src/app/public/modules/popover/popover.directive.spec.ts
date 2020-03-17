@@ -621,7 +621,7 @@ describe('Popover directive', () => {
         detectChangesFakeAsync();
 
         const popover = getPopoverElement();
-        const affixSpy = spyOn(mockAffixer, 'reaffix').and.callThrough();
+        const affixSpy = spyOn(mockAffixer, 'affixTo').and.callThrough();
 
         fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
         detectChangesFakeAsync();
@@ -649,7 +649,9 @@ describe('Popover directive', () => {
         fixture.componentInstance.sendMessage(SkyPopoverMessageType.Reposition);
         detectChangesFakeAsync();
 
-        expect(affixSpy).toHaveBeenCalled();
+        // The original, preferred placement should be re-applied.
+        expect(affixSpy.calls.argsFor(0)[1].placement).toEqual('below');
+        expect(popover).toHaveCssClass('sky-popover-placement-below');
       }
     )));
   });
