@@ -168,6 +168,22 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
+  @ViewChild('popoverArrow')
+  public popoverArrow: ElementRef;
+
+  @ViewChild('popoverContainer')
+  public set popoverContainer(value: ElementRef) {
+    if (value) {
+      this._popoverContainer = value;
+      this.setupAffixer();
+      this.addListeners();
+    }
+  }
+
+  public get popoverContainer(): ElementRef {
+    return this._popoverContainer;
+  }
+
   public animationState: 'hidden' | 'visible' = 'hidden';
 
   public arrowTop: number;
@@ -187,34 +203,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   public isVisible = false;
 
-  @ViewChild('popoverArrow', {
-    read: ElementRef
-  })
-  public set popoverArrow(value: ElementRef) {
-    if (value) {
-      this._popoverArrow = value;
-    }
-  }
-
-  public get popoverArrow(): ElementRef {
-    return this._popoverArrow;
-  }
-
-  @ViewChild('popoverContainer', {
-    read: ElementRef
-  })
-  public set popoverContainer(value: ElementRef) {
-    if (value) {
-      this._popoverContainer = value;
-      this.setupAffixer();
-      this.addEventListeners();
-    }
-  }
-
-  public get popoverContainer(): ElementRef {
-    return this._popoverContainer;
-  }
-
   @ViewChild('popoverTemplate', {
     read: TemplateRef
   })
@@ -224,9 +212,9 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private caller: ElementRef;
 
-  private isMarkedForCloseOnMouseLeave = false;
+  private idled = new Subject<boolean>();
 
-  private ngUnsubscribe = new Subject<void>();
+  private isMarkedForCloseOnMouseLeave = false;
 
   private overlay: SkyOverlayInstance;
 
@@ -241,8 +229,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   private _isStatic: boolean;
 
   private _placement: SkyPopoverPlacement;
-
-  private _popoverArrow: ElementRef;
 
   private _popoverContainer: ElementRef;
 
@@ -277,10 +263,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     }
 
     this.affixer.destroy();
-
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-    this.ngUnsubscribe = undefined;
+    this.removeListeners();
   }
 
   public positionNextTo(
@@ -295,12 +278,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.alignment = alignment;
     this.preferredPlacement = this.placement;
 
-    if (placement === 'fullscreen') {
-      this.isVisible = true;
-      this.animationState = 'visible';
-      return;
-    }
-
     // Let the styles render before gauging the dimensions.
     this.windowRef.getWindow().setTimeout(() => {
       if (
@@ -308,22 +285,34 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
       ) {
         this.placement = 'fullscreen';
-      } else {
-        this.affixer.affixTo(this.caller.nativeElement, {
-          placement: parseAffixPlacement(this.preferredPlacement),
-          horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
-          isSticky: true,
-          enableAutoFit: true,
-          verticalAlignment: 'middle',
-          autoFitContext: SkyAffixAutoFitContext.Viewport
-        });
-
-        this.updateArrowOffset();
       }
 
       this.isVisible = true;
+      this.positionPopover();
       this.animationState = 'visible';
     });
+  }
+
+  /**
+   * Brings focus to the popover element if its open.
+   * @internal
+   */
+  public applyFocus(): void {
+    if (this.isOpen) {
+      this.coreAdapterService.getFocusableChildrenAndApplyFocus(
+        this.popoverContainer,
+        '.sky-popover',
+        true
+      );
+    }
+  }
+
+  /**
+   * Closes the popover.
+   * @internal
+   */
+  public close(): void {
+    this.animationState = 'hidden';
   }
 
   public onAnimationStart(event: AnimationEvent): void {
@@ -351,45 +340,139 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Closes the popover.
-   * @internal
-   */
-  public close(): void {
-    this.animationState = 'hidden';
-  }
-
-  /**
-   * Repositions an open popover.
-   * @internal
-   */
-  public reposition(): void {
-    if (this.isOpen) {
-      this.affixer.reaffix();
-      this.isVisible = true;
-      this.animationState = 'visible';
-    }
-  }
-
-  /**
-   * Brings focus to the popover element if its open.
-   * @internal
-   */
-  public applyFocus(): void {
-    if (this.isOpen) {
-      this.coreAdapterService.getFocusableChildrenAndApplyFocus(
-        this.popoverContainer,
-        '.sky-popover',
-        true
-      );
-    }
-  }
-
-  /**
    * Adds a flag to the popover to close when the mouse leaves the popover's bounds.
    * @internal
    */
   public markForCloseOnMouseLeave(): void {
     this.isMarkedForCloseOnMouseLeave = true;
+  }
+
+  private positionPopover(): void {
+    if (this.placement !== 'fullscreen') {
+      this.affixer.affixTo(this.caller.nativeElement, {
+        placement: parseAffixPlacement(this.preferredPlacement),
+        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
+        isSticky: true,
+        enableAutoFit: true,
+        verticalAlignment: 'middle',
+        autoFitContext: SkyAffixAutoFitContext.Viewport
+      });
+
+      this.updateArrowOffset();
+    }
+  }
+
+  private addListeners(): void {
+    const windowObj = this.windowRef.getWindow();
+    const hostElement = this._popoverContainer.nativeElement;
+
+    Observable
+      .fromEvent(windowObj.document, 'focusin')
+      .takeUntil(this.idled)
+      .subscribe((event: KeyboardEvent) => {
+        /*istanbul ignore if*/
+        if (!this.isOpen) {
+          return;
+        }
+
+        const targetIsChild = (hostElement.contains(event.target));
+        const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
+
+        /* istanbul ignore else */
+        if (!targetIsChild && !targetIsCaller && this.dismissOnBlur) {
+          // The popover is currently being operated by the user, and
+          // has just lost keyboard focus. We should close it.
+          this.close();
+        }
+      });
+
+    Observable
+      .fromEvent(windowObj.document, 'click')
+      .takeUntil(this.idled)
+      .subscribe((event: MouseEvent) => {
+        if (!this.isMouseEnter && this.dismissOnBlur) {
+          this.close();
+        }
+      });
+
+    Observable
+      .fromEvent(hostElement, 'mouseenter')
+      .takeUntil(this.idled)
+      .subscribe(() => {
+        this.isMouseEnter = true;
+      });
+
+    Observable
+      .fromEvent(hostElement, 'mouseleave')
+      .takeUntil(this.idled)
+      .subscribe(() => {
+        this.isMouseEnter = false;
+        /*istanbul ignore else*/
+        if (this.isMarkedForCloseOnMouseLeave) {
+          this.close();
+          this.isMarkedForCloseOnMouseLeave = false;
+        }
+      });
+
+    Observable
+      .fromEvent(hostElement, 'keyup')
+      .takeUntil(this.idled)
+      .subscribe((event: KeyboardEvent) => {
+        const key = event.key.toLowerCase();
+
+        /*istanbul ignore else*/
+        if (key === 'escape' && this.isOpen) {
+          event.stopPropagation();
+          event.preventDefault();
+          this.close();
+          this.caller.nativeElement.focus();
+        }
+      });
+
+    Observable
+      .fromEvent(hostElement, 'keydown')
+      .takeUntil(this.idled)
+      .subscribe((event: KeyboardEvent) => {
+        const key = event.key.toLowerCase();
+        // Since the popover now lives in an overlay at the bottom of the document body, we need to
+        // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
+        // search bar.
+        /*istanbul ignore else*/
+        if (key === 'tab') {
+          const focusableItems = this.coreAdapterService.getFocusableChildren(hostElement);
+          const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
+          const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
+
+          /*istanbul ignore else*/
+          if (focusableItems.length === 0 || isFirstItem || isLastItem) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            this.close();
+            this.caller.nativeElement.focus();
+          }
+        }
+      });
+  }
+
+  private removeListeners(): void {
+    this.idled.next(true);
+    this.idled.complete();
+    this.idled = undefined;
+  }
+
+  private updateArrowOffset(): void {
+    const { top, left } = this.adapterService.getArrowCoordinates(
+      {
+        caller: this.caller,
+        popover: this.popoverContainer,
+        popoverArrow: this.popoverArrow
+      },
+      this.placement
+    );
+
+    this.arrowTop = top;
+    this.arrowLeft = left;
   }
 
   private setupOverlay(): void {
@@ -407,19 +490,19 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.affixer = this.affixService.createAffixer(this.popoverContainer);
 
     this.affixer.offsetChange
-      .takeUntil(this.ngUnsubscribe)
+      .takeUntil(this.idled)
       .subscribe(() => {
         this.updateArrowOffset();
       });
 
     this.affixer.overflowScroll
-      .takeUntil(this.ngUnsubscribe)
+      .takeUntil(this.idled)
       .subscribe(() => {
         this.updateArrowOffset();
       });
 
     this.affixer.placementChange
-      .takeUntil(this.ngUnsubscribe)
+      .takeUntil(this.idled)
       .subscribe((change) => {
         if (change.placement === null) {
           if (
@@ -438,138 +521,10 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       });
   }
 
-  private addEventListeners(): void {
-    const windowObj = this.windowRef.getWindow();
-    const popoverElement = this._popoverContainer.nativeElement;
-
-    // Observable
-    //   .fromEvent(windowObj, 'resize')
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe(() => {
-    //     /*istanbul ignore else*/
-    //     if (
-    //       this.isOpen &&
-    //       this.allowFullscreen
-    //     ) {
-    //       const isLargerThanWindow = this.adapterService.isPopoverLargerThanWindow(
-    //         this.popoverContainer
-    //       );
-
-    //       /*istanbul ignore else*/
-    //       if (isLargerThanWindow) {
-    //         this.activateFullscreen();
-    //       }
-    //     }
-    //   });
-
-    Observable
-      .fromEvent(windowObj.document, 'focusin')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        /*istanbul ignore if*/
-        if (!this.isOpen) {
-          return;
-        }
-
-        const targetIsChild = (popoverElement.contains(event.target));
-        const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
-
-        /* istanbul ignore else */
-        if (!targetIsChild && !targetIsCaller && this.dismissOnBlur) {
-          // The popover is currently being operated by the user, and
-          // has just lost keyboard focus. We should close it.
-          this.close();
-        }
-      });
-
-    Observable
-      .fromEvent(windowObj.document, 'click')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(() => {
-        if (!this.isMouseEnter && this.dismissOnBlur) {
-          this.close();
-        }
-      });
-
-    Observable
-      .fromEvent(popoverElement, 'mouseenter')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(() => {
-        this.isMouseEnter = true;
-      });
-
-    Observable
-      .fromEvent(popoverElement, 'mouseleave')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(() => {
-        this.isMouseEnter = false;
-        /*istanbul ignore else*/
-        if (this.isMarkedForCloseOnMouseLeave) {
-          this.close();
-          this.isMarkedForCloseOnMouseLeave = false;
-        }
-      });
-
-    Observable
-      .fromEvent(popoverElement, 'keydown')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-        // Since the popover now lives in an overlay at the bottom of the document body, we need to
-        // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
-        // search bar.
-        /*istanbul ignore else*/
-        if (key === 'tab') {
-          const focusableItems = this.coreAdapterService.getFocusableChildren(popoverElement);
-          const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
-          const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
-
-          /*istanbul ignore else*/
-          if (focusableItems.length === 0 || isFirstItem || isLastItem) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            this.close();
-            this.caller.nativeElement.focus();
-          }
-        }
-      });
-
-    Observable
-      .fromEvent(popoverElement, 'keyup')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-
-        /*istanbul ignore else*/
-        if (key === 'escape' && this.isOpen) {
-          event.stopPropagation();
-          event.preventDefault();
-          this.close();
-          this.caller.nativeElement.focus();
-        }
-      });
-  }
-
-  private updateArrowOffset(): void {
-    const { top, left } = this.adapterService.getArrowCoordinates(
-      {
-        caller: this.caller,
-        popover: this.popoverContainer,
-        popoverArrow: this.popoverArrow
-      },
-      this.placement
-    );
-
-    this.arrowTop = top;
-    this.arrowLeft = left;
-  }
-
   /**
    * @deprecated The fullscreen feature will be removed in the next major version release.
    */
   private activateFullscreen(): void {
     this.placement = 'fullscreen';
   }
-
 }
