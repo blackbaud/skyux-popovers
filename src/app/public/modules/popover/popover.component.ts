@@ -1,5 +1,10 @@
 import {
-  AnimationEvent
+  AnimationEvent,
+  animate,
+  trigger,
+  state,
+  style,
+  transition
 } from '@angular/animations';
 
 import {
@@ -25,6 +30,10 @@ import {
   SkyWindowRefService
 } from '@skyux/core';
 
+import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/takeUntil';
+
 import {
   Observable
 } from 'rxjs/Observable';
@@ -33,25 +42,14 @@ import {
   Subject
 } from 'rxjs/Subject';
 
-import 'rxjs/add/observable/fromEvent';
-
-import 'rxjs/add/operator/takeUntil';
-
-import {
-  SkyPopoverAlignment
-} from './types/popover-alignment';
-
-import {
-  SkyPopoverPlacement
-} from './types/popover-placement';
-
 import {
   SkyPopoverAdapterService
 } from './popover-adapter.service';
 
 import {
-  skyPopoverAnimation
-} from './popover-animation';
+  SkyPopoverAlignment,
+  SkyPopoverPlacement
+} from './types';
 
 import {
   parseAffixHorizontalAlignment,
@@ -62,7 +60,14 @@ import {
   selector: 'sky-popover',
   templateUrl: './popover.component.html',
   styleUrls: ['./popover.component.scss'],
-  animations: [skyPopoverAnimation]
+  animations: [
+    trigger('popoverState', [
+      state('visible', style({ opacity: 1, visibility: 'visible' })),
+      state('hidden', style({ opacity: 0 })),
+      transition('hidden => visible', animate('150ms')),
+      transition('visible => hidden', animate('150ms'))
+    ])
+  ]
 })
 export class SkyPopoverComponent implements OnInit, OnDestroy {
 
@@ -252,6 +257,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.preferredPlacement = this.placement;
+    this.isOpen = false;
 
     if (this.isStatic) {
       this.viewContainerRef.createEmbeddedView(this.popoverTemplate);
@@ -262,7 +268,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
     this.windowRef.getWindow().setTimeout(() => {
       this.setupOverlay();
-      this.isOpen = false;
     });
   }
 
@@ -287,6 +292,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
     this.caller = caller;
     this.placement = placement;
+    this.alignment = alignment;
     this.preferredPlacement = this.placement;
 
     if (placement === 'fullscreen') {
@@ -295,22 +301,26 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.alignment = alignment;
-
     // Let the styles render before gauging the dimensions.
     this.windowRef.getWindow().setTimeout(() => {
-      this.affixer.affixTo(this.caller.nativeElement, {
-        placement: parseAffixPlacement(this.preferredPlacement),
-        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
-        isSticky: true,
-        enableAutoFit: true,
-        verticalAlignment: 'middle',
-        autoFitContext: SkyAffixAutoFitContext.Viewport
-      });
+      if (
+        this.allowFullscreen &&
+        this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
+      ) {
+        this.placement = 'fullscreen';
+      } else {
+        this.affixer.affixTo(this.caller.nativeElement, {
+          placement: parseAffixPlacement(this.preferredPlacement),
+          horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
+          isSticky: true,
+          enableAutoFit: true,
+          verticalAlignment: 'middle',
+          autoFitContext: SkyAffixAutoFitContext.Viewport
+        });
 
-      this.updateArrowOffset();
+        this.updateArrowOffset();
+      }
 
-      // Start animation.
       this.isVisible = true;
       this.animationState = 'visible';
     });
@@ -414,7 +424,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         if (change.placement === null) {
           if (
             this.allowFullscreen &&
-            this.adapterService.isPopoverLargerThanWindow(this.popoverContainer)
+            this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
           ) {
             this.activateFullscreen();
           } else {

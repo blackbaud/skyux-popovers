@@ -767,7 +767,7 @@ describe('Popover directive', () => {
       fakeAsync(inject(
         [SkyPopoverAdapterService],
         (adapterService: SkyPopoverAdapterService) => {
-          spyOn(adapterService, 'isPopoverLargerThanWindow').and.returnValue(true);
+          spyOn(adapterService, 'isPopoverLargerThanParent').and.returnValue(true);
 
           fixture.componentInstance.placement = 'below';
           detectChangesFakeAsync();
