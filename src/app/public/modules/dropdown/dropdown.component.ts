@@ -287,7 +287,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    setTimeout(() => {
+    this.windowRef.nativeWindow.setTimeout(() => {
       this.createOverlay();
       this.changeDetector.markForCheck();
     });
@@ -309,6 +309,16 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
       this.overlay = undefined;
   }
 
+  private positionDropdownMenu(): void {
+    this.affixer.affixTo(this.triggerButton.nativeElement, {
+      autoFitContext: SkyAffixAutoFitContext.Viewport,
+      enableAutoFit: true,
+      horizontalAlignment: this._alignment || this.horizontalAlignment,
+      isSticky: true,
+      placement: 'below'
+    });
+  }
+
   private handleIncomingMessages(message: SkyDropdownMessage): void {
     if (this.disabled) {
       return;
@@ -318,6 +328,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     switch (message.type) {
       case SkyDropdownMessageType.Open:
         this.isOpen = true;
+        this.positionDropdownMenu();
         this.adapter.showElement(this.menuContainerElementRef);
         break;
 
@@ -452,14 +463,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   private createAffixer(): void {
     this.affixer = this.affixService.createAffixer(this.menuContainerElementRef);
-
-    this.affixer.affixTo(this.triggerButton.nativeElement, {
-      autoFitContext: SkyAffixAutoFitContext.Viewport,
-      enableAutoFit: true,
-      horizontalAlignment: this._alignment || this.horizontalAlignment,
-      isSticky: true,
-      placement: 'below'
-    });
   }
 
 }

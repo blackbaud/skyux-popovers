@@ -15,6 +15,10 @@ $popover-max-width: 276px;
     visibility: hidden;
     opacity: 0;
     pointer-events: none !important;
+
+    * {
+      pointer-events: none !important;
+    }
   }
 
   &.sky-popover-static {

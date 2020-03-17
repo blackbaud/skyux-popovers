@@ -119,10 +119,11 @@ export class SkyPopoverDirective implements OnInit {
     /* tslint:disable-next-line:switch-default */
     switch (message.type) {
       case SkyPopoverMessageType.Open:
-        this._popover.open(this.elementRef, {
-          alignment: this.skyPopoverAlignment,
-          placement: this.skyPopoverPlacement
-        });
+        this._popover.positionNextTo(
+          this.elementRef,
+          this.skyPopoverPlacement,
+          this.skyPopoverAlignment
+        );
         break;
 
       case SkyPopoverMessageType.Close:
@@ -130,10 +131,11 @@ export class SkyPopoverDirective implements OnInit {
         break;
 
       case SkyPopoverMessageType.Toggle:
-        this._popover.toggle(this.elementRef, {
-          alignment: this.skyPopoverAlignment,
-          placement: this.skyPopoverPlacement
-        });
+        this._popover.toggle(
+          this.elementRef,
+          this.skyPopoverPlacement,
+          this.skyPopoverAlignment
+        );
         break;
 
       case SkyPopoverMessageType.Reposition:

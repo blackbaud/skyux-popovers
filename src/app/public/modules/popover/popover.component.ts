@@ -3,8 +3,6 @@ import {
 } from '@angular/animations';
 
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -44,10 +42,6 @@ import {
 } from './types/popover-alignment';
 
 import {
-  SkyPopoverOpenConfig
-} from './types/popover-open-config';
-
-import {
   SkyPopoverPlacement
 } from './types/popover-placement';
 
@@ -68,8 +62,7 @@ import {
   selector: 'sky-popover',
   templateUrl: './popover.component.html',
   styleUrls: ['./popover.component.scss'],
-  animations: [skyPopoverAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [skyPopoverAnimation]
 })
 export class SkyPopoverComponent implements OnInit, OnDestroy {
 
@@ -170,21 +163,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
-  public set isOpen(value: boolean) {
-    this._isOpen = value;
-    this.updateCssClassNames();
-    this.changeDetector.markForCheck();
-  }
-
-  public get isOpen(): boolean {
-    return this._isOpen || false;
-  }
-
   public animationState: 'hidden' | 'visible' = 'hidden';
 
-  public arrowLeft: number;
-
   public arrowTop: number;
+
+  public arrowLeft: number;
 
   /**
    * Used by unit tests to disable animations since the component is injected at the bottom of the
@@ -193,11 +176,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
    */
   public enableAnimations: boolean = true;
 
-  public cssClassNames: string[] = [];
+  public isMouseEnter = false;
 
-  public isMouseEnter: boolean = false;
+  public isOpen = false;
 
-  public isVisible: boolean = false;
+  public isVisible = false;
 
   @ViewChild('popoverArrow', {
     read: ElementRef
@@ -205,7 +188,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   public set popoverArrow(value: ElementRef) {
     if (value) {
       this._popoverArrow = value;
-      this.changeDetector.markForCheck();
     }
   }
 
@@ -221,7 +203,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       this._popoverContainer = value;
       this.setupAffixer();
       this.addEventListeners();
-      this.changeDetector.markForCheck();
     }
   }
 
@@ -252,8 +233,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private _dismissOnBlur: boolean;
 
-  private _isOpen: boolean;
-
   private _isStatic: boolean;
 
   private _placement: SkyPopoverPlacement;
@@ -263,18 +242,16 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   private _popoverContainer: ElementRef;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
-    private windowRef: SkyWindowRefService,
     private coreAdapterService: SkyCoreAdapterService,
     private overlayService: SkyOverlayService,
+    private viewContainerRef: ViewContainerRef,
     private adapterService: SkyPopoverAdapterService,
-    private viewContainerRef: ViewContainerRef
+    private windowRef: SkyWindowRefService
   ) { }
 
   public ngOnInit(): void {
     this.preferredPlacement = this.placement;
-    this.changeDetector.markForCheck();
 
     if (this.isStatic) {
       this.viewContainerRef.createEmbeddedView(this.popoverTemplate);
@@ -301,6 +278,44 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe = undefined;
   }
 
+  public positionNextTo(
+    caller: ElementRef,
+    placement?: SkyPopoverPlacement,
+    alignment?: SkyPopoverAlignment
+  ): void {
+    this.close();
+
+    this.caller = caller;
+    this.placement = placement;
+    this.preferredPlacement = this.placement;
+
+    if (placement === 'fullscreen') {
+      this.isVisible = true;
+      this.animationState = 'visible';
+      return;
+    }
+
+    this.alignment = alignment;
+
+    // Let the styles render before gauging the dimensions.
+    this.windowRef.getWindow().setTimeout(() => {
+      this.affixer.affixTo(this.caller.nativeElement, {
+        placement: parseAffixPlacement(this.preferredPlacement),
+        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
+        isSticky: true,
+        enableAutoFit: true,
+        verticalAlignment: 'middle',
+        autoFitContext: SkyAffixAutoFitContext.Viewport
+      });
+
+      this.updateArrowOffset();
+
+      // Start animation.
+      this.isVisible = true;
+      this.animationState = 'visible';
+    });
+  }
+
   public onAnimationStart(event: AnimationEvent): void {
     if (event.fromState === 'void') {
       return;
@@ -325,41 +340,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Opens the popover.
-   * @internal
-   * @param caller The element that triggered the popover.
-   */
-  public open(caller: ElementRef, config: SkyPopoverOpenConfig = {}): void {
-    if (config.placement) {
-      this.placement = config.placement;
-      this.preferredPlacement = this.placement;
-    }
-
-    this.alignment = config.alignment;
-    this.animationState = 'visible';
-    this.caller = caller;
-
-    if (this.isOpen) {
-      this.updateCssClassNames();
-    }
-
-    if (this.placement === 'fullscreen') {
-      this.changeDetector.markForCheck();
-      return;
-    }
-
-    this.affixer.affixTo(this.caller.nativeElement, {
-      placement: parseAffixPlacement(this.placement),
-      horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
-      isSticky: true,
-      enableAutoFit: true,
-      verticalAlignment: 'middle',
-      autoFitContext: SkyAffixAutoFitContext.OverflowParent
-    });
-
-    this.updateArrowOffset();
-    this.changeDetector.markForCheck();
+  public positionPopover(): void {
   }
 
   /**
@@ -368,7 +349,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
    */
   public close(): void {
     this.animationState = 'hidden';
-    this.changeDetector.markForCheck();
   }
 
   /**
@@ -378,7 +358,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   public reposition(): void {
     if (this.isOpen) {
       this.placement = this.preferredPlacement;
-      this.open(this.caller);
+      this.affixer.reaffix();
     }
   }
 
@@ -387,11 +367,15 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
    * @internal
    * @param caller The element that triggered the popover.
    */
-  public toggle(caller: ElementRef, config?: SkyPopoverOpenConfig): void {
+  public toggle(
+    caller: ElementRef,
+    placement?: SkyPopoverPlacement,
+    alignment?: SkyPopoverAlignment
+  ): void {
     if (this.isOpen) {
       this.close();
     } else {
-      this.open(caller, config);
+      this.positionNextTo(caller, placement, alignment);
     }
   }
 
@@ -435,14 +419,12 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
         this.updateArrowOffset();
-        this.changeDetector.markForCheck();
       });
 
     this.affixer.overflowScroll
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
         this.updateArrowOffset();
-        this.changeDetector.markForCheck();
       });
 
     this.affixer.placementChange
@@ -457,16 +439,11 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
           } else {
             this.isVisible = false;
           }
-
-          this.changeDetector.markForCheck();
           return;
         }
 
-        this.isVisible = true;
         this.placement = change.placement;
-        this.updateCssClassNames();
-        this.updateArrowOffset();
-        this.changeDetector.markForCheck();
+        this.isVisible = true;
       });
   }
 
@@ -474,25 +451,25 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     const windowObj = this.windowRef.getWindow();
     const popoverElement = this._popoverContainer.nativeElement;
 
-    Observable
-      .fromEvent(windowObj, 'resize')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(() => {
-        /*istanbul ignore else*/
-        if (
-          this.isOpen &&
-          this.allowFullscreen
-        ) {
-          const isLargerThanWindow = this.adapterService.isPopoverLargerThanWindow(
-            this.popoverContainer
-          );
+    // Observable
+    //   .fromEvent(windowObj, 'resize')
+    //   .takeUntil(this.ngUnsubscribe)
+    //   .subscribe(() => {
+    //     /*istanbul ignore else*/
+    //     if (
+    //       this.isOpen &&
+    //       this.allowFullscreen
+    //     ) {
+    //       const isLargerThanWindow = this.adapterService.isPopoverLargerThanWindow(
+    //         this.popoverContainer
+    //       );
 
-          /*istanbul ignore else*/
-          if (isLargerThanWindow) {
-            this.activateFullscreen();
-          }
-        }
-      });
+    //       /*istanbul ignore else*/
+    //       if (isLargerThanWindow) {
+    //         this.activateFullscreen();
+    //       }
+    //     }
+    //   });
 
     Observable
       .fromEvent(windowObj.document, 'focusin')
@@ -510,7 +487,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
         if (!targetIsChild && !targetIsCaller && this.dismissOnBlur) {
           // The popover is currently being operated by the user, and
           // has just lost keyboard focus. We should close it.
-          console.log('close focusin');
           this.close();
         }
       });
@@ -584,25 +560,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       });
   }
 
-  private updateCssClassNames(): void {
-    this.cssClassNames = [
-      `sky-popover-alignment-${this.alignment}`,
-      `sky-popover-placement-${this.placement}`
-    ];
-
-    if (!this.isOpen) {
-      this.cssClassNames.push('sky-popover-hidden');
-    }
-
-    if (!this.allowFullscreen) {
-      this.cssClassNames.push('sky-popover-max-height');
-    }
-
-    if (this.isStatic) {
-      this.cssClassNames.push('sky-popover-static');
-    }
-  }
-
   private updateArrowOffset(): void {
     const { top, left } = this.adapterService.getArrowCoordinates(
       {
@@ -622,7 +579,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
    */
   private activateFullscreen(): void {
     this.placement = 'fullscreen';
-    this.changeDetector.markForCheck();
   }
 
 }

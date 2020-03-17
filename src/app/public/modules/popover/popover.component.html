@@ -4,8 +4,14 @@
   <div
     class="sky-popover-container"
     [@.disabled]="!enableAnimations"
+    [class.sky-popover-hidden]="!isOpen"
+    [class.sky-popover-max-height]="!allowFullscreen"
+    [class.sky-popover-static]="isStatic"
+    [ngClass]="[
+      'sky-popover-alignment-' + alignment,
+      'sky-popover-placement-' + placement
+    ]"
     [@popoverState]="animationState"
-    [ngClass]="cssClassNames"
     [style.visibility]="(isVisible) ? 'visible': 'hidden'"
     (@popoverState.done)="onAnimationDone($event)"
     (@popoverState.start)="onAnimationStart($event)"

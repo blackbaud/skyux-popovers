@@ -155,18 +155,16 @@ describe('Dropdown component', function () {
         reaffix() {}
       };
 
+      const button = getButtonElement();
       const createAffixerSpy = spyOn(affixService, 'createAffixer').and.returnValue(mockAffixer);
-
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-      tick();
 
       // Make sure the set alignment in our test doesn't match the default alignment.
       // (We need to confirm that a change has occurred.)
       expect(fixture.componentInstance.dropdownRef.alignment).not.toEqual(expectedAlignment);
 
-      tick();
+      detectChangesFakeAsync();
+      button.click();
+      detectChangesFakeAsync();
 
       expect(actualConfig.horizontalAlignment).toEqual(expectedAlignment);
 
@@ -933,18 +931,18 @@ describe('Dropdown component', function () {
 
       // Repositioning should only happen if menu is open.
       expect(affixSpy).not.toHaveBeenCalledWith();
-      affixSpy.calls.reset();
 
       // Open the menu.
       fixture.componentInstance.sendMessage(SkyDropdownMessageType.Open);
       detectChangesFakeAsync();
+      affixSpy.calls.reset();
 
       // Reposition the menu.
       fixture.componentInstance.sendMessage(SkyDropdownMessageType.Reposition);
       detectChangesFakeAsync();
 
       // The affixing method should be called now.
-      expect(affixSpy).toHaveBeenCalledWith();
+      expect(affixSpy).toHaveBeenCalled();
     }));
   });
 
