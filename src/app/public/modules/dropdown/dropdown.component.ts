@@ -294,7 +294,9 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
     this.messageStream
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(message => this.handleIncomingMessages(message));
+      .subscribe((message: SkyDropdownMessage) => {
+        this.handleIncomingMessages(message);
+      });
   }
 
   public ngOnDestroy(): void {
@@ -307,51 +309,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     this.affixer =
       this.ngUnsubscribe =
       this.overlay = undefined;
-  }
-
-  private positionDropdownMenu(): void {
-    this.affixer.affixTo(this.triggerButton.nativeElement, {
-      autoFitContext: SkyAffixAutoFitContext.Viewport,
-      enableAutoFit: true,
-      horizontalAlignment: this._alignment || this.horizontalAlignment,
-      isSticky: true,
-      placement: 'below'
-    });
-  }
-
-  private handleIncomingMessages(message: SkyDropdownMessage): void {
-    if (this.disabled) {
-      return;
-    }
-
-    /* tslint:disable-next-line:switch-default */
-    switch (message.type) {
-      case SkyDropdownMessageType.Open:
-        this.isOpen = true;
-        this.positionDropdownMenu();
-        this.adapter.showElement(this.menuContainerElementRef);
-        break;
-
-      case SkyDropdownMessageType.Close:
-        this.isOpen = false;
-        this.adapter.hideElement(this.menuContainerElementRef);
-        break;
-
-      case SkyDropdownMessageType.FocusTriggerButton:
-        this.triggerButton.nativeElement.focus();
-        break;
-
-      case SkyDropdownMessageType.Reposition:
-        // Only reposition the dropdown if it is already open.
-        if (this.isOpen) {
-          this.affixer.reaffix();
-        }
-        break;
-    }
-  }
-
-  private sendMessage(type: SkyDropdownMessageType): void {
-    this.messageStream.next({ type });
   }
 
   private addEventListeners(): void {
@@ -463,6 +420,51 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   private createAffixer(): void {
     this.affixer = this.affixService.createAffixer(this.menuContainerElementRef);
+  }
+
+  private handleIncomingMessages(message: SkyDropdownMessage): void {
+    if (this.disabled) {
+      return;
+    }
+
+    /* tslint:disable-next-line:switch-default */
+    switch (message.type) {
+      case SkyDropdownMessageType.Open:
+        this.isOpen = true;
+        this.positionDropdownMenu();
+        this.adapter.showElement(this.menuContainerElementRef);
+        break;
+
+      case SkyDropdownMessageType.Close:
+        this.isOpen = false;
+        this.adapter.hideElement(this.menuContainerElementRef);
+        break;
+
+      case SkyDropdownMessageType.FocusTriggerButton:
+        this.triggerButton.nativeElement.focus();
+        break;
+
+      case SkyDropdownMessageType.Reposition:
+        // Only reposition the dropdown if it is already open.
+        if (this.isOpen) {
+          this.affixer.reaffix();
+        }
+        break;
+    }
+  }
+
+  private sendMessage(type: SkyDropdownMessageType): void {
+    this.messageStream.next({ type });
+  }
+
+  private positionDropdownMenu(): void {
+    this.affixer.affixTo(this.triggerButton.nativeElement, {
+      autoFitContext: SkyAffixAutoFitContext.Viewport,
+      enableAutoFit: true,
+      horizontalAlignment: this._alignment || this.horizontalAlignment,
+      isSticky: true,
+      placement: 'below'
+    });
   }
 
 }

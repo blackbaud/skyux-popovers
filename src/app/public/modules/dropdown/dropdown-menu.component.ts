@@ -8,7 +8,6 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  OnInit,
   Optional,
   Output,
   QueryList
@@ -50,7 +49,7 @@ let nextId = 0;
   styleUrls: ['./dropdown-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Sets the dropdown menu's `aria-labelledby` attribute to support accessibility. The value should
@@ -144,31 +143,55 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
     @Optional() private dropdownComponent: SkyDropdownComponent
   ) { }
 
-  public ngOnInit(): void {
-    this.dropdownComponent.messageStream
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((message: SkyDropdownMessage) => {
-        this.handleIncomingMessage(message);
-      });
-
-    this.menuChanges
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((change: SkyDropdownMenuChange) => {
-        // Close the dropdown when a menu item is selected.
-        if (change.selectedItem) {
-          this.sendMessage(SkyDropdownMessageType.Close);
-        }
-
-        if (change.items) {
-          // Update the popover style and position whenever the number of items changes.
-          this.sendMessage(SkyDropdownMessageType.Reposition);
-        }
-      });
-  }
-
   public ngAfterViewInit(): void {
-    this.dropdownComponent.menuId = this.dropdownMenuId;
+    /* istanbul ignore else */
+    if (this.dropdownComponent) {
+      this.dropdownComponent.menuId = this.dropdownMenuId;
+      this.dropdownComponent.messageStream
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((message: SkyDropdownMessage) => {
+          /* tslint:disable-next-line:switch-default */
+          switch (message.type) {
+            case SkyDropdownMessageType.Open:
+            case SkyDropdownMessageType.Close:
+            this.reset();
+            break;
 
+            case SkyDropdownMessageType.FocusFirstItem:
+            this.focusFirstItem();
+            break;
+
+            case SkyDropdownMessageType.FocusNextItem:
+            this.focusNextItem();
+            break;
+
+            case SkyDropdownMessageType.FocusPreviousItem:
+            this.focusPreviousItem();
+            break;
+          }
+        });
+
+      this.menuChanges
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((change: SkyDropdownMenuChange) => {
+          // Close the dropdown when a menu item is selected.
+          if (change.selectedItem) {
+            this.dropdownComponent.messageStream.next({
+              type: SkyDropdownMessageType.Close
+            });
+          }
+
+          if (change.items) {
+            // Update the popover style and position whenever the number of
+            // items changes.
+            this.dropdownComponent.messageStream.next({
+              type: SkyDropdownMessageType.Reposition
+            });
+          }
+        });
+    }
+
+    // Reset dropdown whenever the menu items change.
     this.menuItems.changes
       .takeUntil(this.ngUnsubscribe)
       .subscribe((items: QueryList<SkyDropdownItemComponent>) => {
@@ -256,28 +279,6 @@ export class SkyDropdownMenuComponent implements OnInit, AfterViewInit, OnDestro
     return this.menuItems.find((item: any, i: number) => {
       return (i === index);
     });
-  }
-
-  private handleIncomingMessage(message: SkyDropdownMessage): void {
-    /* tslint:disable-next-line:switch-default */
-    switch (message.type) {
-      case SkyDropdownMessageType.Open:
-      case SkyDropdownMessageType.Close:
-        this.reset();
-        break;
-
-      case SkyDropdownMessageType.FocusFirstItem:
-        this.focusFirstItem();
-        break;
-
-      case SkyDropdownMessageType.FocusNextItem:
-        this.focusNextItem();
-        break;
-
-      case SkyDropdownMessageType.FocusPreviousItem:
-        this.focusPreviousItem();
-        break;
-    }
   }
 
   private sendMessage(type: SkyDropdownMessageType): void {
