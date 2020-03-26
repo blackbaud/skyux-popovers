@@ -21,6 +21,9 @@ import {
 } from '@angular/core';
 
 import {
+  SkyAffixAutoFitContext,
+  SkyAffixer,
+  SkyAffixService,
   SkyWindowRefService
 } from '@skyux/core';
 
@@ -44,6 +47,11 @@ import {
   SkyPopoverAlignment,
   SkyPopoverPlacement
 } from './types';
+
+import {
+  parseAffixHorizontalAlignment,
+  parseAffixPlacement
+} from './popover-extensions';
 
 @Component({
   selector: 'sky-popover',
@@ -153,6 +161,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   public popoverTop: number;
 
+  private affixer: SkyAffixer;
+
   private caller: ElementRef;
 
   private idled = new Subject<boolean>();
@@ -160,8 +170,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   private isMarkedForCloseOnMouseLeave = false;
 
   private preferredPlacement: SkyPopoverPlacement;
-
-  private scrollListeners: Function[] = [];
 
   private _alignment: SkyPopoverAlignment;
 
@@ -173,7 +181,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     private adapterService: SkyPopoverAdapterService,
     private changeDetector: ChangeDetectorRef,
     private elementRef: ElementRef,
-    private windowRef: SkyWindowRefService
+    private windowRef: SkyWindowRefService,
+    private affixService: SkyAffixService
   ) { }
 
   public ngOnInit(): void {
@@ -272,39 +281,29 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private positionPopover(): void {
     if (this.placement !== 'fullscreen') {
-      const elements = {
-        popover: this.popoverContainer,
-        popoverArrow: this.popoverArrow,
-        caller: this.caller
-      };
+      if (!this.affixer) {
+        this.setupAffixer();
+      }
 
-      const position = this.adapterService.getPopoverPosition(
-        elements,
-        this.preferredPlacement,
-        this.alignment
-      );
+      this.affixer.affixTo(this.caller.nativeElement, {
+        placement: parseAffixPlacement(this.preferredPlacement),
+        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
+        isSticky: true,
+        enableAutoFit: true,
+        verticalAlignment: 'middle',
+        autoFitContext: SkyAffixAutoFitContext.Viewport
+      });
 
-      this.placement = position.placement;
-      this.alignment = position.alignment;
-      this.popoverTop = position.top;
-      this.popoverLeft = position.left;
-      this.arrowTop = position.arrowTop;
-      this.arrowLeft = position.arrowLeft;
+      setTimeout(() => {
+        this.updateArrowOffset();
+        this.changeDetector.markForCheck();
+      });
     }
-
-    this.changeDetector.markForCheck();
   }
 
   private addListeners(): void {
     const windowObj = this.windowRef.getWindow();
     const hostElement = this.elementRef.nativeElement;
-
-    Observable
-      .fromEvent(windowObj, 'resize')
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.reposition();
-      });
 
     Observable
       .fromEvent(windowObj.document, 'focusin')
@@ -365,26 +364,52 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
           }
         }
       });
-
-    this.scrollListeners = this.adapterService
-      .getParentScrollListeners(this.popoverContainer, (isElementVisibleWithinScrollable: boolean) => {
-        this.reposition();
-        this.isVisible = isElementVisibleWithinScrollable;
-        this.changeDetector.markForCheck();
-      });
   }
 
   private removeListeners(): void {
     this.idled.next(true);
+  }
 
-    if (this.scrollListeners) {
-      this.scrollListeners.forEach((listener: any) => {
-        // Remove renderer-generated listeners by calling the listener itself.
-        // https://github.com/angular/angular/issues/9368#issuecomment-227199778
-        listener();
+  private updateArrowOffset(): void {
+    const { top, left } = this.adapterService.getArrowCoordinates(
+      {
+        caller: this.caller,
+        popover: this.popoverContainer,
+        popoverArrow: this.popoverArrow
+      },
+      this.placement
+    );
+
+    this.arrowTop = top;
+    this.arrowLeft = left;
+  }
+
+  private setupAffixer(): void {
+    this.affixer = this.affixService.createAffixer(this.popoverContainer);
+
+    this.affixer.placementChange
+      .takeUntil(this.idled)
+      .subscribe((change) => {
+        this.placement = change.placement;
+        this.changeDetector.markForCheck();
+        setTimeout(() => {
+          this.updateArrowOffset();
+          this.changeDetector.markForCheck();
+        });
       });
 
-      this.scrollListeners = [];
-    }
+    this.affixer.offsetChange
+      .takeUntil(this.idled)
+      .subscribe(() => {
+        this.updateArrowOffset();
+        this.changeDetector.markForCheck();
+      });
+
+    this.affixer.overflowScroll
+      .takeUntil(this.idled)
+      .subscribe(() => {
+        this.updateArrowOffset();
+        this.changeDetector.markForCheck();
+      });
   }
 }

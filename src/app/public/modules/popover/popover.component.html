@@ -7,8 +7,6 @@
     'sky-popover-placement-' + placement
   ]"
   [@popoverState]="animationState"
-  [style.left.px]="popoverLeft"
-  [style.top.px]="popoverTop"
   [style.visibility]="(isVisible) ? 'visible': 'hidden'"
   (@popoverState.done)="onAnimationDone($event)"
   (@popoverState.start)="onAnimationStart($event)"

@@ -11,6 +11,7 @@ import {
 } from '@angular/platform-browser/animations';
 
 import {
+  SkyAffixModule,
   SkyWindowRefService
 } from '@skyux/core';
 
@@ -38,6 +39,7 @@ import {
   imports: [
     BrowserAnimationsModule,
     CommonModule,
+    SkyAffixModule,
     SkyIconModule,
     SkyPopoversResourcesModule
   ],
