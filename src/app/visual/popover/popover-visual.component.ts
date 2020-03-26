@@ -1,29 +1,30 @@
 import {
-  AfterViewInit,
-  Component,
-  QueryList,
-  ViewChildren
+  Component, OnInit, ViewChild, AfterViewInit
 } from '@angular/core';
 
-import {
-  SkyPopoverComponent
-} from '../../public';
+import { AnimationTestComponent } from './animation-test.component';
 
 @Component({
   selector: 'popover-visual',
   templateUrl: './popover-visual.component.html',
   styleUrls: ['./popover-visual.component.scss']
 })
-export class PopoverVisualComponent implements AfterViewInit {
+export class PopoverVisualComponent implements OnInit, AfterViewInit {
 
-  @ViewChildren(SkyPopoverComponent)
-  private popoverComponents: QueryList<SkyPopoverComponent>;
+  public isOpen = false;
+
+  @ViewChild('componentRef', {read: AnimationTestComponent})
+  private componentRef: AnimationTestComponent;
+
+  public ngOnInit(): void {
+  }
 
   public ngAfterViewInit(): void {
-    // Disable animations for the visual tests.
-    setTimeout(() => {
-      this.popoverComponents.forEach(c => c.enableAnimations = false);
-    });
+  }
+
+  public onClick(): void {
+    this.componentRef.open();
+    this.isOpen = !this.isOpen;
   }
 
 }

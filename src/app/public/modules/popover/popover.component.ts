@@ -1,75 +1,36 @@
 import {
-  AnimationEvent,
-  animate,
-  trigger,
-  state,
-  style,
-  transition
-} from '@angular/animations';
-
-import {
   Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
   TemplateRef,
   ViewChild,
-  ViewContainerRef
+  Output,
+  EventEmitter,
+  ElementRef,
+  Input
 } from '@angular/core';
 
 import {
-  SkyAffixAutoFitContext,
-  SkyAffixer,
-  SkyAffixService,
-  SkyCoreAdapterService,
   SkyOverlayInstance,
-  SkyOverlayService,
-  SkyWindowRefService
+  SkyOverlayService
 } from '@skyux/core';
 
-import 'rxjs/add/observable/fromEvent';
-
-import 'rxjs/add/operator/takeUntil';
+import {
+  SkyPopoverAlignment
+} from './types/popover-alignment';
 
 import {
-  Observable
-} from 'rxjs/Observable';
-
-import {
-  Subject
-} from 'rxjs/Subject';
-
-import {
-  SkyPopoverAdapterService
-} from './popover-adapter.service';
-
-import {
-  SkyPopoverAlignment,
   SkyPopoverPlacement
-} from './types';
+} from './types/popover-placement';
 
 import {
-  parseAffixHorizontalAlignment,
-  parseAffixPlacement
-} from './popover-extensions';
+  SkyPopoverContentComponent
+} from './popover-content.component';
+import { SkyPopoverContext } from './popover-context';
 
 @Component({
   selector: 'sky-popover',
-  templateUrl: './popover.component.html',
-  styleUrls: ['./popover.component.scss'],
-  animations: [
-    trigger('popoverState', [
-      state('visible', style({ opacity: 1, visibility: 'visible' })),
-      state('hidden', style({ opacity: 0 })),
-      transition('hidden => visible', animate('150ms')),
-      transition('visible => hidden', animate('150ms'))
-    ])
-  ]
+  templateUrl: './popover.component.html'
 })
-export class SkyPopoverComponent implements OnInit, OnDestroy {
+export class SkyPopoverComponent {
 
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
@@ -120,23 +81,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Indicates if the popover should be injected in-place as a static HTML element. The default
-   * value of `false` injects the popover in an overlay with a fixed position. This setting is for
-   * internal use only.
-   * @internal
-   * @deprecated Static popovers will be removed in the next major version release.
-   * @default false
-   */
-  @Input()
-  public set isStatic(value: boolean) {
-    this._isStatic = value;
-  }
-
-  public get isStatic(): boolean {
-    return this._isStatic || false;
-  }
-
-  /**
    * Specifies the placement of the popover in relation to the trigger element.
    * The `skyPopoverPlacement` property on the popover directive overwrites this property.
    * @default "above"
@@ -168,57 +112,18 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
-  @ViewChild('popoverArrow')
-  public popoverArrow: ElementRef;
+  public isMouseEnter: boolean = false;
 
-  @ViewChild('popoverContainer')
-  public set popoverContainer(value: ElementRef) {
-    if (value) {
-      this._popoverContainer = value;
-      this.setupAffixer();
-      this.addListeners();
-    }
-  }
+  public isOpen: boolean = false;
 
-  public get popoverContainer(): ElementRef {
-    return this._popoverContainer;
-  }
+  @ViewChild('templateRef', { read: TemplateRef })
+  private templateRef: TemplateRef<any>;
 
-  public animationState: 'hidden' | 'visible' = 'hidden';
+  private contentRef: SkyPopoverContentComponent;
 
-  public arrowTop: number;
-
-  public arrowLeft: number;
-
-  /**
-   * Used by unit tests to disable animations since the component is injected at the bottom of the
-   * document body.
-   * @internal
-   */
-  public enableAnimations: boolean = true;
-
-  public isMouseEnter = false;
-
-  public isOpen = false;
-
-  public isVisible = false;
-
-  @ViewChild('popoverTemplate', {
-    read: TemplateRef
-  })
-  private popoverTemplate: TemplateRef<any>;
-
-  private affixer: SkyAffixer;
-
-  private caller: ElementRef;
-
-  private idled = new Subject<boolean>();
-
-  private isMarkedForCloseOnMouseLeave = false;
+  private isMarkedForCloseOnMouseLeave: boolean = false;
 
   private overlay: SkyOverlayInstance;
-
-  private preferredPlacement: SkyPopoverPlacement;
 
   private _alignment: SkyPopoverAlignment;
 
@@ -226,85 +131,29 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private _dismissOnBlur: boolean;
 
-  private _isStatic: boolean;
-
   private _placement: SkyPopoverPlacement;
 
-  private _popoverContainer: ElementRef;
-
   constructor(
-    private affixService: SkyAffixService,
-    private coreAdapterService: SkyCoreAdapterService,
-    private overlayService: SkyOverlayService,
-    private viewContainerRef: ViewContainerRef,
-    private adapterService: SkyPopoverAdapterService,
-    private windowRef: SkyWindowRefService
+    private overlayService: SkyOverlayService
   ) { }
-
-  public ngOnInit(): void {
-    this.preferredPlacement = this.placement;
-    this.isOpen = false;
-
-    if (this.isStatic) {
-      this.viewContainerRef.createEmbeddedView(this.popoverTemplate);
-      this.animationState = 'visible';
-      this.isOpen = true;
-      return;
-    }
-
-    this.windowRef.getWindow().setTimeout(() => {
-      this.setupOverlay();
-    });
-  }
-
-  public ngOnDestroy(): void {
-    if (this.overlay) {
-      this.overlayService.close(this.overlay);
-    }
-
-    this.affixer.destroy();
-    this.removeListeners();
-  }
 
   public positionNextTo(
     caller: ElementRef,
     placement?: SkyPopoverPlacement,
     alignment?: SkyPopoverAlignment
   ): void {
-    this.close();
+    if (!this.overlay) {
+      this.setupOverlay();
+    }
 
-    this.caller = caller;
     this.placement = placement;
     this.alignment = alignment;
-    this.preferredPlacement = this.placement;
 
-    // Let the styles render before gauging the dimensions.
-    this.windowRef.getWindow().setTimeout(() => {
-      if (
-        this.allowFullscreen &&
-        this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
-      ) {
-        this.placement = 'fullscreen';
-      }
-
-      this.isVisible = true;
-      this.positionPopover();
-      this.animationState = 'visible';
-    });
-  }
-
-  /**
-   * Brings focus to the popover element if its open.
-   * @internal
-   */
-  public applyFocus(): void {
-    if (this.isOpen) {
-      this.coreAdapterService.getFocusableChildrenAndApplyFocus(
-        this.popoverContainer,
-        '.sky-popover',
-        true
-      );
-    }
+    this.contentRef.open(
+      caller,
+      this.placement,
+      this.alignment
+    );
   }
 
   /**
@@ -312,31 +161,15 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
    * @internal
    */
   public close(): void {
-    this.animationState = 'hidden';
+    this.contentRef.close();
   }
 
-  public onAnimationStart(event: AnimationEvent): void {
-    if (event.fromState === 'void') {
-      return;
-    }
-
-    if (event.toState === 'visible') {
-      this.isOpen = true;
-    }
-  }
-
-  public onAnimationDone(event: AnimationEvent): void {
-    if (event.fromState === 'void') {
-      return;
-    }
-
-    if (event.toState === 'hidden') {
-      this.isOpen = false;
-      this.popoverClosed.emit(this);
-    } else {
-      this.isOpen = true;
-      this.popoverOpened.emit(this);
-    }
+  /**
+   * Brings focus to the popover element if its open.
+   * @internal
+   */
+  public applyFocus(): void {
+    this.contentRef.applyFocus();
   }
 
   /**
@@ -347,184 +180,34 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     this.isMarkedForCloseOnMouseLeave = true;
   }
 
-  private positionPopover(): void {
-    if (this.placement !== 'fullscreen') {
-      this.affixer.affixTo(this.caller.nativeElement, {
-        placement: parseAffixPlacement(this.preferredPlacement),
-        horizontalAlignment: parseAffixHorizontalAlignment(this.alignment),
-        isSticky: true,
-        enableAutoFit: true,
-        verticalAlignment: 'middle',
-        autoFitContext: SkyAffixAutoFitContext.Viewport
-      });
-
-      this.updateArrowOffset();
-    }
-  }
-
-  private addListeners(): void {
-    const windowObj = this.windowRef.getWindow();
-    const hostElement = this._popoverContainer.nativeElement;
-
-    Observable
-      .fromEvent(windowObj.document, 'focusin')
-      .takeUntil(this.idled)
-      .subscribe((event: KeyboardEvent) => {
-        /*istanbul ignore if*/
-        if (!this.isOpen) {
-          return;
-        }
-
-        const targetIsChild = (hostElement.contains(event.target));
-        const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
-
-        /* istanbul ignore else */
-        if (!targetIsChild && !targetIsCaller && this.dismissOnBlur) {
-          // The popover is currently being operated by the user, and
-          // has just lost keyboard focus. We should close it.
-          this.close();
-        }
-      });
-
-    Observable
-      .fromEvent(windowObj.document, 'click')
-      .takeUntil(this.idled)
-      .subscribe((event: MouseEvent) => {
-        if (!this.isMouseEnter && this.dismissOnBlur) {
-          this.close();
-        }
-      });
-
-    Observable
-      .fromEvent(hostElement, 'mouseenter')
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.isMouseEnter = true;
-      });
-
-    Observable
-      .fromEvent(hostElement, 'mouseleave')
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.isMouseEnter = false;
-        /*istanbul ignore else*/
-        if (this.isMarkedForCloseOnMouseLeave) {
-          this.close();
-          this.isMarkedForCloseOnMouseLeave = false;
-        }
-      });
-
-    Observable
-      .fromEvent(hostElement, 'keyup')
-      .takeUntil(this.idled)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-
-        /*istanbul ignore else*/
-        if (key === 'escape' && this.isOpen) {
-          event.stopPropagation();
-          event.preventDefault();
-          this.close();
-          this.caller.nativeElement.focus();
-        }
-      });
-
-    Observable
-      .fromEvent(hostElement, 'keydown')
-      .takeUntil(this.idled)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-        // Since the popover now lives in an overlay at the bottom of the document body, we need to
-        // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
-        // search bar.
-        /*istanbul ignore else*/
-        if (key === 'tab') {
-          const focusableItems = this.coreAdapterService.getFocusableChildren(hostElement);
-          const isFirstItem = (focusableItems[0] === event.target && event.shiftKey);
-          const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
-
-          /*istanbul ignore else*/
-          if (focusableItems.length === 0 || isFirstItem || isLastItem) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            this.close();
-            this.caller.nativeElement.focus();
-          }
-        }
-      });
-  }
-
-  private removeListeners(): void {
-    this.idled.next(true);
-    this.idled.complete();
-    this.idled = undefined;
-  }
-
-  private updateArrowOffset(): void {
-    const { top, left } = this.adapterService.getArrowCoordinates(
-      {
-        caller: this.caller,
-        popover: this.popoverContainer,
-        popoverArrow: this.popoverArrow
-      },
-      this.placement
-    );
-
-    this.arrowTop = top;
-    this.arrowLeft = left;
-  }
-
   private setupOverlay(): void {
-    this.overlay = this.overlayService.create({
-      closeOnNavigation: false,
-      showBackdrop: false,
-      enableClose: false,
+    const overlay = this.overlayService.create({
       enableScroll: true
     });
 
-    this.overlay.attachTemplate(this.popoverTemplate);
+    overlay.click.subscribe(() => this.close());
+
+    const contentRef = overlay.attachComponent(SkyPopoverContentComponent, [{
+      provide: SkyPopoverContext,
+      useValue: new SkyPopoverContext({
+        contentTemplateRef: this.templateRef
+      })
+    }]);
+
+    contentRef.opened.subscribe(() => {
+      this.isOpen = true;
+      this.popoverOpened.emit(this);
+    });
+
+    contentRef.closed.subscribe(() => {
+      this.overlayService.close(this.overlay);
+      this.overlay = undefined;
+      this.isOpen = false;
+      this.popoverClosed.emit(this);
+    });
+
+    this.overlay = overlay;
+    this.contentRef = contentRef;
   }
 
-  private setupAffixer(): void {
-    this.affixer = this.affixService.createAffixer(this.popoverContainer);
-
-    this.affixer.offsetChange
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.updateArrowOffset();
-      });
-
-    this.affixer.overflowScroll
-      .takeUntil(this.idled)
-      .subscribe(() => {
-        this.updateArrowOffset();
-      });
-
-    this.affixer.placementChange
-      .takeUntil(this.idled)
-      .subscribe((change) => {
-        if (change.placement === null) {
-          if (
-            this.allowFullscreen &&
-            this.adapterService.isPopoverLargerThanParent(this.popoverContainer)
-          ) {
-            this.activateFullscreen();
-          } else {
-            this.isVisible = false;
-          }
-          return;
-        }
-
-        this.placement = change.placement;
-        this.isVisible = true;
-      });
-  }
-
-  /**
-   * @deprecated The fullscreen feature will be removed in the next major version release.
-   */
-  private activateFullscreen(): void {
-    this.placement = 'fullscreen';
-  }
 }

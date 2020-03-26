@@ -198,6 +198,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .subscribe(() => {
         this.skyPopover.isMouseEnter = true;
         if (this.skyPopoverTrigger === 'mouseenter') {
+          console.log('open?');
           this.sendMessage(SkyPopoverMessageType.Open);
         }
       });
@@ -206,23 +207,29 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .fromEvent(element, 'mouseleave')
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
-        this.skyPopover.isMouseEnter = false;
-
         if (this.skyPopoverTrigger === 'mouseenter') {
-          if (this.isPopoverOpen()) {
-            // Give the popover a chance to set its isMouseEnter flag before checking to see
-            // if it should be closed.
-            this.windowRef.getWindow().setTimeout(() => {
-              this.closePopoverOrMarkForClose();
-            });
-          } else {
-            // If the mouse leaves before the popover is open,
-            // wait for the transition to complete before closing it.
-            this.skyPopover.popoverOpened.take(1).subscribe(() => {
-              this.closePopoverOrMarkForClose();
-            });
+          if (this.skyPopover.isMouseEnter === false) {
+            // This is a problem because overlays disable all click events.
+            console.log('close.');
           }
         }
+        // this.skyPopover.isMouseEnter = false;
+
+        // if (this.skyPopoverTrigger === 'mouseenter') {
+        //   if (this.isPopoverOpen()) {
+        //     // Give the popover a chance to set its isMouseEnter flag before checking to see
+        //     // if it should be closed.
+        //     this.windowRef.getWindow().setTimeout(() => {
+        //       this.closePopoverOrMarkForClose();
+        //     });
+        //   } else {
+        //     // If the mouse leaves before the popover is open,
+        //     // wait for the transition to complete before closing it.
+        //     this.skyPopover.popoverOpened.take(1).subscribe(() => {
+        //       this.closePopoverOrMarkForClose();
+        //     });
+        //   }
+        // }
       });
   }
 

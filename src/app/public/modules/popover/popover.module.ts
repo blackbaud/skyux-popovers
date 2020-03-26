@@ -30,6 +30,10 @@ import {
 } from './popover-adapter.service';
 
 import {
+  SkyPopoverContentComponent
+} from './popover-content.component';
+
+import {
   SkyPopoverComponent
 } from './popover.component';
 
@@ -40,6 +44,7 @@ import {
 @NgModule({
   declarations: [
     SkyPopoverComponent,
+    SkyPopoverContentComponent,
     SkyPopoverDirective
   ],
   imports: [
@@ -53,7 +58,11 @@ import {
   ],
   exports: [
     SkyPopoverComponent,
+    SkyPopoverContentComponent,
     SkyPopoverDirective
+  ],
+  entryComponents: [
+    SkyPopoverContentComponent
   ],
   providers: [
     SkyPopoverAdapterService,
