@@ -57,7 +57,6 @@ import {
   selector: 'sky-popover',
   templateUrl: './popover.component.html',
   styleUrls: ['./popover.component.scss'],
-  providers: [SkyPopoverAdapterService],
   animations: [
     trigger('popoverState', [
       state('visible', style({ opacity: 1, visibility: 'visible' })),
@@ -101,9 +100,20 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
   /**
    * Indicates whether to close the popover when it loses focus.
    * To require users to click a trigger button to close the popover, set this input to false.
+   * @default true
    */
   @Input()
-  public dismissOnBlur = true;
+  public set dismissOnBlur(value: boolean) {
+    this._dismissOnBlur = value;
+  }
+
+  public get dismissOnBlur(): boolean {
+    if (this._dismissOnBlur === undefined) {
+      return true;
+    }
+
+    return this._dismissOnBlur;
+  }
 
   /**
    * Specifies the placement of the popover in relation to the trigger element.
@@ -175,6 +185,8 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
 
   private _allowFullscreen: boolean;
 
+  private _dismissOnBlur: boolean;
+
   private _placement: SkyPopoverPlacement;
 
   constructor(
@@ -200,10 +212,6 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
     placement?: SkyPopoverPlacement,
     alignment?: SkyPopoverAlignment
   ): void {
-    if (!caller) {
-      return;
-    }
-
     this.close();
 
     this.caller = caller;
@@ -341,6 +349,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .takeUntil(this.idled)
       .subscribe(() => {
         this.isMouseEnter = false;
+        /* istanbul ignore else */
         if (this.isMarkedForCloseOnMouseLeave) {
           this.close();
           this.isMarkedForCloseOnMouseLeave = false;
@@ -353,6 +362,7 @@ export class SkyPopoverComponent implements OnInit, OnDestroy {
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
 
+        /* istanbul ignore else */
         if (key === 'escape') {
           event.stopPropagation();
           event.preventDefault();

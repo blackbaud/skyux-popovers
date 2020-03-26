@@ -79,9 +79,17 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
    * Specifies the user action that displays the popover.
    */
   @Input()
-  public skyPopoverTrigger: SkyPopoverTrigger = 'click';
+  public set skyPopoverTrigger(value: SkyPopoverTrigger) {
+    this._trigger = value;
+  }
+
+  public get skyPopoverTrigger(): SkyPopoverTrigger {
+    return this._trigger || 'click';
+  }
 
   private idled = new Subject<boolean>();
+
+  private _trigger: SkyPopoverTrigger;
 
   constructor(
     private elementRef: ElementRef,
@@ -92,6 +100,7 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     /* istanbul ignore else */
     if (changes.skyPopover) {
       this.removeEventListeners();
+      /* istanbul ignore else */
       if (changes.skyPopover.currentValue !== undefined) {
         this.addEventListeners();
       }

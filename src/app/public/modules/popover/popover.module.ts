@@ -24,6 +24,10 @@ import {
 } from '../shared';
 
 import {
+  SkyPopoverAdapterService
+} from './popover-adapter.service';
+
+import {
   SkyPopoverComponent
 } from './popover.component';
 
@@ -48,6 +52,7 @@ import {
     SkyPopoverDirective
   ],
   providers: [
+    SkyPopoverAdapterService,
     SkyWindowRefService
   ]
 })

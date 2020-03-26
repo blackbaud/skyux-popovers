@@ -1,7 +1,8 @@
 import {
   ElementRef,
   Injectable,
-  Renderer2
+  Renderer2,
+  RendererFactory2
 } from '@angular/core';
 
 import {
@@ -20,10 +21,14 @@ import {
 @Injectable()
 export class SkyPopoverAdapterService {
 
+  private renderer: Renderer2;
+
   constructor(
-    private renderer: Renderer2,
+    rendererFactory: RendererFactory2,
     private windowRef: SkyWindowRefService
-  ) { }
+  ) {
+    this.renderer = rendererFactory.createRenderer(undefined, undefined);
+  }
 
   public hidePopover(elem: ElementRef): void {
     this.renderer.addClass(elem.nativeElement, 'sky-popover-hidden');
