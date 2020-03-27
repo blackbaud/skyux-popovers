@@ -80,9 +80,19 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public affixer: SkyAffixer;
 
+  /**
+   * @deprecated Fullscreen popovers are not an approved SKY UX design pattern. Use the SKY UX
+   * modal component instead.
+   */
+  public allowFullscreen: boolean = false;
+
   public arrowLeft: number;
 
   public arrowTop: number;
+
+  public dismissOnBlur: boolean = true;
+
+  public enableAnimations: boolean = true;
 
   public horizontalAlignment: SkyPopoverAlignment;
 
@@ -124,13 +134,13 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.affixer.destroy();
-
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
     this._closed.complete();
     this._opened.complete();
+
+    this.affixer.destroy();
 
     this.affixer =
       this.ngUnsubscribe =
@@ -154,22 +164,39 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public open(
     caller: ElementRef,
-    placement: SkyPopoverPlacement,
-    alignment: SkyPopoverAlignment
+    config: {
+      allowFullscreen: boolean;
+      dismissOnBlur: boolean;
+      enableAnimations: boolean;
+      horizontalAlignment: SkyPopoverAlignment;
+      placement: SkyPopoverPlacement;
+    }
   ): void {
     this.caller = caller;
-    this.placement = placement;
-    this.horizontalAlignment = alignment;
+    this.allowFullscreen = config.allowFullscreen;
+    this.enableAnimations = config.enableAnimations;
+    this.placement = config.placement;
+    this.horizontalAlignment = config.horizontalAlignment;
+    this.dismissOnBlur = config.dismissOnBlur;
     this.changeDetector.markForCheck();
+
+    if (
+      this.placement === 'fullscreen' &&
+      this.allowFullscreen
+    ) {
+      this.isOpen = true;
+      this.changeDetector.markForCheck();
+      return;
+    }
 
     setTimeout(() => {
       if (!this.affixer) {
         this.setupAffixer();
       }
 
-      this.affixer.affixTo(caller.nativeElement, {
-        placement: parseAffixPlacement(placement),
-        horizontalAlignment: parseAffixHorizontalAlignment(alignment),
+      this.affixer.affixTo(this.caller.nativeElement, {
+        placement: parseAffixPlacement(this.placement),
+        horizontalAlignment: parseAffixHorizontalAlignment(this.horizontalAlignment),
         isSticky: true,
         enableAutoFit: true,
         verticalAlignment: 'middle',
@@ -201,20 +228,35 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
   private setupAffixer(): void {
     const affixer = this.affixService.createAffixer(this.popoverRef);
 
-    affixer.offsetChange.takeUntil(this.ngUnsubscribe).subscribe(() => {
-      this.updateArrowOffset();
-      this.changeDetector.markForCheck();
-    });
+    affixer.offsetChange
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this.updateArrowOffset();
+        this.changeDetector.markForCheck();
+      });
 
-    affixer.overflowScroll.takeUntil(this.ngUnsubscribe).subscribe(() => {
-      this.updateArrowOffset();
-      this.changeDetector.markForCheck();
-    });
+    affixer.overflowScroll
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this.updateArrowOffset();
+        this.changeDetector.markForCheck();
+      });
 
-    affixer.placementChange.takeUntil(this.ngUnsubscribe).subscribe((change) => {
-      this.placement = change.placement;
-      this.changeDetector.markForCheck();
-    });
+    affixer.placementChange
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((change) => {
+        if (
+          change.placement === null &&
+          this.allowFullscreen &&
+          this.adapterService.isPopoverLargerThanParent(this.popoverRef)
+        ) {
+          this.activateFullscreen();
+        } else {
+          this.placement = change.placement;
+        }
+
+        this.changeDetector.markForCheck();
+      });
 
     this.affixer = affixer;
   }
@@ -233,6 +275,13 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     this.arrowLeft = left;
   }
 
+  /**
+   * @deprecated The fullscreen feature will be removed in the next major version release.
+   */
+  private activateFullscreen(): void {
+    this.placement = 'fullscreen';
+  }
+
   private addEventListeners(): void {
     const hostElement = this.elementRef.nativeElement;
 
@@ -245,6 +294,75 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       .fromEvent(hostElement, 'mouseleave')
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => this._isMouseEnter.next(false));
+
+    Observable
+      .fromEvent(window.document, 'focusin')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        if (!this.isOpen || !this.dismissOnBlur) {
+          return;
+        }
+
+        const targetIsChild = (hostElement.contains(event.target));
+        const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
+        if (!targetIsChild && !targetIsCaller) {
+          // The popover is currently being operated by the user, and
+          // has just lost keyboard focus. We should close it.
+          this.close();
+        }
+      });
+
+    Observable
+      .fromEvent(hostElement, 'keydown')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        if (!this.dismissOnBlur) {
+          return;
+        }
+
+        const key = event.key.toLowerCase();
+        // Since the popover now lives in an overlay at the bottom of the document body, we need to
+        // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
+        // search bar.
+        /*istanbul ignore else*/
+        if (key === 'tab') {
+          const focusableItems = this.coreAdapterService.getFocusableChildren(hostElement);
+
+          const isFirstItem = (
+            focusableItems[0] === event.target &&
+            event.shiftKey
+          );
+
+          const isLastItem = (
+            focusableItems[focusableItems.length - 1] === event.target &&
+            !event.shiftKey
+          );
+
+          /*istanbul ignore else*/
+          if (focusableItems.length === 0 || isFirstItem || isLastItem) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            this.close();
+            this.caller.nativeElement.focus();
+          }
+        }
+      });
+
+    Observable
+      .fromEvent(hostElement, 'keyup')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((event: KeyboardEvent) => {
+        const key = event.key.toLowerCase();
+
+        /*istanbul ignore else*/
+        if (key === 'escape' && this.isOpen) {
+          event.stopPropagation();
+          event.preventDefault();
+          this.close();
+          this.caller.nativeElement.focus();
+        }
+      });
   }
 
 }

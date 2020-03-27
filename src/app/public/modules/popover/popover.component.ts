@@ -120,9 +120,18 @@ export class SkyPopoverComponent implements OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
-  public isMouseEnter: boolean = false;
+  public get isOpen(): boolean {
+    return !!(this.contentRef && this.contentRef.isOpen);
+  }
 
-  public isOpen: boolean = false;
+  /**
+   * Used by unit tests to disable animations since the component is injected at the bottom of the
+   * document body.
+   * @internal
+   */
+  public enableAnimations: boolean = true;
+
+  public isMouseEnter: boolean = false;
 
   @ViewChild('templateRef', { read: TemplateRef })
   private templateRef: TemplateRef<any>;
@@ -154,8 +163,20 @@ export class SkyPopoverComponent implements OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.ngUnsubscribe = undefined;
+
+    if (this.overlay) {
+      this.overlayService.close(this.overlay);
+      this.overlay = undefined;
+    }
   }
 
+  /**
+   * Positions the popover next to a given caller element.
+   * @param caller The element that opened the popover.
+   * @param placement The placement of the popover.
+   * @param alignment The horizontal alignment of the popover.
+   * @internal
+   */
   public positionNextTo(
     caller: ElementRef,
     placement?: SkyPopoverPlacement,
@@ -170,8 +191,13 @@ export class SkyPopoverComponent implements OnDestroy {
 
     this.contentRef.open(
       caller,
-      this.placement,
-      this.alignment
+      {
+        allowFullscreen: this.allowFullscreen,
+        dismissOnBlur: this.dismissOnBlur,
+        enableAnimations: this.enableAnimations,
+        horizontalAlignment: this.alignment,
+        placement: this.placement
+      }
     );
   }
 
@@ -208,7 +234,11 @@ export class SkyPopoverComponent implements OnDestroy {
 
     overlay.backdropClick
       .takeUntil(this.ngUnsubscribe)
-      .subscribe(() => this.close());
+      .subscribe(() => {
+        if (this.dismissOnBlur) {
+          this.close();
+        }
+      });
 
     const contentRef = overlay.attachComponent(SkyPopoverContentComponent, [{
       provide: SkyPopoverContext,
@@ -220,7 +250,6 @@ export class SkyPopoverComponent implements OnDestroy {
     contentRef.opened
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
-        this.isOpen = true;
         this.popoverOpened.emit(this);
       });
 
@@ -229,7 +258,6 @@ export class SkyPopoverComponent implements OnDestroy {
       .subscribe(() => {
         this.overlayService.close(this.overlay);
         this.overlay = undefined;
-        this.isOpen = false;
         this.popoverClosed.emit(this);
       });
 
