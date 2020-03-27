@@ -30,14 +30,6 @@ export class SkyPopoverAdapterService {
     this.renderer = rendererFactory.createRenderer(undefined, undefined);
   }
 
-  public hidePopover(elem: ElementRef): void {
-    this.renderer.addClass(elem.nativeElement, 'sky-popover-hidden');
-  }
-
-  public showPopover(elem: ElementRef): void {
-    this.renderer.removeClass(elem.nativeElement, 'sky-popover-hidden');
-  }
-
   /**
    * Used by the popover component to determine if fullscreen mode should be used.
    * @deprecated This method will be removed in the next major version.

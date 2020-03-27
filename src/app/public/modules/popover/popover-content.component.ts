@@ -74,6 +74,10 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     return this._opened.asObservable();
   }
 
+  public get isMouseEnter(): Observable<boolean> {
+    return this._isMouseEnter.asObservable();
+  }
+
   public affixer: SkyAffixer;
 
   public arrowLeft: number;
@@ -101,10 +105,13 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   private _closed = new Subject<void>();
 
+  private _isMouseEnter = new Subject<boolean>();
+
   private _opened = new Subject<void>();
 
   constructor(
     private changeDetector: ChangeDetectorRef,
+    private elementRef: ElementRef,
     private affixService: SkyAffixService,
     private coreAdapterService: SkyCoreAdapterService,
     private adapterService: SkyPopoverAdapterService,
@@ -113,6 +120,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.contentTarget.createEmbeddedView(this.context.contentTemplateRef);
+    this.addEventListeners();
   }
 
   public ngOnDestroy(): void {
@@ -223,6 +231,20 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
     this.arrowTop = top;
     this.arrowLeft = left;
+  }
+
+  private addEventListeners(): void {
+    const hostElement = this.elementRef.nativeElement;
+
+    Observable
+      .fromEvent(hostElement, 'mouseenter')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => this._isMouseEnter.next(true));
+
+    Observable
+      .fromEvent(hostElement, 'mouseleave')
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => this._isMouseEnter.next(false));
   }
 
 }

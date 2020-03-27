@@ -1,17 +1,22 @@
 import {
   Component,
-  TemplateRef,
-  ViewChild,
-  Output,
-  EventEmitter,
   ElementRef,
-  Input
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  TemplateRef,
+  ViewChild
 } from '@angular/core';
 
 import {
   SkyOverlayInstance,
   SkyOverlayService
 } from '@skyux/core';
+
+import {
+  Subject
+} from 'rxjs/Subject';
 
 import {
   SkyPopoverAlignment
@@ -24,13 +29,16 @@ import {
 import {
   SkyPopoverContentComponent
 } from './popover-content.component';
-import { SkyPopoverContext } from './popover-context';
+
+import {
+  SkyPopoverContext
+} from './popover-context';
 
 @Component({
   selector: 'sky-popover',
   templateUrl: './popover.component.html'
 })
-export class SkyPopoverComponent {
+export class SkyPopoverComponent implements OnDestroy {
 
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
@@ -121,7 +129,12 @@ export class SkyPopoverComponent {
 
   private contentRef: SkyPopoverContentComponent;
 
+  /**
+   * @deprecated The trigger type `mouseenter` will be removed in the next major version.
+   */
   private isMarkedForCloseOnMouseLeave: boolean = false;
+
+  private ngUnsubscribe = new Subject<void>();
 
   private overlay: SkyOverlayInstance;
 
@@ -136,6 +149,12 @@ export class SkyPopoverComponent {
   constructor(
     private overlayService: SkyOverlayService
   ) { }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.ngUnsubscribe = undefined;
+  }
 
   public positionNextTo(
     caller: ElementRef,
@@ -175,6 +194,7 @@ export class SkyPopoverComponent {
   /**
    * Adds a flag to the popover to close when the mouse leaves the popover's bounds.
    * @internal
+   * @deprecated The trigger type `mouseenter` will be removed in the next major version.
    */
   public markForCloseOnMouseLeave(): void {
     this.isMarkedForCloseOnMouseLeave = true;
@@ -182,10 +202,13 @@ export class SkyPopoverComponent {
 
   private setupOverlay(): void {
     const overlay = this.overlayService.create({
-      enableScroll: true
+      enableScroll: true,
+      enablePointerEvents: true
     });
 
-    overlay.click.subscribe(() => this.close());
+    overlay.backdropClick
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => this.close());
 
     const contentRef = overlay.attachComponent(SkyPopoverContentComponent, [{
       provide: SkyPopoverContext,
@@ -194,17 +217,31 @@ export class SkyPopoverComponent {
       })
     }]);
 
-    contentRef.opened.subscribe(() => {
-      this.isOpen = true;
-      this.popoverOpened.emit(this);
-    });
+    contentRef.opened
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this.isOpen = true;
+        this.popoverOpened.emit(this);
+      });
 
-    contentRef.closed.subscribe(() => {
-      this.overlayService.close(this.overlay);
-      this.overlay = undefined;
-      this.isOpen = false;
-      this.popoverClosed.emit(this);
-    });
+    contentRef.closed
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        this.overlayService.close(this.overlay);
+        this.overlay = undefined;
+        this.isOpen = false;
+        this.popoverClosed.emit(this);
+      });
+
+    contentRef.isMouseEnter
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((isMouseEnter) => {
+        this.isMouseEnter = isMouseEnter;
+        if (this.isMarkedForCloseOnMouseLeave) {
+          this.isMarkedForCloseOnMouseLeave = false;
+          this.close();
+        }
+      });
 
     this.overlay = overlay;
     this.contentRef = contentRef;
