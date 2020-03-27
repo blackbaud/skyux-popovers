@@ -1,8 +1,6 @@
 import {
   ElementRef,
-  Injectable,
-  RendererFactory2,
-  Renderer2
+  Injectable
 } from '@angular/core';
 
 import {
@@ -21,14 +19,9 @@ import {
 @Injectable()
 export class SkyPopoverAdapterService {
 
-  private renderer: Renderer2;
-
   constructor(
-    rendererFactory: RendererFactory2,
     private windowRef: SkyWindowRefService
-  ) {
-    this.renderer = rendererFactory.createRenderer(undefined, undefined);
-  }
+  ) { }
 
   /**
    * Used by the popover component to determine if fullscreen mode should be used.

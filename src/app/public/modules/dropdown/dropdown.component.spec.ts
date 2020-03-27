@@ -341,7 +341,7 @@ describe('Dropdown component', function () {
 
       expect(isElementVisible(container)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(window.document, 'click');
+      SkyAppTestUtility.fireDomEvent(window.document.body, 'click');
       detectChangesFakeAsync();
 
       expect(isElementVisible(container)).toEqual(false);
@@ -359,7 +359,7 @@ describe('Dropdown component', function () {
 
       expect(isElementVisible(container)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(window.document, 'click');
+      SkyAppTestUtility.fireDomEvent(window.document.body, 'click');
       detectChangesFakeAsync();
 
       // Menu should still be open.

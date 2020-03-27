@@ -120,9 +120,11 @@ export class SkyPopoverComponent implements OnDestroy {
   @Output()
   public popoverOpened = new EventEmitter<SkyPopoverComponent>();
 
-  public get isOpen(): boolean {
-    return !!(this.contentRef && this.contentRef.isOpen);
-  }
+  /**
+   * Indicates that the popover is in the process of being opened or closed.
+   * @internal
+   */
+  public isActive: boolean = false;
 
   /**
    * Used by unit tests to disable animations since the component is injected at the bottom of the
@@ -188,6 +190,7 @@ export class SkyPopoverComponent implements OnDestroy {
 
     this.placement = placement;
     this.alignment = alignment;
+    this.isActive = true;
 
     this.contentRef.open(
       caller,
@@ -258,6 +261,7 @@ export class SkyPopoverComponent implements OnDestroy {
       .subscribe(() => {
         this.overlayService.close(this.overlay);
         this.overlay = undefined;
+        this.isActive = false;
         this.popoverClosed.emit(this);
       });
 

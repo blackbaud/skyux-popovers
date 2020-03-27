@@ -140,7 +140,9 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     this._closed.complete();
     this._opened.complete();
 
-    this.affixer.destroy();
+    if (this.affixer) {
+      this.affixer.destroy();
+    }
 
     this.affixer =
       this.ngUnsubscribe =
@@ -299,16 +301,15 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       .fromEvent(window.document, 'focusin')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        if (!this.isOpen || !this.dismissOnBlur) {
-          return;
-        }
-
-        const targetIsChild = (hostElement.contains(event.target));
-        const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
-        if (!targetIsChild && !targetIsCaller) {
-          // The popover is currently being operated by the user, and
-          // has just lost keyboard focus. We should close it.
-          this.close();
+        /* istanbul ignore else */
+        if (this.isOpen && this.dismissOnBlur) {
+          const targetIsChild = (hostElement.contains(event.target));
+          const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
+          if (!targetIsChild && !targetIsCaller) {
+            // The popover is currently being operated by the user, and
+            // has just lost keyboard focus. We should close it.
+            this.close();
+          }
         }
       });
 
@@ -316,6 +317,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       .fromEvent(hostElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
+        /* istanbul ignore if */
         if (!this.dismissOnBlur) {
           return;
         }

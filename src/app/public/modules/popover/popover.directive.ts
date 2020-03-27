@@ -105,7 +105,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
   }
 
   public togglePopover(): void {
-    if (this.isPopoverOpen()) {
+    if (this.skyPopover.isActive) {
       this.sendMessage(SkyPopoverMessageType.Close);
       return;
     }
@@ -133,10 +133,6 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
     }
   }
 
-  private isPopoverOpen(): boolean {
-    return (this.skyPopover && this.skyPopover.isOpen);
-  }
-
   private addEventListeners(): void {
     const element = this.elementRef.nativeElement;
 
@@ -150,7 +146,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .fromEvent(element, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        if (!this.isPopoverOpen()) {
+        if (!this.skyPopover.isActive) {
           return;
         }
 
@@ -178,7 +174,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
           event.stopPropagation();
           event.preventDefault();
 
-          if (this.isPopoverOpen()) {
+          if (this.skyPopover.isActive) {
             this.sendMessage(SkyPopoverMessageType.Close);
           }
         }
@@ -198,7 +194,10 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
         this.skyPopover.isMouseEnter = true;
-        if (this.skyPopoverTrigger === 'mouseenter') {
+        if (
+          !this.skyPopover.isActive &&
+          this.skyPopoverTrigger === 'mouseenter'
+        ) {
           this.sendMessage(SkyPopoverMessageType.Open);
         }
       });
@@ -208,21 +207,15 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(() => {
         this.skyPopover.isMouseEnter = false;
-
-        if (this.skyPopoverTrigger === 'mouseenter') {
-          if (this.isPopoverOpen()) {
-            // Give the popover a chance to set its isMouseEnter flag before checking to see
-            // if it should be closed.
-            this.windowRef.getWindow().setTimeout(() => {
-              this.closePopoverOrMarkForClose();
-            });
-          } else {
-            // If the mouse leaves before the popover is open,
-            // wait for the transition to complete before closing it.
-            this.skyPopover.popoverOpened.take(1).subscribe(() => {
-              this.closePopoverOrMarkForClose();
-            });
-          }
+        if (
+          this.skyPopover.isActive &&
+          this.skyPopoverTrigger === 'mouseenter'
+        ) {
+          // Give the popover a chance to set its isMouseEnter flag before checking to see
+          // if it should be closed.
+          this.windowRef.getWindow().setTimeout(() => {
+            this.closePopoverOrMarkForClose();
+          });
         }
       });
   }
@@ -246,7 +239,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
 
       case SkyPopoverMessageType.Reposition:
         // Only reposition the popover if it is already open.
-        if (this.isPopoverOpen()) {
+        if (this.skyPopover.isActive) {
           this.positionPopover();
         }
         break;
