@@ -1,50 +1,16 @@
-<div id="screenshot-all-popovers">
-  <div class="popover-visual-container">
-    <sky-popover placement="above">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="below">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="right">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="left">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover>
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="above" popoverTitle="Did you know?">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="below" popoverTitle="Did you know?">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="right" popoverTitle="Did you know?">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
-  <div class="popover-visual-container">
-    <sky-popover placement="left" popoverTitle="Did you know?">
-      The content of a popover can be text, HTML, or Angular components.
-    </sky-popover>
-  </div>
+<div
+  class="static-popovers"
+  id="screenshot-all-popovers"
+>
+  <ng-container
+    #staticPopoversTarget
+  ></ng-container>
 </div>
+
+<ng-template #staticPopoverContentRef>
+  <div>The content of a popover can be text, HTML, or Angular components.</div>
+</ng-template>
+
 
 <div id="screenshot-popover-placements">
   <button id="btn-popover-placement-default" class="sky-btn" [skyPopover]="myPopover5">

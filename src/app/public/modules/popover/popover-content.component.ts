@@ -110,6 +110,8 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public placement: SkyPopoverPlacement;
 
+  public popoverTitle: string;
+
   @ViewChild('arrowRef', { read: ElementRef })
   private arrowRef: ElementRef;
 
@@ -182,14 +184,17 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       enableAnimations: boolean;
       horizontalAlignment: SkyPopoverAlignment;
       placement: SkyPopoverPlacement;
+      popoverTitle: string;
     }
   ): void {
-    this.caller = caller;
     this.allowFullscreen = config.allowFullscreen;
-    this.enableAnimations = config.enableAnimations;
-    this.placement = config.placement;
-    this.horizontalAlignment = config.horizontalAlignment;
+    this.caller = caller;
     this.dismissOnBlur = config.dismissOnBlur;
+    this.enableAnimations = config.enableAnimations;
+    this.horizontalAlignment = config.horizontalAlignment;
+    this.placement = config.placement;
+    this.popoverTitle = config.popoverTitle;
+
     this.changeDetector.markForCheck();
 
     if (

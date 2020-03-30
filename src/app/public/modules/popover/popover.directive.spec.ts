@@ -195,6 +195,21 @@ describe('Popover directive', () => {
     expect(popover).toHaveCssClass('sky-popover-alignment-right');
   }));
 
+  it('should show a title for the popover', fakeAsync(() => {
+    fixture.componentInstance.popoverTitle = 'Did you know?';
+    detectChangesFakeAsync();
+
+    const button = getCallerElement();
+
+    button.click();
+    detectChangesFakeAsync();
+
+    const headingElement = getPopoverElement().querySelector('.sky-popover-header');
+
+    expect(headingElement).toHaveText('Did you know?');
+
+  }));
+
   it('should add scrollbars for tall popover', fakeAsync(() => {
     detectChangesFakeAsync();
 
