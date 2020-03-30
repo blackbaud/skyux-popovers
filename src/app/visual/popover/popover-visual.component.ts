@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ComponentFactoryResolver,
   ElementRef,
@@ -39,7 +38,6 @@ export class PopoverVisualComponent implements AfterViewInit {
   private staticPopoverContentRef: TemplateRef<any>;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
     private resolver: ComponentFactoryResolver,
     private elementRef: ElementRef,
     private injector: Injector
