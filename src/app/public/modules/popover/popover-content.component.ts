@@ -7,10 +7,10 @@ import {
   Component,
   ElementRef,
   OnDestroy,
-  ViewChild,
+  OnInit,
   Optional,
-  ViewContainerRef,
-  OnInit
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 
 import {
