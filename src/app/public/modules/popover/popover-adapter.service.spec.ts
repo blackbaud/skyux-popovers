@@ -6,7 +6,7 @@ import {
   SkyPopoverAdapterService
 } from './popover-adapter.service';
 
-describe('Popover adapter', function () {
+describe('SkyPopoverAdapterService', () => {
 
   let adapter: SkyPopoverAdapterService;
   let callerElement: any;

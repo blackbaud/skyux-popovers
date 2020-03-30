@@ -18,6 +18,10 @@ import {
   Subject
 } from 'rxjs/Subject';
 
+import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/takeUntil';
+
 import {
   SkyPopoverAlignment
 } from './types/popover-alignment';

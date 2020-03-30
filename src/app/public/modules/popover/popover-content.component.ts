@@ -21,9 +21,16 @@ import {
 } from '@skyux/core';
 
 import {
-  Observable,
+  Observable
+} from 'rxjs/Observable';
+
+import {
   Subject
-} from 'rxjs';
+} from 'rxjs/Subject';
+
+import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/takeUntil';
 
 import {
   SkyPopoverAlignment
@@ -46,10 +53,13 @@ import {
 } from './popover-animation-state';
 
 import {
+  SkyPopoverContext
+} from './popover-context';
+
+import {
   parseAffixHorizontalAlignment,
   parseAffixPlacement
 } from './popover-extensions';
-import { SkyPopoverContext } from './popover-context';
 
 /**
  * @internal

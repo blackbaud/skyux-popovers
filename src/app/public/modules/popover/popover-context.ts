@@ -1,7 +1,11 @@
-import { TemplateRef, Injectable } from '@angular/core';
+import {
+  Injectable,
+  TemplateRef
+} from '@angular/core';
 
 /**
  * @dynamic
+ * @internal
  */
 @Injectable()
 export class SkyPopoverContext {

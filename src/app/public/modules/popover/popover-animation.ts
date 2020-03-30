@@ -7,6 +7,9 @@ import {
   trigger
 } from '@angular/animations';
 
+/**
+ * @internal
+ */
 export const skyPopoverAnimation: AnimationTriggerMetadata = trigger('skyPopoverAnimation', [
   state('void', style({
     opacity: 0

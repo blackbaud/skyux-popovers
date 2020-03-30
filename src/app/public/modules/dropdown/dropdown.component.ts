@@ -14,7 +14,7 @@ import {
   SkyAffixAutoFitContext,
   SkyAffixer,
   SkyAffixService,
-  SkyAppWindowRef,
+  SkyWindowRefService,
   SkyOverlayInstance,
   SkyOverlayService
 } from '@skyux/core';
@@ -143,6 +143,13 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Specifies an accessibility label to provide a text equivalent for screen readers when the
+   * dropdown button has no text.
+   */
+  @Input()
+  public label: string;
+
+  /**
    * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
    * @default "left"
    */
@@ -154,13 +161,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public get horizontalAlignment(): SkyDropdownHorizontalAlignment {
     return this._horizontalAlignment || 'left';
   }
-
-  /**
-   * Specifies an accessibility label to provide a text equivalent for screen readers when the
-   * dropdown button has no text.
-   */
-  @Input()
-  public label: string;
 
   /**
    * Provides an observable to send commands to the dropdown. The commands should respect
@@ -182,7 +182,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
    * for users on touch devices such as phones and tablets.
    * @deprecated We recommend against using this property. If you choose to use the deprecated
    * `hover` value anyway, we recommend that you not use it in combination with the `title`
-   * property.
+   * property. (This property will be removed in the next major version release.)
    * @default "click"
    */
   @Input()
@@ -193,14 +193,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public get trigger(): SkyDropdownTriggerType {
     return this._trigger || 'click';
   }
-
-  /**
-   * @internal
-   */
-  @ViewChild('triggerButton', {
-    read: ElementRef
-  })
-  public triggerButton: ElementRef;
 
   /**
    * @internal
@@ -219,9 +211,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._isOpen || false;
   }
 
-  /**
-   * @internal
-   */
   public isMouseEnter: boolean = false;
 
   public menuId: string;
@@ -253,10 +242,11 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   public isVisible: boolean = false;
 
-  @ViewChild('menuContainerTemplateRef', {
-    read: TemplateRef
-  })
+  @ViewChild('menuContainerTemplateRef')
   private menuContainerTemplateRef: TemplateRef<any>;
+
+  @ViewChild('triggerButton')
+  private triggerButton: ElementRef;
 
   private affixer: SkyAffixer;
 
@@ -285,9 +275,9 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
-    private windowRef: SkyAppWindowRef,
     private adapter: SkyDropdownAdapterService,
-    private overlayService: SkyOverlayService
+    private overlayService: SkyOverlayService,
+    private windowRef: SkyWindowRefService
   ) { }
 
   public ngOnInit(): void {
@@ -385,7 +375,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         if (this.trigger === 'hover') {
           // Allow the dropdown menu to set isMouseEnter before checking if the close action
           // should be taken.
-          this.windowRef.nativeWindow.setTimeout(() => {
+          this.windowRef.getWindow().setTimeout(() => {
             if (!this.isMouseEnter) {
               this.sendMessage(SkyDropdownMessageType.Close);
             }
@@ -484,7 +474,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     this.createOverlay();
     this.changeDetector.markForCheck();
 
-    this.windowRef.nativeWindow.setTimeout(() => {
+    this.windowRef.getWindow().setTimeout(() => {
       this.affixer.affixTo(this.triggerButton.nativeElement, {
         autoFitContext: SkyAffixAutoFitContext.Viewport,
         enableAutoFit: true,

@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterContentInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -13,8 +13,6 @@ import {
   QueryList
 } from '@angular/core';
 
-import 'rxjs/add/operator/takeUntil';
-
 import {
   SkyCoreAdapterService
 } from '@skyux/core';
@@ -26,6 +24,10 @@ import {
 import {
   Subject
 } from 'rxjs/Subject';
+
+import 'rxjs/add/observable/fromEvent';
+
+import 'rxjs/add/operator/takeUntil';
 
 import {
   SkyDropdownComponent
@@ -49,7 +51,7 @@ let nextId = 0;
   styleUrls: ['./dropdown-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
+export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
 
   /**
    * Sets the dropdown menu's `aria-labelledby` attribute to support accessibility. The value should
@@ -143,7 +145,7 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
     @Optional() private dropdownComponent: SkyDropdownComponent
   ) { }
 
-  public ngAfterViewInit(): void {
+  public ngAfterContentInit(): void {
     /* istanbul ignore else */
     if (this.dropdownComponent) {
       this.dropdownComponent.menuId = this.dropdownMenuId;
@@ -173,7 +175,7 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
 
       this.menuChanges
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((change) => {
+        .subscribe((change: SkyDropdownMenuChange) => {
           // Close the dropdown when a menu item is selected.
           if (change.selectedItem) {
             this.dropdownComponent.messageStream.next({

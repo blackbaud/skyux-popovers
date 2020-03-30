@@ -15,5 +15,4 @@ export class SkyDropdownAdapterService {
 
     return nativeEl.contains(focusedEl);
   }
-
 }

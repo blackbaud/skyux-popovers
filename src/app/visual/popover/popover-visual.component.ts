@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, AfterViewInit
+  Component
 } from '@angular/core';
 
 @Component({
@@ -7,12 +7,4 @@ import {
   templateUrl: './popover-visual.component.html',
   styleUrls: ['./popover-visual.component.scss']
 })
-export class PopoverVisualComponent implements OnInit, AfterViewInit {
-
-  public ngOnInit(): void {
-  }
-
-  public ngAfterViewInit(): void {
-  }
-
-}
+export class PopoverVisualComponent { }

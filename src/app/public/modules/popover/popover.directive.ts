@@ -186,9 +186,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
     Observable
       .fromEvent(element, 'click')
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: MouseEvent) => {
-        event.stopPropagation();
-        event.preventDefault();
+      .subscribe(() => {
         this.togglePopover();
       });
 
