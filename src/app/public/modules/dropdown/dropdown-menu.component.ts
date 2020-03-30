@@ -173,7 +173,7 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
 
       this.menuChanges
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((change: SkyDropdownMenuChange) => {
+        .subscribe((change) => {
           // Close the dropdown when a menu item is selected.
           if (change.selectedItem) {
             this.dropdownComponent.messageStream.next({
@@ -317,10 +317,6 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
       .fromEvent(dropdownMenuElement, 'keyup')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        if (!this.dropdownComponent.isOpen) {
-          return;
-        }
-
         const key = event.key.toLowerCase();
 
         /*tslint:disable-next-line:switch-default*/
@@ -338,10 +334,6 @@ export class SkyDropdownMenuComponent implements AfterViewInit, OnDestroy {
       .fromEvent(dropdownMenuElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        if (!this.dropdownComponent.isOpen) {
-          return;
-        }
-
         const key = event.key.toLowerCase();
 
         /*tslint:disable-next-line:switch-default*/

@@ -24,7 +24,7 @@
       </ng-template>
 
       <ng-template ngSwitchDefault>
-        <div *ngIf="!buttonType || buttonType === 'select' || buttonType === 'tab'"
+        <div *ngIf="buttonType === 'select' || buttonType === 'tab' || !buttonType"
           class="sky-dropdown-button-container"
         >
           <div
@@ -45,7 +45,7 @@
             </sky-icon>
           </div>
         </div>
-        <div *ngIf="buttonType && buttonType !== 'select' && buttonType !== 'tab'">
+        <div *ngIf="buttonType !== 'select' && buttonType !== 'tab' && buttonType">
           <sky-icon
             [icon]="buttonType"
             size="lg"
@@ -61,6 +61,7 @@
 >
   <div
     class="sky-dropdown-menu-container"
+    [class.hidden]="!isVisible"
     #menuContainerElementRef
   >
     <ng-content

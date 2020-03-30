@@ -53,6 +53,10 @@ import {
   SkyDropdownAdapterService
 } from './dropdown-adapter.service';
 
+import {
+  parseAffixHorizontalAlignment
+} from './dropdown-extensions';
+
 @Component({
   selector: 'sky-dropdown',
   templateUrl: './dropdown.component.html',
@@ -237,10 +241,8 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public set menuContainerElementRef(value: ElementRef) {
     if (value) {
       this._menuContainerElementRef = value;
-      this.isOpen = false;
-      this.adapter.hideElement(this.menuContainerElementRef);
+      this.destroyAffixer();
       this.createAffixer();
-      this.addEventListeners();
       this.changeDetector.markForCheck();
     }
   }
@@ -248,6 +250,8 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public get menuContainerElementRef(): ElementRef {
     return this._menuContainerElementRef;
   }
+
+  public isVisible: boolean = false;
 
   @ViewChild('menuContainerTemplateRef', {
     read: TemplateRef
@@ -287,10 +291,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.windowRef.nativeWindow.setTimeout(() => {
-      this.createOverlay();
-      this.changeDetector.markForCheck();
-    });
+    this.addEventListeners();
 
     this.messageStream
       .takeUntil(this.ngUnsubscribe)
@@ -300,17 +301,8 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    /*istanbul ignore else*/
-    if (this.affixer) {
-      this.affixer.destroy();
-      this.affixer = undefined;
-    }
-
-    /*istanbul ignore else*/
-    if (this.overlay) {
-      this.overlayService.close(this.overlay);
-      this.overlay = undefined;
-    }
+    this.destroyAffixer();
+    this.destroyOverlay();
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -323,22 +315,11 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     Observable
       .fromEvent(buttonElement, 'click')
       .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: MouseEvent) => {
+      .subscribe(() => {
         if (this.isOpen) {
           this.sendMessage(SkyDropdownMessageType.Close);
         } else {
           this.sendMessage(SkyDropdownMessageType.Open);
-        }
-        event.preventDefault();
-        event.stopPropagation();
-      });
-
-    Observable
-      .fromEvent(window.document, 'click')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(() => {
-        if (this.isOpen && !this.isMouseEnter && this.dismissOnBlur) {
-          this.sendMessage(SkyDropdownMessageType.Close);
         }
       });
 
@@ -414,48 +395,83 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   }
 
   private createOverlay(): void {
-    this.overlay = this.overlayService.create({
-      closeOnNavigation: false,
-      showBackdrop: false,
-      enableClose: false,
-      enableScroll: true
-    });
-
-    this.overlay.attachTemplate(this.menuContainerTemplateRef);
-  }
-
-  private createAffixer(): void {
-    this.affixer = this.affixService.createAffixer(this.menuContainerElementRef);
-  }
-
-  private handleIncomingMessages(message: SkyDropdownMessage): void {
-    if (this.disabled) {
+    if (this.overlay) {
       return;
     }
 
-    /* tslint:disable-next-line:switch-default */
-    switch (message.type) {
-      case SkyDropdownMessageType.Open:
-        this.isOpen = true;
-        this.positionDropdownMenu();
-        this.adapter.showElement(this.menuContainerElementRef);
-        break;
+    const overlay = this.overlayService.create({
+      enableScroll: true,
+      enablePointerEvents: true
+    });
 
-      case SkyDropdownMessageType.Close:
-        this.isOpen = false;
-        this.adapter.hideElement(this.menuContainerElementRef);
-        break;
+    overlay.attachTemplate(this.menuContainerTemplateRef);
 
-      case SkyDropdownMessageType.FocusTriggerButton:
-        this.triggerButton.nativeElement.focus();
-        break;
-
-      case SkyDropdownMessageType.Reposition:
-        // Only reposition the dropdown if it is already open.
-        if (this.isOpen) {
-          this.affixer.reaffix();
+    overlay.backdropClick
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(() => {
+        if (this.dismissOnBlur) {
+          this.sendMessage(SkyDropdownMessageType.Close);
         }
-        break;
+      });
+
+    this.overlay = overlay;
+  }
+
+  private destroyAffixer(): void {
+    /*istanbul ignore else*/
+    if (this.affixer) {
+      this.affixer.destroy();
+      this.affixer = undefined;
+    }
+  }
+
+  private destroyOverlay(): void {
+    /*istanbul ignore else*/
+    if (this.overlay) {
+      this.overlayService.close(this.overlay);
+      this.overlay = undefined;
+    }
+  }
+
+  private createAffixer(): void {
+    const affixer = this.affixService.createAffixer(this.menuContainerElementRef);
+
+    affixer.placementChange
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe((change) => {
+        this.isVisible = (change.placement !== null);
+        this.changeDetector.markForCheck();
+      });
+
+    this.affixer = affixer;
+  }
+
+  private handleIncomingMessages(message: SkyDropdownMessage): void {
+    if (!this.disabled) {
+      /* tslint:disable-next-line:switch-default */
+      switch (message.type) {
+        case SkyDropdownMessageType.Open:
+          this.isOpen = true;
+          this.positionDropdownMenu();
+          break;
+
+        case SkyDropdownMessageType.Close:
+          this.isOpen = false;
+          this.destroyOverlay();
+          break;
+
+        case SkyDropdownMessageType.Reposition:
+          // Only reposition the dropdown if it is already open.
+          /* istanbul ignore else */
+          if (this.isOpen) {
+            this.affixer.reaffix();
+          }
+          break;
+
+        case SkyDropdownMessageType.FocusTriggerButton:
+          this.triggerButton.nativeElement.focus();
+          break;
+      }
     }
   }
 
@@ -464,12 +480,23 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   }
 
   private positionDropdownMenu(): void {
-    this.affixer.affixTo(this.triggerButton.nativeElement, {
-      autoFitContext: SkyAffixAutoFitContext.Viewport,
-      enableAutoFit: true,
-      horizontalAlignment: this._alignment || this.horizontalAlignment,
-      isSticky: true,
-      placement: 'below'
+    this.isVisible = false;
+    this.createOverlay();
+    this.changeDetector.markForCheck();
+
+    this.windowRef.nativeWindow.setTimeout(() => {
+      this.affixer.affixTo(this.triggerButton.nativeElement, {
+        autoFitContext: SkyAffixAutoFitContext.Viewport,
+        enableAutoFit: true,
+        horizontalAlignment: parseAffixHorizontalAlignment(
+          this._alignment || this.horizontalAlignment
+        ),
+        isSticky: true,
+        placement: 'below'
+      });
+
+      this.isVisible = true;
+      this.changeDetector.markForCheck();
     });
   }
 
