@@ -183,6 +183,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       dismissOnBlur: boolean;
       enableAnimations: boolean;
       horizontalAlignment: SkyPopoverAlignment;
+      isStatic: boolean;
       placement: SkyPopoverPlacement;
       popoverTitle: string;
     }
@@ -197,10 +198,17 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
     this.changeDetector.markForCheck();
 
-    if (
-      this.placement === 'fullscreen' &&
-      this.allowFullscreen
-    ) {
+    // Indicates if the popover should be displayed statically.
+    // Please note: This feature is internal-only and used by the visual tests to capture multiple
+    // states simultaneously without the overhead of event listeners.
+    /* istanbul ignore if */
+    if (config.isStatic) {
+      this.isOpen = true;
+      this.changeDetector.markForCheck();
+      return;
+    }
+
+    if (this.placement === 'fullscreen' && this.allowFullscreen) {
       this.isOpen = true;
       this.changeDetector.markForCheck();
       return;

@@ -129,15 +129,9 @@ export class PopoverVisualComponent implements AfterViewInit {
         dismissOnBlur: false,
         enableAnimations: false,
         horizontalAlignment: config.horizontalAlignment,
+        isStatic: true,
         placement: config.placement,
         popoverTitle: config.popoverTitle
-      });
-
-      // Reset the popover arrows to auto placement.
-      setTimeout(() => {
-        componentRef.instance.arrowLeft = undefined;
-        componentRef.instance.arrowTop = undefined;
-        this.changeDetector.markForCheck();
       });
     });
   }

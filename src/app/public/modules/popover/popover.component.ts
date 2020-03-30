@@ -203,6 +203,7 @@ export class SkyPopoverComponent implements OnDestroy {
         dismissOnBlur: this.dismissOnBlur,
         enableAnimations: this.enableAnimations,
         horizontalAlignment: this.alignment,
+        isStatic: false,
         placement: this.placement,
         popoverTitle: this.popoverTitle
       }

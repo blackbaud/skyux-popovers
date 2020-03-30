@@ -52,8 +52,6 @@ export class PopoverFixtureComponent implements OnInit {
 
   public dismissOnBlur: boolean;
 
-  public isStatic: boolean;
-
   public messageStream = new Subject<SkyPopoverMessage>();
 
   public placement: SkyPopoverPlacement;
