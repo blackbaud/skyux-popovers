@@ -197,12 +197,12 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       }
 
       this.affixer.affixTo(this.caller.nativeElement, {
-        placement: parseAffixPlacement(this.placement),
+        autoFitContext: SkyAffixAutoFitContext.Viewport,
+        enableAutoFit: true,
         horizontalAlignment: parseAffixHorizontalAlignment(this.horizontalAlignment),
         isSticky: true,
-        enableAutoFit: true,
-        verticalAlignment: 'middle',
-        autoFitContext: SkyAffixAutoFitContext.Viewport
+        placement: parseAffixPlacement(this.placement),
+        verticalAlignment: 'middle'
       });
 
       this.updateArrowOffset();
@@ -298,22 +298,6 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       .subscribe(() => this._isMouseEnter.next(false));
 
     Observable
-      .fromEvent(window.document, 'focusin')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        /* istanbul ignore else */
-        if (this.isOpen && this.dismissOnBlur) {
-          const targetIsChild = (hostElement.contains(event.target));
-          const targetIsCaller = (this.caller && this.caller.nativeElement === event.target);
-          if (!targetIsChild && !targetIsCaller) {
-            // The popover is currently being operated by the user, and
-            // has just lost keyboard focus. We should close it.
-            this.close();
-          }
-        }
-      });
-
-    Observable
       .fromEvent(hostElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
@@ -358,9 +342,9 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
         const key = event.key.toLowerCase();
 
         /*istanbul ignore else*/
-        if (key === 'escape' && this.isOpen) {
-          event.stopPropagation();
+        if (this.isOpen && key === 'escape') {
           event.preventDefault();
+          event.stopPropagation();
           this.close();
           this.caller.nativeElement.focus();
         }

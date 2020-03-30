@@ -461,7 +461,7 @@ describe('Popover directive', () => {
 
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
-          key: 'arrowleft'
+          key: 'arrowdown'
         }
       });
 
@@ -479,7 +479,7 @@ describe('Popover directive', () => {
       // Test IE11-specific key names.
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
-          key: 'left'
+          key: 'down'
         }
       });
 
@@ -589,7 +589,11 @@ describe('Popover directive', () => {
 
       expect(isElementVisible(popover)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(window.document, 'focusin');
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'TAB'
+        }
+      });
       detectChangesFakeAsync();
 
       popover = getPopoverElement();

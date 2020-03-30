@@ -151,16 +151,24 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
         }
 
         const key = event.key.toLowerCase();
-        /* istanbul ignore else */
-        if (
-          (key === 'arrowup' || key === 'up') ||
-          (key === 'arrowright' || key === 'right') ||
-          (key === 'arrowdown' || key === 'down') ||
-          (key === 'arrowleft' || key === 'left')
-        ) {
-          event.stopPropagation();
-          event.preventDefault();
-          this.sendMessage(SkyPopoverMessageType.Focus);
+
+        /* tslint:disable-next-line:switch-default */
+        switch (key) {
+          case 'arrowdown':
+          case 'arrowleft':
+          case 'arrowright':
+          case 'arrowup':
+          case 'down':
+          case 'left':
+          case 'right':
+          case 'up':
+            this.sendMessage(SkyPopoverMessageType.Focus);
+            event.stopPropagation();
+            event.preventDefault();
+            break;
+          case 'tab':
+            this.sendMessage(SkyPopoverMessageType.Close);
+            break;
         }
       });
 
@@ -169,14 +177,9 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
-        /* istanbul ignore else */
-        if (key === 'escape') {
-          event.stopPropagation();
-          event.preventDefault();
 
-          if (this.skyPopover.isActive) {
-            this.sendMessage(SkyPopoverMessageType.Close);
-          }
+        if (key === 'escape' && this.skyPopover.isActive) {
+          this.sendMessage(SkyPopoverMessageType.Close);
         }
       });
 

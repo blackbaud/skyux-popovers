@@ -19,8 +19,6 @@ import {
   SkyDropdownModule,
   SkyPopoverModule
 } from './public';
-import { AnimationTestComponent } from './visual/popover/animation-test.component';
-import { AnimationTestContentComponent } from './visual/popover/animation-test-content.component';
 
 @NgModule({
   exports: [
@@ -29,10 +27,6 @@ import { AnimationTestContentComponent } from './visual/popover/animation-test-c
     SkyDropdownModule,
     SkyPopoverModule,
     SkyDocsToolsModule
-  ],
-  entryComponents: [
-    AnimationTestComponent,
-    AnimationTestContentComponent
   ],
   providers: [
     {
