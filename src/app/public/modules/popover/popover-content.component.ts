@@ -150,16 +150,18 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
 
     this._closed.complete();
+    this._isMouseEnter.complete();
     this._opened.complete();
 
     if (this.affixer) {
       this.affixer.destroy();
     }
 
-    this.affixer =
-      this.ngUnsubscribe =
-      this._closed =
-      this._opened = undefined;
+    this._closed =
+      this._isMouseEnter =
+      this._opened =
+      this.affixer =
+      this.ngUnsubscribe = undefined;
   }
 
   public onAnimationEvent(event: AnimationEvent): void {
@@ -211,9 +213,15 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     if (this.placement === 'fullscreen' && this.allowFullscreen) {
       this.isOpen = true;
       this.changeDetector.markForCheck();
+
+      // Let the styles render and then bring focus to the fullscreen popover.
+      setTimeout(() => {
+        this.popoverRef.nativeElement.querySelector('.sky-popover').focus();
+      });
       return;
     }
 
+    // Let the styles render before gauging the affix dimensions.
     setTimeout(() => {
       if (!this.affixer) {
         this.setupAffixer();

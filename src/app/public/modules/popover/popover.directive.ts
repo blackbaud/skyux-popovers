@@ -172,8 +172,9 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
         const key = event.key.toLowerCase();
-
         if (key === 'escape' && this.skyPopover.isActive) {
+          event.preventDefault();
+          event.stopPropagation();
           this.sendMessage(SkyPopoverMessageType.Close);
         }
       });
