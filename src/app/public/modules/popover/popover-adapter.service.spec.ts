@@ -34,11 +34,7 @@ describe('SkyPopoverAdapterService', () => {
       }
     };
 
-    adapter = new SkyPopoverAdapterService({
-      getWindow(): Window {
-        return window;
-      }
-    });
+    adapter = new SkyPopoverAdapterService();
   });
 
   describe('placement above', () => {

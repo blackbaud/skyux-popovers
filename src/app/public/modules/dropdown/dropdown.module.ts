@@ -8,9 +8,7 @@ import {
 
 import {
   SkyAffixModule,
-  SkyCoreAdapterModule,
-  SkyOverlayModule,
-  SkyWindowRefService
+  SkyOverlayModule
 } from '@skyux/core';
 
 import {
@@ -51,7 +49,6 @@ import {
   imports: [
     CommonModule,
     SkyAffixModule,
-    SkyCoreAdapterModule,
     SkyIconModule,
     SkyOverlayModule,
     SkyPopoversResourcesModule
@@ -63,8 +60,7 @@ import {
     SkyDropdownMenuComponent
   ],
   providers: [
-    SkyDropdownAdapterService,
-    SkyWindowRefService
+    SkyDropdownAdapterService
   ]
 })
 export class SkyDropdownModule { }

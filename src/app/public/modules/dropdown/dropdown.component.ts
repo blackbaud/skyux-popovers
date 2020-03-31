@@ -14,7 +14,6 @@ import {
   SkyAffixAutoFitContext,
   SkyAffixer,
   SkyAffixService,
-  SkyWindowRefService,
   SkyOverlayInstance,
   SkyOverlayService
 } from '@skyux/core';
@@ -211,10 +210,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._isOpen || false;
   }
 
-  public isMouseEnter: boolean = false;
-
-  public menuId: string;
-
   /**
    * @internal
    * Indicates if the dropdown button menu or any of its children have focus.
@@ -240,7 +235,11 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     return this._menuContainerElementRef;
   }
 
+  public isMouseEnter: boolean = false;
+
   public isVisible: boolean = false;
+
+  public menuId: string;
 
   @ViewChild('menuContainerTemplateRef')
   private menuContainerTemplateRef: TemplateRef<any>;
@@ -276,8 +275,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
     private adapter: SkyDropdownAdapterService,
-    private overlayService: SkyOverlayService,
-    private windowRef: SkyWindowRefService
+    private overlayService: SkyOverlayService
   ) { }
 
   public ngOnInit(): void {
@@ -314,19 +312,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
       });
 
     Observable
-      .fromEvent(buttonElement, 'keyup')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-        if (this.isOpen && key === 'escape') {
-          this.sendMessage(SkyDropdownMessageType.Close);
-          this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-          event.stopPropagation();
-          event.preventDefault();
-        }
-      });
-
-    Observable
       .fromEvent(buttonElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
@@ -334,25 +319,35 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
         /* tslint:disable-next-line:switch-default */
         switch (key) {
-          case 'tab':
-            if (this.isOpen) {
-              this.sendMessage(SkyDropdownMessageType.Close);
-            }
-            break;
-          case 'enter':
-            if (!this.isOpen) {
-              this.sendMessage(SkyDropdownMessageType.Open);
-              this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
-            }
+          case 'escape':
+            this.sendMessage(SkyDropdownMessageType.Close);
+            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
             event.stopPropagation();
             event.preventDefault();
             break;
 
+          case 'tab':
+            if (this.dismissOnBlur) {
+              this.sendMessage(SkyDropdownMessageType.Close);
+            }
+            break;
+
+          case 'arrowup':
+          case 'up':
+            this.sendMessage(SkyDropdownMessageType.Open);
+            this.sendMessage(SkyDropdownMessageType.FocusLastItem);
+            event.preventDefault();
+            event.stopPropagation();
+            break;
+
+          case 'enter':
           case 'arrowdown':
           case 'down':
+          case ' ': // Spacebar.
             this.sendMessage(SkyDropdownMessageType.Open);
             this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
             event.preventDefault();
+            event.stopPropagation();
             break;
         }
       });
@@ -375,7 +370,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         if (this.trigger === 'hover') {
           // Allow the dropdown menu to set isMouseEnter before checking if the close action
           // should be taken.
-          this.windowRef.getWindow().setTimeout(() => {
+          setTimeout(() => {
             if (!this.isMouseEnter) {
               this.sendMessage(SkyDropdownMessageType.Close);
             }
@@ -474,7 +469,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     this.createOverlay();
     this.changeDetector.markForCheck();
 
-    this.windowRef.getWindow().setTimeout(() => {
+    setTimeout(() => {
       this.affixer.affixTo(this.triggerButton.nativeElement, {
         autoFitContext: SkyAffixAutoFitContext.Viewport,
         enableAutoFit: true,

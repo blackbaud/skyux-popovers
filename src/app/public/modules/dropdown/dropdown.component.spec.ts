@@ -440,7 +440,7 @@ describe('Dropdown component', function () {
   });
 
   describe('keyboard interactions', function () {
-    it('should open menu with arrowdown key', fakeAsync(() => {
+    it('should open menu and focus first item with arrowdown key', fakeAsync(() => {
       detectChangesFakeAsync();
 
       const button = getButtonElement();
@@ -475,8 +475,74 @@ describe('Dropdown component', function () {
       detectChangesFakeAsync();
 
       container = getMenuContainerElement();
+      const menuItems = getMenuItems();
+      const firstButton = menuItems.item(0).querySelector('button');
 
       expect(isElementVisible(container)).toEqual(true);
+      expect(isElementFocused(firstButton)).toEqual(true);
+    }));
+
+    it('should open menu and focus last item with arrowup key', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'arrowup'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      let container = getMenuContainerElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Close the dropdown.
+      button.click();
+      detectChangesFakeAsync();
+
+      container = getMenuContainerElement();
+
+      expect(container).toBeNull();
+
+      // IE 11 uses 'up'.
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'up'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      container = getMenuContainerElement();
+      const menuItems = getMenuItems();
+      const lastButton = menuItems.item(menuItems.length - 1).querySelector('button');
+
+      expect(isElementVisible(container)).toEqual(true);
+      expect(isElementFocused(lastButton)).toEqual(true);
+    }));
+
+    it('should not focus last item if it is disabled', fakeAsync(() => {
+      fixture.componentInstance.items[fixture.componentInstance.items.length - 1].disabled = true;
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'arrowup'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      const container = getMenuContainerElement();
+      const menuItems = getMenuItems();
+      expect(isElementVisible(container)).toEqual(true);
+      expect(isMenuItemFocused(menuItems.length - 1)).toEqual(false);
+      expect(isMenuItemFocused(menuItems.length - 2)).toEqual(true);
     }));
 
     it('should close menu with escape key while trigger button is focused', fakeAsync(() => {
@@ -490,7 +556,7 @@ describe('Dropdown component', function () {
 
       expect(isElementVisible(container)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(button, 'keyup', {
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
           key: 'escape'
         }
@@ -515,7 +581,7 @@ describe('Dropdown component', function () {
 
       expect(isElementVisible(container)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(firstItem, 'keyup', {
+      SkyAppTestUtility.fireDomEvent(firstItem, 'keydown', {
         keyboardEventInit: {
           key: 'escape'
         }
@@ -641,6 +707,18 @@ describe('Dropdown component', function () {
 
       expect(isMenuItemFocused(0)).toEqual(false);
       expect(isMenuItemFocused(1)).toEqual(false);
+
+      // Try to focus the last item using the up arrow.
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'up'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      expect(isMenuItemFocused(0)).toEqual(false);
+      expect(isMenuItemFocused(1)).toEqual(false);
     }));
 
     it('should navigate menu with arrow keys', fakeAsync(() => {
@@ -716,124 +794,10 @@ describe('Dropdown component', function () {
       expect(isMenuItemFocused(2)).toEqual(true);
     }));
 
-    it('should close the menu after menu loses focus', fakeAsync(() => {
-      fixture.componentInstance.items = [
-        {
-          name: 'Option 1',
-          disabled: false
-        },
-        {
-          name: 'Option 2',
-          disabled: false
-        }
-      ];
-
-      detectChangesFakeAsync();
-
-      const button = getButtonElement();
-
-      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
-        keyboardEventInit: {
-          key: 'enter'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      let container = getMenuContainerElement();
-      let menuItems = getMenuItems();
-
-      expect(isElementVisible(container)).toEqual(true);
-      expect(isMenuItemFocused(0)).toEqual(true);
-
-      // Run 'tab'.
-      const firstItemButton = menuItems.item(0).querySelector('button');
-      SkyAppTestUtility.fireDomEvent(firstItemButton, 'keydown', {
-        keyboardEventInit: {
-          key: 'tab'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      // Tab key should progress to next item.
-      expect(isElementVisible(container)).toEqual(true);
-      expect(isMenuItemFocused(1)).toEqual(true);
-
-      // Run 'shift+tab'.
-      const secondItemButton = menuItems.item(1).querySelector('button');
-      SkyAppTestUtility.fireDomEvent(secondItemButton, 'keydown', {
-        keyboardEventInit: {
-          key: 'tab',
-          shiftKey: true
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      // Tab key should progress to previous item.
-      expect(isElementVisible(container)).toEqual(true);
-      expect(isMenuItemFocused(0)).toEqual(true);
-
-      // Run 'tab' on last item.
-      const lastItemButton = menuItems.item(menuItems.length - 1).querySelector('button');
-      SkyAppTestUtility.fireDomEvent(lastItemButton, 'keydown', {
-        keyboardEventInit: {
-          key: 'tab'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      container = getMenuContainerElement();
-
-      expect(container).toBeNull();
-      expect(isElementFocused(button)).toEqual(true);
-
-      // Re-open menu.
-      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
-        keyboardEventInit: {
-          key: 'enter'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      container = getMenuContainerElement();
-
-      expect(isElementVisible(container)).toEqual(true);
-
-      // Run 'shift+tab' on first item.
-      SkyAppTestUtility.fireDomEvent(firstItemButton, 'keydown', {
-        keyboardEventInit: {
-          key: 'tab',
-          shiftKey: true
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      container = getMenuContainerElement();
-
-      expect(container).toBeNull();
-      expect(isElementFocused(button)).toEqual(true);
-    }));
-
     it('should close the menu after trigger button loses focus', fakeAsync(() => {
       detectChangesFakeAsync();
 
       const button = getButtonElement();
-      const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
-
-      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
-        keyboardEventInit: {
-          key: 'tab'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      expect(messageSpy).not.toHaveBeenCalled();
 
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
@@ -853,6 +817,7 @@ describe('Dropdown component', function () {
           key: 'tab'
         }
       });
+      button.blur();
 
       detectChangesFakeAsync();
 
@@ -862,18 +827,12 @@ describe('Dropdown component', function () {
       expect(container).toBeNull();
     }));
 
-    it('should ignore button keyboard events depending on menu visibility', fakeAsync(() => {
+    it('should not close the menu if dismissOnBlur is false', fakeAsync(() => {
+      fixture.componentInstance.dismissOnBlur = false;
       detectChangesFakeAsync();
 
       const button = getButtonElement();
 
-      // Open the menu.
-      button.click();
-      detectChangesFakeAsync();
-
-      const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
-
-      // Test trigger button 'keydown'.
       SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
           key: 'enter'
@@ -882,30 +841,120 @@ describe('Dropdown component', function () {
 
       detectChangesFakeAsync();
 
-      // Enter key should be ignored if menu is open.
-      expect(messageSpy).not.toHaveBeenCalledWith({
-        type: SkyDropdownMessageType.Open
-      });
+      let container = getMenuContainerElement();
 
-      // Close the menu.
-      button.click();
+      expect(isElementVisible(container)).toEqual(true);
+
+      // Run 'tab' on trigger button.
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+      button.blur();
+
       detectChangesFakeAsync();
 
-      // Reset spy.
-      messageSpy.calls.reset();
+      container = getMenuContainerElement();
 
-      // Test trigger button 'keyup'.
-      SkyAppTestUtility.fireDomEvent(button, 'keyup', {
+      expect(isElementVisible(container)).toEqual(true);
+    }));
+
+    it('should close the menu when tab key is pressed within the menu', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
-          key: 'escape'
+          key: 'down'
         }
       });
 
       detectChangesFakeAsync();
 
-      // Escape key should be ignored if menu is closed.
-      expect(messageSpy).not.toHaveBeenCalledWith({
-        type: SkyDropdownMessageType.Close
+      let container = getMenuContainerElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      const menuItems = getMenuItems();
+
+      SkyAppTestUtility.fireDomEvent(menuItems.item(0), 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      container = getMenuContainerElement();
+
+      expect(container).toBeNull();
+    }));
+
+    it('should select a menu item with the space bar', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'down'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      let container = getMenuContainerElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      const menuItems = getMenuItems();
+      const menuSpy = spyOn(fixture.componentInstance, 'onMenuChanges').and.callThrough();
+
+      SkyAppTestUtility.fireDomEvent(menuItems.item(0), 'keydown', {
+        keyboardEventInit: {
+          key: ' '
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      expect(menuSpy).toHaveBeenCalledWith({
+        selectedItem: fixture.componentInstance.dropdownItemRefs.first
+      });
+    }));
+
+    it('should select a menu item with the enter key', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'down'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      let container = getMenuContainerElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      const menuItems = getMenuItems();
+      const menuSpy = spyOn(fixture.componentInstance, 'onMenuChanges').and.callThrough();
+
+      SkyAppTestUtility.fireDomEvent(menuItems.item(0), 'keydown', {
+        keyboardEventInit: {
+          key: 'enter'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      expect(menuSpy).toHaveBeenCalledWith({
+        selectedItem: fixture.componentInstance.dropdownItemRefs.first
       });
     }));
   });

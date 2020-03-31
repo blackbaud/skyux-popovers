@@ -14,10 +14,6 @@ import {
 } from '@angular/core';
 
 import {
-  SkyCoreAdapterService
-} from '@skyux/core';
-
-import {
   Observable
 } from 'rxjs/Observable';
 
@@ -141,7 +137,6 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private elementRef: ElementRef,
-    private coreAdapterService: SkyCoreAdapterService,
     @Optional() private dropdownComponent: SkyDropdownComponent
   ) { }
 
@@ -170,6 +165,10 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
             case SkyDropdownMessageType.FocusPreviousItem:
             this.focusPreviousItem();
             break;
+
+            case SkyDropdownMessageType.FocusLastItem:
+            this.focusLastItem();
+            break;
           }
         });
 
@@ -178,17 +177,13 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
         .subscribe((change: SkyDropdownMenuChange) => {
           // Close the dropdown when a menu item is selected.
           if (change.selectedItem) {
-            this.dropdownComponent.messageStream.next({
-              type: SkyDropdownMessageType.Close
-            });
+            this.sendMessage(SkyDropdownMessageType.Close);
+            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
           }
 
           if (change.items) {
-            // Update the popover style and position whenever the number of
-            // items changes.
-            this.dropdownComponent.messageStream.next({
-              type: SkyDropdownMessageType.Reposition
-            });
+            // Update the popover style and position whenever the number of items changes.
+            this.sendMessage(SkyDropdownMessageType.Reposition);
           }
         });
     }
@@ -224,6 +219,21 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
       this.focusItem(firstItem);
     } else {
       this.focusNextItem();
+    }
+  }
+
+  public focusLastItem(): void {
+    if (!this.hasFocusableItems) {
+      return;
+    }
+
+    this.menuIndex = this.menuItems.length - 1;
+
+    const lastItem = this.getItemByIndex(this.menuIndex);
+    if (lastItem && lastItem.isFocusable()) {
+      this.focusItem(lastItem);
+    } else {
+      this.focusPreviousItem();
     }
   }
 
@@ -283,6 +293,28 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
     });
   }
 
+  private selectItemByEventTarget(target: EventTarget): void {
+    const selectedItem = this.menuItems.find((item: SkyDropdownItemComponent, i: number) => {
+      const found = (item.elementRef.nativeElement.contains(target));
+
+      if (found) {
+        this.menuIndex = i;
+        this.menuChanges.next({
+          activeIndex: this.menuIndex
+        });
+      }
+
+      return found;
+    });
+
+    /* istanbul ignore else */
+    if (selectedItem) {
+      this.menuChanges.next({
+        selectedItem
+      });
+    }
+  }
+
   private sendMessage(type: SkyDropdownMessageType): void {
     this.dropdownComponent.messageStream.next({ type });
   }
@@ -294,42 +326,7 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
       .fromEvent(dropdownMenuElement, 'click')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: MouseEvent) => {
-        const selectedItem = this.menuItems.find((item: SkyDropdownItemComponent, i: number) => {
-          const found = (item.elementRef.nativeElement.contains(event.target));
-
-          if (found) {
-            this.menuIndex = i;
-            this.menuChanges.next({
-              activeIndex: this.menuIndex
-            });
-          }
-
-          return found;
-        });
-
-        /* istanbul ignore else */
-        if (selectedItem) {
-          this.menuChanges.next({
-            selectedItem
-          });
-        }
-      });
-
-    Observable
-      .fromEvent(dropdownMenuElement, 'keyup')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-
-        /*tslint:disable-next-line:switch-default*/
-        switch (key) {
-          case 'escape':
-            event.stopPropagation();
-            event.preventDefault();
-            this.sendMessage(SkyDropdownMessageType.Close);
-            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-            break;
-        }
+        this.selectItemByEventTarget(event.target);
       });
 
     Observable
@@ -340,6 +337,13 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
 
         /*tslint:disable-next-line:switch-default*/
         switch (key) {
+          case 'escape':
+            this.sendMessage(SkyDropdownMessageType.Close);
+            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+            event.stopPropagation();
+            event.preventDefault();
+            break;
+
           case 'arrowdown':
           case 'down':
             this.focusNextItem();
@@ -352,32 +356,15 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
             event.preventDefault();
             break;
 
-          // Since the menu now lives in an overlay at the bottom of the document body, we need to
-          // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
-          // search bar.
           case 'tab':
-            const focusableItems = this.coreAdapterService.getFocusableChildren(
-              dropdownMenuElement
-            );
+            this.sendMessage(SkyDropdownMessageType.Close);
+            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+            break;
 
-            if (event.shiftKey) {
-              const isFirstItem = (focusableItems[0] === event.target);
-              if (isFirstItem) {
-                this.sendMessage(SkyDropdownMessageType.Close);
-                this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-              } else {
-                this.sendMessage(SkyDropdownMessageType.FocusPreviousItem);
-              }
-            } else {
-              const isLastItem = (focusableItems[focusableItems.length - 1] === event.target);
-              if (isLastItem) {
-                this.sendMessage(SkyDropdownMessageType.Close);
-                this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-              } else {
-                this.sendMessage(SkyDropdownMessageType.FocusNextItem);
-              }
-            }
-
+          case ' ': // Spacebar.
+          case 'enter':
+            this.selectItemByEventTarget(event.target);
+            event.stopPropagation();
             event.preventDefault();
             break;
         }
