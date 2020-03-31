@@ -4,10 +4,6 @@ import {
 } from '@angular/core';
 
 import {
-  SkyWindowRefService
-} from '@skyux/core';
-
-import {
   SkyPopoverAdapterArrowCoordinates,
   SkyPopoverAdapterElements,
   SkyPopoverPlacement
@@ -19,21 +15,16 @@ import {
 @Injectable()
 export class SkyPopoverAdapterService {
 
-  constructor(
-    private windowRef: SkyWindowRefService
-  ) { }
-
   /**
    * Used by the popover component to determine if fullscreen mode should be used.
    * @deprecated This method will be removed in the next major version.
    */
   public isPopoverLargerThanParent(popover: ElementRef): boolean {
-    const windowObj = this.windowRef.getWindow();
     const popoverRect = popover.nativeElement.getBoundingClientRect();
 
     return (
-      popoverRect.height >= windowObj.innerHeight ||
-      popoverRect.width >= windowObj.innerWidth
+      popoverRect.height >= window.innerHeight ||
+      popoverRect.width >= window.innerWidth
     );
   }
 

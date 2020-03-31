@@ -6,10 +6,6 @@ import {
   OnInit
 } from '@angular/core';
 
-import {
-  SkyWindowRefService
-} from '@skyux/core';
-
 import 'rxjs/add/observable/fromEvent';
 
 import 'rxjs/add/operator/takeUntil';
@@ -92,8 +88,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
   private _trigger: SkyPopoverTrigger;
 
   constructor(
-    private elementRef: ElementRef,
-    private windowRef: SkyWindowRefService
+    private elementRef: ElementRef
   ) { }
 
   public ngOnInit(): void {
@@ -214,7 +209,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
         ) {
           // Give the popover a chance to set its isMouseEnter flag before checking to see
           // if it should be closed.
-          this.windowRef.getWindow().setTimeout(() => {
+          setTimeout(() => {
             this.closePopoverOrMarkForClose();
           });
         }

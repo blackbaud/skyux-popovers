@@ -41,6 +41,8 @@ describe('Dropdown component', function () {
 
   let fixture: ComponentFixture<DropdownFixtureComponent>;
 
+  //#region helpers
+
   function getButtonElement(): HTMLButtonElement {
     return fixture.nativeElement.querySelector('.sky-dropdown-button');
   }
@@ -97,6 +99,9 @@ describe('Dropdown component', function () {
     return (getComputedStyle(elem).visibility !== 'hidden');
   }
 
+  /**
+   * Multiple ticks are needed to accommodate setTimeout and observable streams.
+   */
   function detectChangesFakeAsync(): void {
     fixture.detectChanges();
     tick();
@@ -105,6 +110,8 @@ describe('Dropdown component', function () {
     fixture.detectChanges();
     tick();
   }
+
+  //#endregion
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -853,36 +860,6 @@ describe('Dropdown component', function () {
 
       // Tab key should progress to next item after the trigger button.
       expect(container).toBeNull();
-    }));
-
-    xit('should ignore menu keyboard events if menu is closed', fakeAsync(() => {
-      detectChangesFakeAsync();
-
-      const menu = getMenuElement();
-
-      // Test menu 'keydown'.
-      SkyAppTestUtility.fireDomEvent(menu, 'keydown', {
-        keyboardEventInit: {
-          key: 'arrowdown'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      expect(isMenuItemFocused(0)).toEqual(false);
-
-      const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
-
-      // Test menu 'keyup'.
-      SkyAppTestUtility.fireDomEvent(menu, 'keyup', {
-        keyboardEventInit: {
-          key: 'escape'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      expect(messageSpy).not.toHaveBeenCalled();
     }));
 
     it('should ignore button keyboard events depending on menu visibility', fakeAsync(() => {

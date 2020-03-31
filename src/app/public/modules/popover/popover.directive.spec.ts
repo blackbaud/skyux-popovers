@@ -40,6 +40,8 @@ describe('Popover directive', () => {
 
   let fixture: ComponentFixture<PopoverFixtureComponent>;
 
+  //#region helpers
+
   function getCallerElement(): HTMLButtonElement {
     return fixture.componentInstance.callerElementRef.nativeElement;
   }
@@ -66,6 +68,8 @@ describe('Popover directive', () => {
   function getFocusableItems(): NodeListOf<Element> {
     return getPopoverElement().querySelectorAll('input, button');
   }
+
+  //#endregion
 
   beforeEach(() => {
     TestBed.configureTestingModule({
