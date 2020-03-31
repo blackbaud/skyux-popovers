@@ -107,8 +107,6 @@ describe('Dropdown component', function () {
     tick();
     fixture.detectChanges();
     tick();
-    fixture.detectChanges();
-    tick();
   }
 
   //#endregion
