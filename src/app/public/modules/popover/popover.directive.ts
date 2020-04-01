@@ -149,6 +149,18 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
 
         /* tslint:disable-next-line:switch-default */
         switch (key) {
+          case 'escape':
+            this.sendMessage(SkyPopoverMessageType.Close);
+            event.preventDefault();
+            event.stopPropagation();
+            break;
+
+          case 'tab':
+            if (this.skyPopover.dismissOnBlur) {
+              this.sendMessage(SkyPopoverMessageType.Close);
+            }
+            break;
+
           case 'arrowdown':
           case 'arrowleft':
           case 'arrowright':
@@ -161,21 +173,6 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
             event.stopPropagation();
             event.preventDefault();
             break;
-          case 'tab':
-            this.sendMessage(SkyPopoverMessageType.Close);
-            break;
-        }
-      });
-
-    Observable
-      .fromEvent(element, 'keyup')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
-        if (key === 'escape' && this.skyPopover.isActive) {
-          event.preventDefault();
-          event.stopPropagation();
-          this.sendMessage(SkyPopoverMessageType.Close);
         }
       });
 

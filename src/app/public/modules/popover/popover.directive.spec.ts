@@ -418,7 +418,7 @@ describe('Popover directive', () => {
 
       expect(isElementVisible(popover)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(button, 'keyup', {
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
           key: 'escape'
         }
@@ -433,7 +433,7 @@ describe('Popover directive', () => {
       const messageSpy = spyOn(fixture.componentInstance.messageStream, 'next').and.callThrough();
 
       // Escape key detection shouldn't work while the popover is closed.
-      SkyAppTestUtility.fireDomEvent(button, 'keyup', {
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
         keyboardEventInit: {
           key: 'escape'
         }
@@ -455,7 +455,7 @@ describe('Popover directive', () => {
 
       expect(isElementVisible(popover)).toEqual(true);
 
-      SkyAppTestUtility.fireDomEvent(popover, 'keyup', {
+      SkyAppTestUtility.fireDomEvent(popover, 'keydown', {
         keyboardEventInit: {
           key: 'escape'
         }
@@ -618,6 +618,57 @@ describe('Popover directive', () => {
       popover = getPopoverElement();
 
       expect(popover).toBeNull();
+    }));
+
+    it('should not close popover if dismissOnBlur is false (trigger has focus)', fakeAsync(() => {
+      fixture.componentInstance.dismissOnBlur = false;
+      detectChangesFakeAsync();
+
+      const button = getCallerElement();
+      button.click();
+      detectChangesFakeAsync();
+
+      let popover = getPopoverElement();
+
+      expect(isElementVisible(popover)).toEqual(true);
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+      detectChangesFakeAsync();
+
+      popover = getPopoverElement();
+
+      expect(isElementVisible(popover)).toEqual(true);
+    }));
+
+    it('should not close popover if dismissOnBlur is false (popover has focus)', fakeAsync(() => {
+      fixture.componentInstance.dismissOnBlur = false;
+      detectChangesFakeAsync();
+
+      const button = getCallerElement();
+      button.click();
+      detectChangesFakeAsync();
+
+      let container = getPopoverElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      const popover: HTMLElement = container.querySelector('.sky-popover');
+      popover.focus();
+
+      SkyAppTestUtility.fireDomEvent(popover, 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+      detectChangesFakeAsync();
+
+      container = getPopoverElement();
+
+      expect(isElementVisible(container)).toEqual(true);
     }));
   });
 

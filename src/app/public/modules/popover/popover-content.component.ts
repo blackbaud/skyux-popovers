@@ -332,52 +332,46 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       .fromEvent(hostElement, 'keydown')
       .takeUntil(this.ngUnsubscribe)
       .subscribe((event: KeyboardEvent) => {
-        /* istanbul ignore if */
-        if (!this.dismissOnBlur) {
-          return;
-        }
-
         const key = event.key.toLowerCase();
-        // Since the popover now lives in an overlay at the bottom of the document body, we need to
-        // handle the tab key ourselves. Otherwise, focus would be moved to the browser's
-        // search bar.
-        /*istanbul ignore else*/
-        if (key === 'tab') {
-          const focusableItems = this.coreAdapterService.getFocusableChildren(hostElement);
 
-          const isFirstItem = (
-            focusableItems[0] === event.target &&
-            event.shiftKey
-          );
+        /* tslint:disable-next-line:switch-default */
+        switch (key) {
 
-          const isLastItem = (
-            focusableItems[focusableItems.length - 1] === event.target &&
-            !event.shiftKey
-          );
-
-          /*istanbul ignore else*/
-          if (focusableItems.length === 0 || isFirstItem || isLastItem) {
-            event.preventDefault();
-            event.stopPropagation();
-
+          case 'escape':
             this.close();
             this.caller.nativeElement.focus();
-          }
-        }
-      });
+            event.preventDefault();
+            event.stopPropagation();
+            break;
 
-    Observable
-      .fromEvent(hostElement, 'keyup')
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((event: KeyboardEvent) => {
-        const key = event.key.toLowerCase();
+          // Since the popover now lives in an overlay at the bottom of the document body, we need
+          // to handle the tab key ourselves. Otherwise, focus would be moved to the browser's
+          // search bar.
+          case 'tab':
+            if (!this.dismissOnBlur) {
+              return;
+            }
 
-        /*istanbul ignore else*/
-        if (this.isOpen && key === 'escape') {
-          event.preventDefault();
-          event.stopPropagation();
-          this.close();
-          this.caller.nativeElement.focus();
+            const focusableItems = this.coreAdapterService.getFocusableChildren(hostElement);
+
+            const isFirstItem = (
+              focusableItems[0] === event.target &&
+              event.shiftKey
+            );
+
+            const isLastItem = (
+              focusableItems[focusableItems.length - 1] === event.target &&
+              !event.shiftKey
+            );
+
+            /*istanbul ignore else*/
+            if (focusableItems.length === 0 || isFirstItem || isLastItem) {
+              this.close();
+              this.caller.nativeElement.focus();
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            break;
         }
       });
   }

@@ -322,8 +322,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
           case 'escape':
             this.sendMessage(SkyDropdownMessageType.Close);
             this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-            event.stopPropagation();
-            event.preventDefault();
             break;
 
           case 'tab':
