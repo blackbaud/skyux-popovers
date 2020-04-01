@@ -825,7 +825,7 @@ describe('Dropdown component', function () {
       expect(container).toBeNull();
     }));
 
-    it('should not close the menu if dismissOnBlur is false', fakeAsync(() => {
+    it('should not close the menu if dismissOnBlur is false (trigger has focus)', fakeAsync(() => {
       fixture.componentInstance.dismissOnBlur = false;
       detectChangesFakeAsync();
 
@@ -850,6 +850,41 @@ describe('Dropdown component', function () {
         }
       });
       button.blur();
+
+      detectChangesFakeAsync();
+
+      container = getMenuContainerElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+    }));
+
+    it('should not close the menu if dismissOnBlur is false (menu has focus)', fakeAsync(() => {
+      fixture.componentInstance.dismissOnBlur = false;
+      detectChangesFakeAsync();
+
+      const button = getButtonElement();
+
+      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
+        keyboardEventInit: {
+          key: 'enter'
+        }
+      });
+
+      detectChangesFakeAsync();
+
+      let container = getMenuContainerElement();
+
+      expect(isElementVisible(container)).toEqual(true);
+
+      const firstButton = getMenuItems().item(0).querySelector('button');
+
+      // Run 'tab' on first item.
+      SkyAppTestUtility.fireDomEvent(firstButton, 'keydown', {
+        keyboardEventInit: {
+          key: 'tab'
+        }
+      });
+      firstButton.blur();
 
       detectChangesFakeAsync();
 
