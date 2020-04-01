@@ -88,7 +88,7 @@ describe('Popover', () => {
     SkyHostBrowser.setWindowBreakpoint('lg');
     SkyHostBrowser.scrollTo('#screenshot-popover-with-dropdown');
     element(by.id('btn-popover-with-dropdown')).click();
-    element(by.css('#screenshot-popover-with-dropdown .sky-dropdown-button')).click();
+    element(by.css('#popover-with-dropdown .sky-dropdown-button')).click();
     expect('#screenshot-popover-with-dropdown').toMatchBaselineScreenshot(done, {
       screenshotName: 'popover-with-dropdown'
     });
@@ -99,7 +99,7 @@ describe('Popover', () => {
     SkyHostBrowser.setWindowBreakpoint('lg');
     SkyHostBrowser.scrollTo('#screenshot-popover-positioned-parent');
     element(by.id('btn-popover-position-parent-left')).click();
-    element(by.css('#popover-positioned-parent-container-left .sky-dropdown-button')).click();
+    element(by.css('#popover-positioned-parent-left .sky-dropdown-button')).click();
     expect('#screenshot-popover-positioned-parent').toMatchBaselineScreenshot(done, {
       screenshotName: 'popover-position-parent-left'
     });
@@ -110,7 +110,7 @@ describe('Popover', () => {
     SkyHostBrowser.setWindowBreakpoint('lg');
     SkyHostBrowser.scrollTo('#screenshot-popover-positioned-parent');
     element(by.id('btn-popover-position-parent-right')).click();
-    element(by.css('#popover-positioned-parent-container-right .sky-dropdown-button')).click();
+    element(by.css('#popover-positioned-parent-right .sky-dropdown-button')).click();
     expect('#screenshot-popover-positioned-parent').toMatchBaselineScreenshot(done, {
       screenshotName: 'popover-position-parent-right'
     });
