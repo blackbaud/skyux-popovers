@@ -241,6 +241,8 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   public menuId: string;
 
+  public menuAriaRole: string;
+
   @ViewChild('menuContainerTemplateRef')
   private menuContainerTemplateRef: TemplateRef<any>;
 

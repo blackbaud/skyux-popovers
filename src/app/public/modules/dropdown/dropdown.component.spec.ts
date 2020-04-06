@@ -1171,17 +1171,36 @@ describe('Dropdown component', function () {
       expect(button.getAttribute('title')).toEqual('dropdown-title-override');
     }));
 
-    it('should be accessible', async(() => {
+    it('should be accessible', async((done: DoneFn) => {
       fixture.detectChanges();
 
       fixture.whenStable().then(() => {
         const button = getButtonElement();
 
-        button.click();
+        expect(button.getAttribute('aria-expanded')).toEqual('false');
+        expect(button.getAttribute('aria-label')).toEqual('Context menu');
 
+        button.click();
         fixture.detectChanges();
+
+        expect(button.getAttribute('aria-expanded')).toEqual('true');
+
         fixture.whenStable().then(() => {
-          expect(window.document.body).toBeAccessible();
+          fixture.detectChanges();
+
+          const menu = getMenuElement();
+
+          expect(button.getAttribute('aria-haspopup')).toEqual(
+            menu.getAttribute('role')
+          );
+
+          expect(button.getAttribute('aria-controls')).toEqual(
+            menu.getAttribute('id')
+          );
+
+          expect(button).toBeAccessible(() => {
+            expect(menu).toBeAccessible(done);
+          });
         });
       });
     }));
