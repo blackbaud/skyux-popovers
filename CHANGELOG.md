@@ -2,7 +2,7 @@
 
 - Added a deprecation message to the `SkyPopoverTrigger` type. [#63](https://github.com/blackbaud/skyux-popovers/pull/63)
 - Fixed the dropdown component to properly set all ARIA attributes. [#67](https://github.com/blackbaud/skyux-popovers/pull/67)
-- Fixed `SkyPopoverContext` to not throw build warnings. [#63](https://github.com/blackbaud/skyux-popovers/pull/63)
+- Fixed `SkyPopoverContext` to stop throwing build warnings. [#63](https://github.com/blackbaud/skyux-popovers/pull/63)
 
 # 3.5.0 (2020-04-02)
 
