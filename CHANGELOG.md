@@ -1,3 +1,7 @@
+# 3.5.0 (2020-04-02)
+
+- Updated the dropdown and popover components to implement the affix and overlay services. [#61](https://github.com/blackbaud/skyux-popovers/pull/61)
+
 # 4.0.0-rc.0 (2020-02-19)
 
 ### New features
