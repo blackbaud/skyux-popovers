@@ -9,9 +9,7 @@
   "plugins": [
     "@skyux-sdk/builder-plugin-skyux"
   ],
-  "omnibar": {
-    "experimental": true
-  },
+  "omnibar": {},
   "params": {
     "svcid": {
       "value": "skyux"
@@ -27,7 +25,6 @@
   },
   "app": {
     "styles": [
-      "@skyux/theme/css/sky.css",
       "@skyux/docs-tools/css/docs-tools.css"
     ]
   }

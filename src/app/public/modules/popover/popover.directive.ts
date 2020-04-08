@@ -2,14 +2,9 @@ import {
   Directive,
   ElementRef,
   Input,
-  OnChanges,
   OnDestroy,
-  SimpleChanges
+  OnInit
 } from '@angular/core';
-
-import {
-  SkyAppWindowRef
-} from '@skyux/core';
 
 import {
   fromEvent as observableFromEvent,
@@ -17,7 +12,6 @@ import {
 } from 'rxjs';
 
 import {
-  take,
   takeUntil
 } from 'rxjs/operators';
 
@@ -48,7 +42,7 @@ import {
 @Directive({
   selector: '[skyPopover]'
 })
-export class SkyPopoverDirective implements OnChanges, OnDestroy {
+export class SkyPopoverDirective implements OnInit, OnDestroy {
 
   /**
    * References the popover component to display. Add this directive to the trigger element that opens the popover.
@@ -79,34 +73,35 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
   /**
    * Specifies the user action that displays the popover.
+   * @deprecated The trigger type `mouseenter` will be removed in the next major version.
    */
   @Input()
-  public skyPopoverTrigger: SkyPopoverTrigger = 'click';
+  public set skyPopoverTrigger(value: SkyPopoverTrigger) {
+    this._trigger = value;
+  }
 
-  private idled = new Subject<boolean>();
+  public get skyPopoverTrigger(): SkyPopoverTrigger {
+    return this._trigger || 'click';
+  }
+
+  private ngUnsubscribe = new Subject<void>();
+
+  private _trigger: SkyPopoverTrigger;
 
   constructor(
-    private elementRef: ElementRef,
-    private windowRef: SkyAppWindowRef
+    private elementRef: ElementRef
   ) { }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    /* istanbul ignore else */
-    if (changes.skyPopover) {
-      this.removeEventListeners();
-      if (changes.skyPopover.currentValue !== undefined) {
-        this.addEventListeners();
-      }
-    }
+  public ngOnInit(): void {
+    this.addEventListeners();
   }
 
   public ngOnDestroy(): void {
     this.removeEventListeners();
-    this.idled.complete();
   }
 
   public togglePopover(): void {
-    if (this.isPopoverOpen()) {
+    if (this.skyPopover.isActive) {
       this.sendMessage(SkyPopoverMessageType.Close);
       return;
     }
@@ -134,90 +129,102 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
     }
   }
 
-  private isPopoverOpen(): boolean {
-    return (this.skyPopover && this.skyPopover.isOpen);
-  }
-
   private addEventListeners(): void {
     const element = this.elementRef.nativeElement;
 
     this.skyPopoverMessageStream
       .pipe(
-        takeUntil(this.idled)
+        takeUntil(this.ngUnsubscribe)
       )
       .subscribe(message => {
         this.handleIncomingMessages(message);
       });
 
-    observableFromEvent(element, 'keyup')
+    observableFromEvent(element, 'keydown')
       .pipe(
-        takeUntil(this.idled)
+        takeUntil(this.ngUnsubscribe)
       )
       .subscribe((event: KeyboardEvent) => {
+        if (!this.skyPopover.isActive) {
+          return;
+        }
+
         const key = event.key.toLowerCase();
-        if (key === 'escape' && this.isPopoverOpen()) {
-          event.stopPropagation();
-          event.preventDefault();
-          this.sendMessage(SkyPopoverMessageType.Close);
-          this.elementRef.nativeElement.focus();
+
+        /* tslint:disable-next-line:switch-default */
+        switch (key) {
+          case 'escape':
+            this.sendMessage(SkyPopoverMessageType.Close);
+            event.preventDefault();
+            event.stopPropagation();
+            break;
+
+          case 'tab':
+            if (this.skyPopover.dismissOnBlur) {
+              this.sendMessage(SkyPopoverMessageType.Close);
+            }
+            break;
+
+          case 'arrowdown':
+          case 'arrowleft':
+          case 'arrowright':
+          case 'arrowup':
+          case 'down':
+          case 'left':
+          case 'right':
+          case 'up':
+            this.sendMessage(SkyPopoverMessageType.Focus);
+            event.stopPropagation();
+            event.preventDefault();
+            break;
         }
       });
 
     observableFromEvent(element, 'click')
       .pipe(
-        takeUntil(this.idled)
+        takeUntil(this.ngUnsubscribe)
       )
-      .subscribe((event: any) => {
+      .subscribe(() => {
         this.togglePopover();
       });
 
     observableFromEvent(element, 'mouseenter')
       .pipe(
-        takeUntil(this.idled)
+        takeUntil(this.ngUnsubscribe)
       )
-      .subscribe((event: MouseEvent) => {
+      .subscribe(() => {
         this.skyPopover.isMouseEnter = true;
-        if (this.skyPopoverTrigger === 'mouseenter') {
-          event.preventDefault();
+        if (
+          !this.skyPopover.isActive &&
+          this.skyPopoverTrigger === 'mouseenter'
+        ) {
           this.sendMessage(SkyPopoverMessageType.Open);
         }
       });
 
     observableFromEvent(element, 'mouseleave')
       .pipe(
-        takeUntil(this.idled)
+        takeUntil(this.ngUnsubscribe)
       )
-      .subscribe((event: MouseEvent) => {
+      .subscribe(() => {
         this.skyPopover.isMouseEnter = false;
-
-        if (this.skyPopoverTrigger === 'mouseenter') {
-          event.preventDefault();
-
-          if (this.isPopoverOpen()) {
-            // Give the popover a chance to set its isMouseEnter flag before checking to see
-            // if it should be closed.
-            this.windowRef.nativeWindow.setTimeout(() => {
-              this.closePopoverOrMarkForClose();
-            });
-          } else {
-            // If the mouse leaves before the popover is open,
-            // wait for the transition to complete before closing it.
-            this.skyPopover.popoverOpened
-              .pipe(
-                take(1)
-              )
-              .subscribe(() => {
-                this.closePopoverOrMarkForClose();
-              });
-          }
+        if (
+          this.skyPopover.isActive &&
+          this.skyPopoverTrigger === 'mouseenter'
+        ) {
+          // Give the popover a chance to set its isMouseEnter flag before checking to see
+          // if it should be closed.
+          setTimeout(() => {
+            this.closePopoverOrMarkForClose();
+          });
         }
       });
   }
 
   private removeEventListeners(): void {
-    this.idled.next(true);
-    this.idled.unsubscribe();
-    this.idled = new Subject<boolean>();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.ngUnsubscribe = undefined;
   }
 
   private handleIncomingMessages(message: SkyPopoverMessage): void {
@@ -233,9 +240,13 @@ export class SkyPopoverDirective implements OnChanges, OnDestroy {
 
       case SkyPopoverMessageType.Reposition:
         // Only reposition the popover if it is already open.
-        if (this.isPopoverOpen()) {
+        if (this.skyPopover.isActive) {
           this.positionPopover();
         }
+        break;
+
+      case SkyPopoverMessageType.Focus:
+        this.skyPopover.applyFocus();
         break;
     }
   }
