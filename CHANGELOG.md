@@ -1,3 +1,9 @@
+# 4.0.0-rc.1 (2020-04-08)
+
+### New features
+
+- Added bug fixes and features from the `master` branch. [#69](https://github.com/blackbaud/skyux-popovers/pull/69)
+
 # 3.5.1 (2020-04-08)
 
 - Added a deprecation message to the `SkyPopoverTrigger` type. [#63](https://github.com/blackbaud/skyux-popovers/pull/63)
