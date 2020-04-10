@@ -62,7 +62,8 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
   /**
    * Specifies an ARIA role for the dropdown menu to support accessibility by indicating how the
    * dropdown menu functions and what it controls. The ARIA role indicates what the dropdown menu
-   * represents on the web page. For information about ARIA roles, see the
+   * represents on the web page. The dropdown button inherits this value to set its `aria-haspopup`
+   * property. For information about ARIA roles, see the
    * [WAI-ARIA roles model](https://www.w3.org/WAI/PF/aria/roles).
    * @default "menu"
    */
@@ -374,13 +375,6 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
               this.sendMessage(SkyDropdownMessageType.Close);
             }
             this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
-            break;
-
-          case ' ': // Spacebar.
-          case 'enter':
-            this.selectItemByEventTarget(event.target);
-            event.stopPropagation();
-            event.preventDefault();
             break;
         }
       });
