@@ -1,3 +1,9 @@
+# 4.0.0-rc.2 (2020-04-10)
+
+### New features
+
+- Added bug fixes and features from the `master` branch. [#78](https://github.com/blackbaud/skyux-popovers/pull/78)
+
 # 3.5.2 (2020-04-10)
 
 - Fixed the dropdown component to prevent propagation of the escape key when the dropdown menu is open. [#75](https://github.com/blackbaud/skyux-popovers/pull/75)
