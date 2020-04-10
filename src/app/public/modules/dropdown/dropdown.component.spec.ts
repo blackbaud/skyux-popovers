@@ -1085,6 +1085,34 @@ describe('Dropdown component', function () {
       // The affixing method should be called now.
       expect(affixSpy).toHaveBeenCalled();
     }));
+
+    it('should focus the last item', fakeAsync(() => {
+      detectChangesFakeAsync();
+
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.Open);
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.FocusLastItem);
+
+      detectChangesFakeAsync();
+
+      const items = getMenuItems();
+
+      verifyActiveMenuItemByIndex(items.length - 1);
+
+      expect(isMenuItemFocused(items.length - 1)).toEqual(true);
+
+      fixture.componentInstance.items = [];
+
+      detectChangesFakeAsync();
+
+      fixture.componentInstance.sendMessage(SkyDropdownMessageType.FocusLastItem);
+
+      detectChangesFakeAsync();
+
+      expect(getMenuElement().contains(document.activeElement)).toEqual(
+        false,
+        'Requesting to focus the last item of an empty menu should not trigger focus within the menu container.'
+      );
+    }));
   });
 
   describe('focus properties', () => {

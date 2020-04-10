@@ -323,32 +323,41 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         /* tslint:disable-next-line:switch-default */
         switch (key) {
           case 'escape':
-            this.sendMessage(SkyDropdownMessageType.Close);
-            this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+            /*istanbul ignore else*/
+            if (this.isOpen) {
+              this.sendMessage(SkyDropdownMessageType.Close);
+              this.sendMessage(SkyDropdownMessageType.FocusTriggerButton);
+              event.stopPropagation();
+            }
             break;
 
           case 'tab':
-            if (this.dismissOnBlur) {
+            if (this.isOpen && this.dismissOnBlur) {
               this.sendMessage(SkyDropdownMessageType.Close);
             }
             break;
 
           case 'arrowup':
           case 'up':
-            this.sendMessage(SkyDropdownMessageType.Open);
-            this.sendMessage(SkyDropdownMessageType.FocusLastItem);
-            event.preventDefault();
-            event.stopPropagation();
+            if (!this.isOpen) {
+              this.sendMessage(SkyDropdownMessageType.Open);
+              this.sendMessage(SkyDropdownMessageType.FocusLastItem);
+              event.preventDefault();
+              event.stopPropagation();
+            }
             break;
 
           case 'enter':
           case 'arrowdown':
           case 'down':
           case ' ': // Spacebar.
-            this.sendMessage(SkyDropdownMessageType.Open);
-            this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
-            event.preventDefault();
-            event.stopPropagation();
+            /*istanbul ignore else*/
+            if (!this.isOpen) {
+              this.sendMessage(SkyDropdownMessageType.Open);
+              this.sendMessage(SkyDropdownMessageType.FocusFirstItem);
+              event.preventDefault();
+              event.stopPropagation();
+            }
             break;
         }
       });
