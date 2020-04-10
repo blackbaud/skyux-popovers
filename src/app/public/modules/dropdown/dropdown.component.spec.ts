@@ -1051,37 +1051,6 @@ describe('Dropdown component', function () {
     }));
   });
 
-  describe('focus properties', () => {
-
-    it('should reflect the state of focus', fakeAsync(() => {
-      detectChangesFakeAsync();
-
-      const button = getButtonElement();
-      button.click();
-      detectChangesFakeAsync();
-
-      const firstItemButton = getFirstMenuItem().querySelector('button');
-
-      const dropdownRef = fixture.componentInstance.dropdownRef;
-
-      expect(dropdownRef.buttonIsFocused).toEqual(false);
-      expect(dropdownRef.menuIsFocused).toEqual(false);
-
-      button.focus();
-      detectChangesFakeAsync();
-
-      expect(dropdownRef.buttonIsFocused).toEqual(true);
-      expect(dropdownRef.menuIsFocused).toEqual(false);
-
-      // Move focus to first item.
-      firstItemButton.focus();
-      detectChangesFakeAsync();
-
-      expect(dropdownRef.buttonIsFocused).toEqual(false);
-      expect(dropdownRef.menuIsFocused).toEqual(true);
-    }));
-  });
-
   describe('accessibility', function () {
     it('should set default ARIA attributes', fakeAsync(() => {
       detectChangesFakeAsync();
