@@ -268,8 +268,9 @@ describe('Dropdown component', function () {
     expect(menu.scrollHeight > menu.clientHeight).toEqual(true);
   }));
 
-  it('should emit when a menu item is selected', fakeAsync(() => {
+  it('should emit when a menu item is clicked', fakeAsync(() => {
     const menuChangesSpy = spyOn(fixture.componentInstance, 'onMenuChanges').and.callThrough();
+    const itemClickSpy = spyOn(fixture.componentInstance, 'onItemClick').and.callThrough();
     detectChangesFakeAsync();
 
     const button = getButtonElement();
@@ -290,6 +291,7 @@ describe('Dropdown component', function () {
 
     expect(menuChangesSpy).toHaveBeenCalledWith({ activeIndex: buttonIndex });
     expect(menuChangesSpy).toHaveBeenCalledWith({ selectedItem });
+    expect(itemClickSpy).toHaveBeenCalledWith(fixture.componentInstance.items[buttonIndex].name);
   }));
 
   describe('mouse interactions', function () {
@@ -919,72 +921,6 @@ describe('Dropdown component', function () {
       container = getMenuContainerElement();
 
       expect(container).toBeNull();
-    }));
-
-    it('should select a menu item with the space bar', fakeAsync(() => {
-      detectChangesFakeAsync();
-
-      const button = getButtonElement();
-
-      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
-        keyboardEventInit: {
-          key: 'down'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      let container = getMenuContainerElement();
-
-      expect(isElementVisible(container)).toEqual(true);
-
-      const menuItems = getMenuItems();
-      const menuSpy = spyOn(fixture.componentInstance, 'onMenuChanges').and.callThrough();
-
-      SkyAppTestUtility.fireDomEvent(menuItems.item(0), 'keydown', {
-        keyboardEventInit: {
-          key: ' '
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      expect(menuSpy).toHaveBeenCalledWith({
-        selectedItem: fixture.componentInstance.dropdownItemRefs.first
-      });
-    }));
-
-    it('should select a menu item with the enter key', fakeAsync(() => {
-      detectChangesFakeAsync();
-
-      const button = getButtonElement();
-
-      SkyAppTestUtility.fireDomEvent(button, 'keydown', {
-        keyboardEventInit: {
-          key: 'down'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      let container = getMenuContainerElement();
-
-      expect(isElementVisible(container)).toEqual(true);
-
-      const menuItems = getMenuItems();
-      const menuSpy = spyOn(fixture.componentInstance, 'onMenuChanges').and.callThrough();
-
-      SkyAppTestUtility.fireDomEvent(menuItems.item(0), 'keydown', {
-        keyboardEventInit: {
-          key: 'enter'
-        }
-      });
-
-      detectChangesFakeAsync();
-
-      expect(menuSpy).toHaveBeenCalledWith({
-        selectedItem: fixture.componentInstance.dropdownItemRefs.first
-      });
     }));
   });
 
