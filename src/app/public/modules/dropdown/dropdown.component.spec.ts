@@ -1151,7 +1151,13 @@ describe('Dropdown component', function () {
       fixture.whenStable().then(() => {
         fixture.detectChanges();
         fixture.whenStable().then(() => {
-          expect(window.document.body).toBeAccessible();
+          expect(window.document.body).toBeAccessible(() => {}, {
+            rules: {
+              region: {
+                enabled: false
+              }
+            }
+          });
         });
       });
     }));
@@ -1166,7 +1172,13 @@ describe('Dropdown component', function () {
 
         fixture.detectChanges();
         fixture.whenStable().then(() => {
-          expect(window.document.body).toBeAccessible();
+          expect(window.document.body).toBeAccessible(() => {}, {
+            rules: {
+              region: {
+                enabled: false
+              }
+            }
+          });
         });
       });
     }));
