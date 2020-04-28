@@ -20,7 +20,7 @@ import {
 import {
   SkyPopoverAlignment,
   SkyPopoverPlacement
-} from '../../public';
+} from '../../public/public_api';
 
 @Component({
   selector: 'popover-visual',
