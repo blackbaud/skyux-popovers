@@ -1,3 +1,7 @@
+# 4.0.0-rc.3 (2020-04-28)
+
+- Upgraded development dependencies. [#81](https://github.com/blackbaud/skyux-popovers/pull/81)
+
 # 4.0.0-rc.2 (2020-04-10)
 
 ### New features
