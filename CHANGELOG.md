@@ -1,3 +1,16 @@
+# 4.0.0 (2020-05-12)
+
+### New features
+
+- Added support for `@angular/core@^9`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+- Updated the pipeline to transpile to the [Angular Package Format](https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/preview). [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+
+### Breaking changes
+
+- Removed the `alignment` input from the dropdown component. Use the `horizontalAlignment` input instead. [#86](https://github.com/blackbaud/skyux-popovers/pull/86)
+- Removed the `allowFullscreen` input from the popover component since fullscreen popovers are not an approved SKY UX design pattern. Use the SKY UX modal component instead. [#86](https://github.com/blackbaud/skyux-popovers/pull/86)
+- Dropped support for `rxjs@5`. Consumers can install `rxjs-compat@^6` to support older versions of `rxjs`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+
 # 3.6.0 (2020-05-08)
 
 - Added modern theme styles to the tab dropdown button. [#84](https://github.com/blackbaud/skyux-popovers/pull/84)
