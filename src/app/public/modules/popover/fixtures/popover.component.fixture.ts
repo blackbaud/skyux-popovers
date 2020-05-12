@@ -49,8 +49,6 @@ export class PopoverFixtureComponent implements OnInit, AfterViewInit {
 
   public alignment: SkyPopoverAlignment;
 
-  public allowFullscreen: boolean;
-
   public dismissOnBlur: boolean;
 
   public messageStream = new Subject<SkyPopoverMessage>();

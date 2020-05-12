@@ -11,10 +11,6 @@ import {
 } from 'rxjs';
 
 import {
-  SkyPopoverAlignment
-} from '../../popover/types/popover-alignment';
-
-import {
   SkyDropdownHorizontalAlignment
 } from '../types/dropdown-horizontal-alignment';
 
@@ -49,8 +45,6 @@ import {
 export class DropdownFixtureComponent {
 
   //#region directive properties
-
-  public alignment: SkyPopoverAlignment;
 
   public buttonStyle: string;
 

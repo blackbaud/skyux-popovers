@@ -28,10 +28,6 @@ import {
 } from 'rxjs/operators';
 
 import {
-  SkyPopoverAlignment
-} from '../popover/types/popover-alignment';
-
-import {
   SkyDropdownHorizontalAlignment
 } from './types/dropdown-horizontal-alignment';
 
@@ -58,21 +54,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkyDropdownComponent implements OnInit, OnDestroy {
-
-  /**
-   * Specifies the horizontal alignment of the dropdown menu in relation to the dropdown button.
-   * Available values are `left`, `right`, and `center`.
-   * @default "left"
-   * @deprecated Use `horizontalAlignment` instead.
-   */
-  @Input()
-  public set alignment(value: SkyPopoverAlignment) {
-    this._alignment = value;
-  }
-
-  public get alignment(): SkyPopoverAlignment {
-    return this._alignment || 'left';
-  }
 
   /**
    * Specifies a background color for the dropdown button. Available values are `default` and
@@ -238,8 +219,6 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   private overlay: SkyOverlayInstance;
-
-  private _alignment: SkyPopoverAlignment;
 
   private _buttonStyle: string;
 
@@ -475,9 +454,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
       this.affixer.affixTo(this.triggerButton.nativeElement, {
         autoFitContext: SkyAffixAutoFitContext.Viewport,
         enableAutoFit: true,
-        horizontalAlignment: parseAffixHorizontalAlignment(
-          this._alignment || this.horizontalAlignment
-        ),
+        horizontalAlignment: parseAffixHorizontalAlignment(this.horizontalAlignment),
         isSticky: true,
         placement: 'below'
       });

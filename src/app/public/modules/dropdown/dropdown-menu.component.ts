@@ -22,10 +22,6 @@ import {
   takeUntil
 } from 'rxjs/operators';
 
-import 'rxjs/add/observable/fromEvent';
-
-import 'rxjs/add/operator/takeUntil';
-
 import {
   SkyDropdownComponent
 } from './dropdown.component';

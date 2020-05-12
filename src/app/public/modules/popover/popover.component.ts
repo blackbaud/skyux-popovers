@@ -59,22 +59,6 @@ export class SkyPopoverComponent implements OnDestroy {
   }
 
   /**
-   * Indicates if the popover element should render as a full screen modal
-   * when the content is too large to fit inside its parent.
-   * @internal
-   * @deprecated Fullscreen popovers are not an approved SKY UX design pattern. Use the SKY UX
-   * modal component instead.
-   */
-  @Input()
-  public set allowFullscreen(value: boolean) {
-    this._allowFullscreen = value;
-  }
-
-  public get allowFullscreen(): boolean {
-    return this._allowFullscreen === undefined ? true : this._allowFullscreen;
-  }
-
-  /**
    * Indicates whether to close the popover when it loses focus.
    * To require users to click a trigger button to close the popover, set this input to false.
    * @default true
@@ -155,8 +139,6 @@ export class SkyPopoverComponent implements OnDestroy {
 
   private _alignment: SkyPopoverAlignment;
 
-  private _allowFullscreen: boolean;
-
   private _dismissOnBlur: boolean;
 
   private _placement: SkyPopoverPlacement;
@@ -199,7 +181,6 @@ export class SkyPopoverComponent implements OnDestroy {
     this.contentRef.open(
       caller,
       {
-        allowFullscreen: this.allowFullscreen,
         dismissOnBlur: this.dismissOnBlur,
         enableAnimations: this.enableAnimations,
         horizontalAlignment: this.alignment,

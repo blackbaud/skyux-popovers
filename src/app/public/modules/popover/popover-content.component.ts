@@ -88,12 +88,6 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public affixer: SkyAffixer;
 
-  /**
-   * @deprecated Fullscreen popovers are not an approved SKY UX design pattern. Use the SKY UX
-   * modal component instead.
-   */
-  public allowFullscreen: boolean = false;
-
   public arrowLeft: number;
 
   public arrowTop: number;
@@ -160,6 +154,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     this._isMouseEnter.complete();
     this._opened.complete();
 
+    /* istanbul ignore else */
     if (this.affixer) {
       this.affixer.destroy();
     }
@@ -188,7 +183,6 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
   public open(
     caller: ElementRef,
     config: {
-      allowFullscreen: boolean;
       dismissOnBlur: boolean;
       enableAnimations: boolean;
       horizontalAlignment: SkyPopoverAlignment;
@@ -197,7 +191,6 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       popoverTitle: string;
     }
   ): void {
-    this.allowFullscreen = config.allowFullscreen;
     this.caller = caller;
     this.dismissOnBlur = config.dismissOnBlur;
     this.enableAnimations = config.enableAnimations;
@@ -214,17 +207,6 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     if (config.isStatic) {
       this.isOpen = true;
       this.changeDetector.markForCheck();
-      return;
-    }
-
-    if (this.placement === 'fullscreen' && this.allowFullscreen) {
-      this.isOpen = true;
-      this.changeDetector.markForCheck();
-
-      // Let the styles render and then bring focus to the fullscreen popover.
-      setTimeout(() => {
-        this.popoverRef.nativeElement.querySelector('.sky-popover').focus();
-      });
       return;
     }
 
@@ -291,16 +273,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe((change) => {
-        if (
-          change.placement === null &&
-          this.allowFullscreen &&
-          this.adapterService.isPopoverLargerThanParent(this.popoverRef)
-        ) {
-          this.activateFullscreen();
-        } else {
-          this.placement = change.placement;
-        }
-
+        this.placement = change.placement;
         this.changeDetector.markForCheck();
       });
 
@@ -319,14 +292,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
     this.arrowTop = top;
     this.arrowLeft = left;
-  }
-
-  /**
-   * @deprecated The fullscreen feature will be removed in the next major version release.
-   */
-  private activateFullscreen(): void {
-    this.placement = 'fullscreen';
-  }
+    }
 
   private addEventListeners(): void {
     const hostElement = this.elementRef.nativeElement;
