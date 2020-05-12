@@ -115,14 +115,4 @@ describe('Popover', () => {
       screenshotName: 'popover-position-parent-right'
     });
   });
-
-  it('should open a fullscreen popover', (done) => {
-    SkyHostBrowser.get('visual/popover');
-    SkyHostBrowser.setWindowBreakpoint('lg');
-    SkyHostBrowser.scrollTo('#screenshot-popover-fullscreen');
-    element(by.id('btn-popover-fullscreen')).click();
-    expect('.sky-popover-container.sky-popover-placement-fullscreen').toMatchBaselineScreenshot(done, {
-      screenshotName: 'popover-fullscreen'
-    });
-  });
 });

@@ -1,3 +1,11 @@
+# 3.6.0 (2020-05-08)
+
+- Added modern theme styles to the tab dropdown button. [#84](https://github.com/blackbaud/skyux-popovers/pull/84)
+
+# 3.5.3 (2020-04-29)
+
+- Fixed the dropdown button styles to left-align overflowing text within a tab dropdown. [#82](https://github.com/blackbaud/skyux-popovers/pull/82)
+
 # 4.0.0-rc.3 (2020-04-28)
 
 - Upgraded development dependencies. [#81](https://github.com/blackbaud/skyux-popovers/pull/81)
@@ -40,7 +48,7 @@
 
 ### Breaking changes
 
-- Dropped support for `rxjs@5`. Consumers may install `rxjs-compat@^6` to support older versions of `rxjs`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+- Dropped support for `rxjs@5`. Consumers can install `rxjs-compat@^6` to support older versions of `rxjs`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
 
 # 3.4.0 (2019-10-09)
 

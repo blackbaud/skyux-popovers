@@ -1,5 +1,4 @@
 import {
-  ElementRef,
   Injectable
 } from '@angular/core';
 
@@ -20,19 +19,6 @@ import {
  */
 @Injectable()
 export class SkyPopoverAdapterService {
-
-  /**
-   * Used by the popover component to determine if fullscreen mode should be used.
-   * @deprecated This method will be removed in the next major version.
-   */
-  public isPopoverLargerThanParent(popover: ElementRef): boolean {
-    const popoverRect = popover.nativeElement.getBoundingClientRect();
-
-    return (
-      popoverRect.height >= window.innerHeight ||
-      popoverRect.width >= window.innerWidth
-    );
-  }
 
   public getArrowCoordinates(
     elements: SkyPopoverAdapterElements,

@@ -123,7 +123,6 @@ export class PopoverVisualComponent implements AfterViewInit {
       const componentRef = this.staticPopoversTarget.createComponent(factory, undefined, injector);
 
       componentRef.instance.open(this.elementRef, {
-        allowFullscreen: false,
         dismissOnBlur: false,
         enableAnimations: false,
         horizontalAlignment: config.horizontalAlignment,
