@@ -73,7 +73,6 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
 
   /**
    * Specifies the user action that displays the popover.
-   * @deprecated The trigger type `mouseenter` will be removed in the next major version.
    */
   @Input()
   public set skyPopoverTrigger(value: SkyPopoverTrigger) {

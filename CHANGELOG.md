@@ -48,7 +48,7 @@
 
 ### Breaking changes
 
-- Dropped support for `rxjs@5`. Consumers may install `rxjs-compat@^6` to support older versions of `rxjs`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
+- Dropped support for `rxjs@5`. Consumers can install `rxjs-compat@^6` to support older versions of `rxjs`. [#53](https://github.com/blackbaud/skyux-popovers/pull/53)
 
 # 3.4.0 (2019-10-09)
 
