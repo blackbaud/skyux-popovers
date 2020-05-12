@@ -31,12 +31,6 @@ import {
   SkyDropdownHorizontalAlignment
 } from './types/dropdown-horizontal-alignment';
 
-import 'rxjs/add/operator/takeUntil';
-
-import {
-  SkyPopoverAlignment
-} from '../popover/types/popover-alignment';
-
 import {
   SkyDropdownMessage
 } from './types/dropdown-message';
