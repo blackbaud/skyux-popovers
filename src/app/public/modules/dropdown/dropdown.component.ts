@@ -118,6 +118,12 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Specifies a custom CSS class to apply to the dropdown menu element.
+   */
+  @Input()
+  public dropdownClass: string;
+
+  /**
    * Specifies an accessibility label to provide a text equivalent for screen readers when the
    * dropdown button has no text.
    */

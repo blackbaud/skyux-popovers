@@ -129,6 +129,7 @@ describe('Dropdown component', function () {
     expect(dropdownRef.buttonType).toEqual('select');
     expect(dropdownRef.disabled).toEqual(false);
     expect(dropdownRef.dismissOnBlur).toEqual(true);
+    expect(dropdownRef.dropdownClass).toBeUndefined();
     expect(dropdownRef.horizontalAlignment).toEqual('left');
     expect(dropdownRef.label).toBeUndefined();
     expect(dropdownRef.title).toBeUndefined();
@@ -254,6 +255,17 @@ describe('Dropdown component', function () {
     expect(menuChangesSpy).toHaveBeenCalledWith({ activeIndex: buttonIndex });
     expect(menuChangesSpy).toHaveBeenCalledWith({ selectedItem });
     expect(itemClickSpy).toHaveBeenCalledWith(fixture.componentInstance.items[buttonIndex].name);
+  }));
+
+  it('should add a custom CSS class to the dropdown menu element', fakeAsync(() => {
+    fixture.componentInstance.dropdownClass = 'foobar';
+    fixture.detectChanges();
+    tick();
+    const button = getButtonElement();
+    button.click();
+    detectChangesFakeAsync();
+    const menu = getMenuContainerElement();
+    expect(menu).toHaveCssClass('foobar');
   }));
 
   describe('mouse interactions', function () {

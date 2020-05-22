@@ -54,6 +54,8 @@ export class DropdownFixtureComponent {
 
   public dismissOnBlur: boolean;
 
+  public dropdownClass: string;
+
   public horizontalAlignment: SkyDropdownHorizontalAlignment;
 
   public itemAriaRole: string;

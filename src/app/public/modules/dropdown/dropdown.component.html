@@ -62,6 +62,7 @@
   <div
     class="sky-dropdown-menu-container"
     [class.hidden]="!isVisible"
+    [ngClass]="dropdownClass"
     #menuContainerElementRef
   >
     <ng-content
