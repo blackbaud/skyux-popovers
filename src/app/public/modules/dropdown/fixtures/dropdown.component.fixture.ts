@@ -56,8 +56,6 @@ export class DropdownFixtureComponent {
 
   public horizontalAlignment: SkyDropdownHorizontalAlignment;
 
-  public itemAriaRole: string;
-
   public label: string;
 
   public messageStream = new Subject<SkyDropdownMessage>();

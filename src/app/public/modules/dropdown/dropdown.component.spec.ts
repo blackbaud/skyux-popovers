@@ -1022,14 +1022,12 @@ describe('Dropdown component', function () {
       detectChangesFakeAsync();
 
       const menu = getMenuElement();
-      const item = getFirstMenuItem();
 
       expect(button.getAttribute('aria-haspopup')).toEqual(menu.getAttribute('role'));
       expect(button.getAttribute('aria-label')).toEqual('Context menu');
       expect(button.getAttribute('aria-expanded')).toEqual('true');
       expect(menu.getAttribute('role')).toEqual('menu');
       expect(menu.getAttribute('aria-labelledby')).toBeNull();
-      expect(item.getAttribute('role')).toEqual('menuitem');
     }));
 
     it('should allow custom overrides of ARIA attributes', fakeAsync(() => {
@@ -1041,19 +1039,16 @@ describe('Dropdown component', function () {
 
       fixture.componentInstance.menuAriaRole = 'menu-role-override';
       fixture.componentInstance.menuAriaLabelledBy = 'menu-labelled-by-override';
-      fixture.componentInstance.itemAriaRole = 'item-role-override';
       fixture.componentInstance.label = 'button-label-override';
 
       detectChangesFakeAsync();
       detectChangesFakeAsync();
 
       const menu = getMenuElement();
-      const item = getFirstMenuItem();
 
       expect(button.getAttribute('aria-label')).toEqual('button-label-override');
       expect(menu.getAttribute('role')).toEqual('menu-role-override');
       expect(menu.getAttribute('aria-labelledby')).toEqual('menu-labelled-by-override');
-      expect(item.getAttribute('role')).toEqual('item-role-override');
     }));
 
     it('should set the aria-expanded attribute', fakeAsync(() => {

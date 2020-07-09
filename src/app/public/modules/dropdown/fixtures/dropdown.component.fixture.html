@@ -23,11 +23,10 @@
     #dropdownMenuRef
   >
 
-    <sky-dropdown-item *ngFor="let item of items"
-      [ariaRole]="itemAriaRole"
-    >
+    <sky-dropdown-item *ngFor="let item of items">
       <button
         type="button"
+        [attr.role]="itemAriaRole"
         [attr.disabled]="item.disabled ? '' : null"
         (click)="onItemClick(item.name)"
       >

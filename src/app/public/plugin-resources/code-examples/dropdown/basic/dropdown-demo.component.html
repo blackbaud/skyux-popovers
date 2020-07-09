@@ -5,6 +5,7 @@
   <sky-dropdown-menu>
     <sky-dropdown-item *ngFor="let item of items">
       <button
+        role="menuitem"
         type="button"
         [attr.disabled]="item.disabled ? '' : null"
         (click)="actionClicked(item.name)"

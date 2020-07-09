@@ -22,6 +22,9 @@ export class SkyDropdownItemComponent implements AfterViewInit {
    * dropdown menu item represents on the web page. For information about ARIA roles, see the
    * [WAI-ARIA roles model](https://www.w3.org/WAI/PF/aria/roles).
    * @default "menuitem"
+   * @deprecated This property should be replaced by placing the role on the interactive
+   * element which is passed into the dropdown item. This role should normally be `menuitem`.
+   * @internal
    */
   @Input()
   public set ariaRole(value: string) {
