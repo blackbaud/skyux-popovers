@@ -1,1 +1,1 @@
-export * from './dropdown-fixture';
+export * from './dropdown/dropdown-fixture';

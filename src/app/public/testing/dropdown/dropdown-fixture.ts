@@ -16,7 +16,7 @@ import {
 
 import {
   SkyDropdownComponent
-} from '../modules/dropdown/dropdown.component';
+} from '../../modules/dropdown/dropdown.component';
 
 import {
   SkyDropdownFixtureDropdownItem
