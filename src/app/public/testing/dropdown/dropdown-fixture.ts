@@ -46,7 +46,7 @@ export class SkyDropdownFixture {
     const button = this.buttonDebugElement;
 
     if (!button) {
-      return undefined;
+      return;
     }
 
     const buttonCmp = button.componentInstance as SkyDropdownComponent;
@@ -75,7 +75,7 @@ export class SkyDropdownFixture {
   public get dropdownMenu(): SkyDropdownFixtureDropdownMenu {
     const menu = this.getOverlay().querySelector('.sky-dropdown-menu');
     if (!menu) {
-      return undefined;
+      return;
     }
 
     return {
@@ -91,7 +91,6 @@ export class SkyDropdownFixture {
     const overlay = this.getOverlay();
 
     if (!overlay) {
-      /* tslint:disable-next-line:no-null-keyword */
       return false;
     }
 
@@ -141,7 +140,7 @@ export class SkyDropdownFixture {
   public getDropdownItem(index: number): SkyDropdownFixtureDropdownItem {{
     const item = this.getDropdownItemEls()[index];
     if (!item) {
-      return undefined;
+      return;
     }
 
     return {
@@ -150,10 +149,15 @@ export class SkyDropdownFixture {
   }}
 
   /**
-   * Returns the first element inside the dropdown menu
-   * that is a descendant of the provided selector.
+   * Returns the first element inside the dropdown menu that is a descendant of the
+   * provided selector. Selector should not contain SKYUX prefixes, as they are for
+   * internal use only and are subject to change.
    */
   public querySelector(selector: string): any {
+    if (selector.substring(0, 5) === '.sky-' || selector.substring(0, 4) === 'sky-') {
+      throw new Error(`Selector should not contain SKYUX prefixes.`);
+    }
+
     const overlay = this.getOverlay();
     if (!overlay) {
       /* tslint:disable-next-line:no-null-keyword */
@@ -164,10 +168,15 @@ export class SkyDropdownFixture {
   }
 
   /**
-   * Returns all elements inside the dropdown menu
-   * that are descendants of the provided selector.
+   * Returns all elements inside the dropdown menu that are descendants of the provided selector.
+   * Selector should not contain SKYUX prefixes, as they are for internal use only
+   * and are subject to change.
    */
   public querySelectorAll(selector: string): NodeListOf<any> {
+    if (selector.substring(0, 5) === '.sky-' || selector.substring(0, 4) === 'sky-') {
+      throw new Error(`Selector should not contain SKYUX prefixes.`);
+    }
+
     const overlay = this.getOverlay();
     if (!overlay) {
       /* tslint:disable-next-line:no-null-keyword */

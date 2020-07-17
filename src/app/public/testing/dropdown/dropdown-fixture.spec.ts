@@ -224,4 +224,24 @@ describe('Dropdown fixture', () => {
     expect(disabledButton.textContent.trim()).toEqual(testComponent.items[1].name);
     expect(disabledButton.disabled).toEqual(true);
   });
+
+  it('should throw error when the querySelector argument starts with .sky- or sky-', async() => {
+    expect(() => {
+      dropdownFixture.querySelector('.sky-dropdown');
+    }).toThrow();
+
+    expect(() => {
+      dropdownFixture.querySelector('sky-dropdown');
+    }).toThrow();
+  });
+
+  it('should throw error when the querySelectorAll argument starts with .sky- or sky-', async() => {
+    expect(() => {
+      dropdownFixture.querySelectorAll('.sky-dropdown-item');
+    }).toThrow();
+
+    expect(() => {
+      dropdownFixture.querySelectorAll('sky-dropdown-item');
+    }).toThrow();
+  });
 });
