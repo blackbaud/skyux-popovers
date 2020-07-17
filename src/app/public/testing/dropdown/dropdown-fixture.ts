@@ -66,7 +66,7 @@ export class SkyDropdownFixture {
    * Returns the dropdown button's text.
    */
   public get dropdownButtonText(): string {
-    return this.buttonDebugElement.nativeElement.innerText;
+    return this.buttonDebugElement.nativeElement.innerText.trim();
   }
 
   /**
