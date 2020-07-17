@@ -1,11 +1,10 @@
 import {
-  ComponentFixture,
-  tick
-} from '@angular/core/testing';
-
-import {
   DebugElement
 } from '@angular/core';
+
+import {
+  ComponentFixture
+} from '@angular/core/testing';
 
 import {
   By
@@ -14,6 +13,22 @@ import {
 import {
   SkyAppTestUtility
 } from '@skyux-sdk/testing';
+
+import {
+  SkyDropdownComponent
+} from '../modules/dropdown/dropdown.component';
+
+import {
+  SkyDropdownFixtureDropdownItem
+} from './dropdown-fixture-dropdown-item';
+
+import {
+  SkyDropdownFixtureDropdownMenu
+} from './dropdown-fixture-dropdown-menu';
+
+import {
+  SkyDropdownFixtureDropdown
+} from './dropdown-fixture-dropdown';
 
 /**
  * Allows interaction with a SKY UX dropdown component just as a user would.
@@ -24,65 +39,149 @@ export class SkyDropdownFixture {
 
   private debugEl: DebugElement;
 
-  private hostSelector: string = 'sky-dropdown';
+  /**
+   * Retrieves information about the dropdown component.
+   */
+  public get dropdown(): SkyDropdownFixtureDropdown {{
+    const button = this.buttonDebugElement;
+
+    if (!button) {
+      return undefined;
+    }
+
+    const buttonCmp = button.componentInstance as SkyDropdownComponent;
+
+    return {
+      buttonStyle: buttonCmp.buttonStyle,
+      buttonType: buttonCmp.buttonType,
+      disabled: buttonCmp.disabled,
+      dismissOnBlur: buttonCmp.dismissOnBlur,
+      horizontalAlignment: buttonCmp.horizontalAlignment,
+      label: buttonCmp.label,
+      title: buttonCmp.title
+    };
+  }}
+
+  /**
+   * Returns the dropdown button's text.
+   */
+  public get dropdownButtonText(): string {
+    return this.buttonDebugElement.nativeElement.innerText;
+  }
+
+  /**
+   * Retrieves information about the dropdown menu component.
+   */
+  public get dropdownMenu(): SkyDropdownFixtureDropdownMenu {
+    const menu = this.getOverlay().querySelector('.sky-dropdown-menu');
+    if (!menu) {
+      return undefined;
+    }
+
+    return {
+      ariaLabelledBy: menu.getAttribute('aria-labelledby'),
+      ariaRole: menu.getAttribute('role')
+    };
+  }
+
+  /**
+   * Indicates if the dropdown menu is open and visible.
+   */
+  public get dropdownMenuIsVisible(): boolean {
+    const overlay = this.getOverlay();
+
+    if (!overlay) {
+      /* tslint:disable-next-line:no-null-keyword */
+      return false;
+    }
+
+    return this.getOverlay().querySelector('.sky-dropdown-menu') !== null;
+  }
+
+  private get buttonDebugElement(): DebugElement {
+    return this.debugEl.query(
+      By.css('.sky-dropdown-button')
+    );
+  }
 
   constructor(
     private fixture: ComponentFixture<any>,
     skyTestId: string
   ) {
-    this.debugEl = SkyAppTestUtility.getDebugElementByTestId(fixture, skyTestId, this.hostSelector);
-  }
-
-  public getHost(): any {
-
+    this.debugEl = SkyAppTestUtility.getDebugElementByTestId(fixture, skyTestId, 'sky-dropdown');
   }
 
   /**
-   * The dropdown button's inner text.
+   * Click the dropdown button to open or close the dropdown menu.
    */
-  public get innerText(): string {
-    return this.getDropdownButtonDebugElement().nativeElement.innerText;
-  }
-
-  /**
-   * Indicates if the dropdown button is disabled.
-   */
-  public get disabled(): boolean {
-    return this.getDropdownButtonDebugElement().nativeElement.disabled;
-  }
-
-  public get menuEl(): any {
-    return document.querySelector('.sky-dropdown-menu');
-  }
-
-  public get itemEls(): NodeListOf<any> {
-    return document.querySelectorAll('.sky-dropdown-item');
-  }
-
-  public get buttonEl(): any {
-    return document.querySelector('.sky-dropdown-button');
-  }
-
-  public clickDropdownButton(): Promise<any> {
-    this.getDropdownButtonDebugElement().nativeElement.click();
+  public async clickDropdownButton(): Promise<any> {
+    this.buttonDebugElement.nativeElement.click();
     this.fixture.detectChanges();
     return this.fixture.whenStable();
   }
 
-  public clickItem(itemIndex: number): Promise<any> {
-    if (itemIndex >= this.itemEls.length) {
-      throw new Error(`There is no tab at index ${itemIndex}.`);
+  /**
+   * Click the dropdown item at the provided index.
+   */
+  public async clickDropdownItem(index: number): Promise<any> {
+    const itemEls = this.getDropdownItemEls();
+    if (index >= itemEls.length) {
+      throw new Error(`There is no dropdown item at index ${index}.`);
     }
 
-    this.itemEls[itemIndex].click();
+    itemEls[index].click();
 
     this.fixture.detectChanges();
     return this.fixture.whenStable();
   }
 
-  private getDropdownButtonDebugElement(): DebugElement {
-    return this.debugEl.query(
-      By.css('.sky-dropdown-button')
-    );
+  /**
+   * Retrieves information about the dropdown item at the provided index.
+   */
+  public getDropdownItem(index: number): SkyDropdownFixtureDropdownItem {{
+    const item = this.getDropdownItemEls()[index];
+    if (!item) {
+      return undefined;
+    }
+
+    return {
+      ariaRole: item.getAttribute('role')
+    };
+  }}
+
+  /**
+   * Returns the first element inside the dropdown menu
+   * that is a descendant of the provided selector.
+   */
+  public querySelector(selector: string): any {
+    const overlay = this.getOverlay();
+    if (!overlay) {
+      /* tslint:disable-next-line:no-null-keyword */
+      return null;
+    }
+
+    return overlay.querySelector(selector);
+  }
+
+  /**
+   * Returns all elements inside the dropdown menu
+   * that are descendants of the provided selector.
+   */
+  public querySelectorAll(selector: string): NodeListOf<any> {
+    const overlay = this.getOverlay();
+    if (!overlay) {
+      /* tslint:disable-next-line:no-null-keyword */
+      return null;
+    }
+
+    return overlay.querySelectorAll(selector);
+  }
+
+  private getDropdownItemEls(): NodeListOf<any> {
+    return this.getOverlay().querySelectorAll('.sky-dropdown-item');
+  }
+
+  private getOverlay(): HTMLElement {
+    return document.querySelector('sky-overlay');
   }
 }
