@@ -19,16 +19,16 @@ import {
 } from '../../modules/dropdown/dropdown.component';
 
 import {
-  SkyDropdownFixtureDropdownItem
-} from './dropdown-fixture-dropdown-item';
+  SkyPopoversFixtureDropdownItem
+} from './popovers-fixture-dropdown-item';
 
 import {
-  SkyDropdownFixtureDropdownMenu
-} from './dropdown-fixture-dropdown-menu';
+  SkyPopoversFixtureDropdownMenu
+} from './popovers-fixture-dropdown-menu';
 
 import {
-  SkyDropdownFixtureDropdown
-} from './dropdown-fixture-dropdown';
+  SkyPopoversFixtureDropdown
+} from './popovers-fixture-dropdown';
 
 /**
  * Allows interaction with a SKY UX dropdown component just as a user would.
@@ -42,7 +42,7 @@ export class SkyDropdownFixture {
   /**
    * Retrieves information about the dropdown component.
    */
-  public get dropdown(): SkyDropdownFixtureDropdown {{
+  public get dropdown(): SkyPopoversFixtureDropdown {{
     const button = this.buttonDebugElement;
 
     if (!button) {
@@ -72,7 +72,7 @@ export class SkyDropdownFixture {
   /**
    * Retrieves information about the dropdown menu component.
    */
-  public get dropdownMenu(): SkyDropdownFixtureDropdownMenu {
+  public get dropdownMenu(): SkyPopoversFixtureDropdownMenu {
     const menu = this.getOverlay().querySelector('.sky-dropdown-menu');
     if (!menu) {
       return;
@@ -137,7 +137,7 @@ export class SkyDropdownFixture {
   /**
    * Retrieves information about the dropdown item at the provided index.
    */
-  public getDropdownItem(index: number): SkyDropdownFixtureDropdownItem {{
+  public getDropdownItem(index: number): SkyPopoversFixtureDropdownItem {{
     const item = this.getDropdownItemEls()[index];
     if (!item) {
       return;

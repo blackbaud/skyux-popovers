@@ -2,7 +2,7 @@ import {
   SkyDropdownHorizontalAlignment
 } from '@skyux/popovers/modules/dropdown/types/dropdown-horizontal-alignment';
 
-export interface SkyDropdownFixtureDropdown {
+export interface SkyPopoversFixtureDropdown {
   buttonStyle: string;
   buttonType: string;
   disabled: boolean;
