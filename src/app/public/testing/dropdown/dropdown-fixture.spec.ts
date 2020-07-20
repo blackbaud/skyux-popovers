@@ -149,8 +149,6 @@ describe('Dropdown fixture', () => {
     expect(dropdownFixture.dropdown.buttonStyle).toEqual(testComponent.buttonStyle);
     expect(dropdownFixture.dropdown.buttonType).toEqual(testComponent.buttonType);
     expect(dropdownFixture.dropdown.disabled).toEqual(testComponent.disabled);
-    expect(dropdownFixture.dropdown.dismissOnBlur).toEqual(testComponent.dismissOnBlur);
-    expect(dropdownFixture.dropdown.horizontalAlignment).toEqual(testComponent.horizontalAlignment);
     expect(dropdownFixture.dropdown.label).toEqual(testComponent.label);
     expect(dropdownFixture.dropdown.title).toEqual(testComponent.title);
     expect(dropdownFixture.dropdown.buttonType).toEqual(testComponent.buttonType);
@@ -199,10 +197,14 @@ describe('Dropdown fixture', () => {
     expect(fixture.componentInstance.activeIndex).toEqual(2);
   });
 
-  it('should return elements in the dropdown items with querySelectorAll', async() => {
+  it('should return content inside the dropdown menu with getDropdownMenuContent()', async() => {
     await dropdownFixture.clickDropdownButton();
 
-    const buttonEls = dropdownFixture.querySelectorAll('button[data-test-id]');
+    const menu = dropdownFixture.getDropdownMenuContent();
+
+    expect(menu).not.toBeNull();
+
+    const buttonEls = menu.querySelectorAll('button[data-test-id]');
 
     expect(buttonEls).not.toBeNull();
     expect(buttonEls.length).toEqual(3);
@@ -215,33 +217,5 @@ describe('Dropdown fixture', () => {
 
     expect(buttonEls[2].textContent.trim()).toEqual(testComponent.items[2].name);
     expect(buttonEls[2].disabled).toEqual(false);
-  });
-
-  it('should return an element in the dropdown menu with querySelector', async() => {
-    await dropdownFixture.clickDropdownButton();
-
-    const disabledButton = dropdownFixture.querySelector(`button[data-test-id='my-button-1']`);
-    expect(disabledButton.textContent.trim()).toEqual(testComponent.items[1].name);
-    expect(disabledButton.disabled).toEqual(true);
-  });
-
-  it('should throw error when the querySelector argument starts with .sky- or sky-', async() => {
-    expect(() => {
-      dropdownFixture.querySelector('.sky-dropdown');
-    }).toThrow();
-
-    expect(() => {
-      dropdownFixture.querySelector('sky-dropdown');
-    }).toThrow();
-  });
-
-  it('should throw error when the querySelectorAll argument starts with .sky- or sky-', async() => {
-    expect(() => {
-      dropdownFixture.querySelectorAll('.sky-dropdown-item');
-    }).toThrow();
-
-    expect(() => {
-      dropdownFixture.querySelectorAll('sky-dropdown-item');
-    }).toThrow();
   });
 });
