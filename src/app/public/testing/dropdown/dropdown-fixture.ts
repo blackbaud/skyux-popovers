@@ -36,7 +36,7 @@ export class SkyDropdownFixture {
   /**
    * Returns information about the dropdown component.
    */
-  public get dropdown(): SkyPopoversFixtureDropdown {{
+  public get dropdown(): SkyPopoversFixtureDropdown {
     const button = this.buttonDebugElement;
 
     if (!button) {
@@ -50,7 +50,7 @@ export class SkyDropdownFixture {
       label: button.nativeElement.getAttribute('aria-label'),
       title: button.nativeElement.getAttribute('title')
     };
-  }}
+  }
 
   /**
    * Returns the dropdown button's text.
