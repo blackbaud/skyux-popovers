@@ -14,17 +14,8 @@ import {
 
 import {
   SkyDropdownMenuChange,
-  SkyDropdownMessage,
   SkyDropdownModule
 } from '@skyux/popovers';
-
-import {
-  SkyDropdownHorizontalAlignment
-} from '@skyux/popovers/modules/dropdown/types/dropdown-horizontal-alignment';
-
-import {
-  Subject
-} from 'rxjs';
 
 import {
   SkyDropdownFixture
@@ -41,10 +32,7 @@ const DATA_SKY_ID = 'test-dropdown';
   [buttonStyle]="buttonStyle"
   [buttonType]="buttonType"
   [disabled]="disabled"
-  [dismissOnBlur]="dismissOnBlur"
-  [horizontalAlignment]="horizontalAlignment"
   [label]="label"
-  [messageStream]="messageStream"
   [title]="title"
 >
   <sky-dropdown-button>
@@ -80,19 +68,13 @@ class DropdownTestComponent {
 
   public disabled: boolean = false;
 
-  public dismissOnBlur: boolean = true;
-
   public dropdownButtonText: string = 'Show dropdown';
 
   public dropdownMenuAriaLabelledBy: string;
 
   public dropdownMenuAriaRole: string;
 
-  public horizontalAlignment: SkyDropdownHorizontalAlignment;
-
   public label: string;
-
-  public messageStream: Subject<SkyDropdownMessage> = new Subject<SkyDropdownMessage>();
 
   public title: string;
 
@@ -139,8 +121,6 @@ describe('Dropdown fixture', () => {
     testComponent.buttonStyle = 'primary';
     testComponent.buttonType = 'context-menu';
     testComponent.disabled = true;
-    testComponent.dismissOnBlur = false;
-    testComponent.horizontalAlignment = 'right';
     testComponent.label = 'A11y descriptor';
     testComponent.title = 'my tile';
     fixture.detectChanges();
