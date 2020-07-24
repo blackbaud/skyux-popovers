@@ -1,6 +1,6 @@
 {
   "name": "@skyux/popovers",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "SKY UX Popovers",
   "scripts": {
     "build": "skyux build-public-library",
@@ -65,7 +65,7 @@
     "@skyux/lookup": "4.2.0",
     "@skyux/modals": "4.3.1",
     "@skyux/omnibar-interop": "4.0.0",
-    "@skyux/popovers": "4.0.0",
+    "@skyux/popovers": "4.0.1",
     "@skyux/router": "4.0.0",
     "@skyux/tabs": "4.2.0",
     "@skyux/theme": "4.4.0",
