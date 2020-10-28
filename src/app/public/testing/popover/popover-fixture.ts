@@ -1,0 +1,119 @@
+import {
+  DebugElement
+} from '@angular/core';
+
+import {
+  ComponentFixture
+} from '@angular/core/testing';
+
+import {
+  SkyAppTestUtility
+} from '@skyux-sdk/testing';
+
+/**
+ * Provides information for and interaction with a SKY UX popover component.
+ * By using the fixture API, a test insulates itself against updates to the internals
+ * of a component, such as changing its DOM structure.
+ */
+export class SkyPopoverFixture {
+  private debugEl: DebugElement;
+
+  constructor(
+    private fixture: ComponentFixture<any>,
+    skyTestId: string
+  ) {
+    this.debugEl = SkyAppTestUtility.getDebugElementByTestId(fixture, skyTestId, 'sky-popover');
+  }
+
+  /**
+   * Indicates if the popover is open and visible.
+   */
+  public get popoverIsVisible(): boolean {
+    return this.contentElement !== undefined;
+  }
+
+  /**
+   * Returns the popover position if the popover is open, otherwise undefined.
+   */
+  public get position(): string {
+    return this.getClassValueFromPrefix('sky-popover-placement-');
+  }
+
+  /**
+   * Returns the popover alignment if the popover is open, otherwise undefined.
+   */
+  public get alignment(): string {
+    return this.getClassValueFromPrefix('sky-popover-alignment-');
+  }
+
+  /**
+   * Returns the popover title text if the popover is open, otherwise undefined.
+   */
+  public get title(): string {
+    return SkyAppTestUtility.getText(this.titleElement);
+  }
+
+  /**
+   * Returns the popover body element if the popover is open, otherwise undefined.
+   */
+  public get body(): HTMLElement {
+    return this.bodyElement;
+  }
+
+  /**
+   * Triggers the blur event for the popover.
+   */
+  public blur(): Promise<any> {
+
+    // this.containerElement.focus();
+    // this.containerElement.blur();
+
+    // this.debugEl.nativeElement.blur();
+    // this.contentElement.blur();
+
+    SkyAppTestUtility.fireDomEvent(window.document.body, 'click');
+    // document.body.click();
+
+    this.fixture.detectChanges();
+    return this.fixture.whenStable();
+  }
+
+  //#region helpers
+  private get contentElement(): HTMLElement {
+    return this.queryOverlay('sky-popover-content');
+  }
+
+  private get containerElement(): HTMLElement {
+    return this.queryOverlay('.sky-popover-container');
+  }
+
+  private get titleElement(): HTMLElement {
+    return this.queryOverlay('.sky-popover-title');
+  }
+
+  private get bodyElement(): HTMLElement {
+    return this.queryOverlay('.sky-popover-body');
+  }
+
+  private getOverlay(): HTMLElement {
+    return document.querySelector('sky-overlay');
+  }
+
+  private queryOverlay(query: string): HTMLElement {
+    const overlay = this.getOverlay();
+
+    return !overlay
+      ? undefined
+      : overlay.querySelector(query);
+  }
+
+  private getClassValueFromPrefix(prefix: string): string {
+    let containerClasses = this.containerElement?.className.split(' ');
+    let prefixedClass = containerClasses?.find(x => x.startsWith(prefix));
+
+    return !prefixedClass
+      ? undefined
+      : prefixedClass.slice(prefix.length);
+  }
+  //#endregion
+}

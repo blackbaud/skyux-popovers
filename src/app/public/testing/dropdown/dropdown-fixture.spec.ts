@@ -125,7 +125,7 @@ describe('Dropdown fixture', () => {
     testComponent.buttonType = 'context-menu';
     testComponent.disabled = true;
     testComponent.label = 'A11y descriptor';
-    testComponent.title = 'my tile';
+    testComponent.title = 'my title';
     fixture.detectChanges();
 
     // Expect new values to be set on sky-dropdown component.
