@@ -36,14 +36,14 @@ export class SkyPopoverFixture {
    * Returns the popover position if the popover is open, otherwise undefined.
    */
   public get position(): string {
-    return this.getClassValueFromPrefix('sky-popover-placement-');
+    return this.getClassSuffixByClassPrefix(this.containerElement, 'sky-popover-placement-');
   }
 
   /**
    * Returns the popover alignment if the popover is open, otherwise undefined.
    */
   public get alignment(): string {
-    return this.getClassValueFromPrefix('sky-popover-alignment-');
+    return this.getClassSuffixByClassPrefix(this.containerElement, 'sky-popover-alignment-');
   }
 
   /**
@@ -107,8 +107,18 @@ export class SkyPopoverFixture {
       : overlay.querySelector(query);
   }
 
-  private getClassValueFromPrefix(prefix: string): string {
-    let containerClasses = this.containerElement?.className.split(' ');
+  /**
+   * Searches the element's class names for a class which matches a given prefix.
+   * If a match is found, the prefix is trimmed from the class name and the suffix is returned.
+   * If no class matching the prefix is found, undefined is returned.
+   *
+   * Example:
+   *   For a class 'sky-popover-placement-right', passing the prefix 'sky-popover-placement-'
+   *   should return the value 'right'.
+   * @param prefix
+   */
+  private getClassSuffixByClassPrefix(element: HTMLElement, prefix: string): string {
+    let containerClasses = element?.className.split(' ');
     let prefixedClass = containerClasses?.find(x => x.startsWith(prefix));
 
     return !prefixedClass
