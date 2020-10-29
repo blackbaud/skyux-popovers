@@ -13,13 +13,16 @@ import {
 } from '@skyux-sdk/testing';
 
 import {
-  SkyDropdownMenuChange,
-  SkyDropdownModule
+  SkyDropdownMenuChange
 } from '@skyux/popovers';
 
 import {
   SkyDropdownFixture
 } from './dropdown-fixture';
+
+import {
+  SkyDropdownTestingModule
+} from './dropdown-testing.module';
 
 const DATA_SKY_ID = 'test-dropdown';
 
@@ -107,7 +110,7 @@ describe('Dropdown fixture', () => {
         DropdownTestComponent
       ],
       imports: [
-        SkyDropdownModule
+        SkyDropdownTestingModule
       ]
     });
 

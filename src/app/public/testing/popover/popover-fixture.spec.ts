@@ -10,24 +10,17 @@ import {
 } from '@angular/core';
 
 import {
-  NoopAnimationsModule
-} from '@angular/platform-browser/animations';
-
-import {
-  expect
+  expect,
+  SkyAppTestUtility
 } from '@skyux-sdk/testing';
-
-import {
-  SkyPopoverModule
-} from '@skyux/popovers';
 
 import {
   SkyPopoverFixture
 } from './popover-fixture';
 
 import {
-  SkyAppTestUtility
-} from '@skyux-sdk/testing';
+  SkyPopoverTestingModule
+} from './popover-testing.module';
 
 //#region Test component
 @Component({
@@ -94,8 +87,7 @@ describe('Popover fixture', () => {
         PopoverTestComponent
       ],
       imports: [
-        SkyPopoverModule,
-        NoopAnimationsModule
+        SkyPopoverTestingModule
       ]
     });
 
