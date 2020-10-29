@@ -74,9 +74,6 @@ describe('Popover fixture', () => {
   function detectChangesFakeAsync(): void {
     fixture.detectChanges();
     tick();
-
-    fixture.detectChanges();
-    tick();
   }
 
   function openPopover(): void {
@@ -96,7 +93,8 @@ describe('Popover fixture', () => {
         PopoverTestComponent
       ],
       imports: [
-        SkyPopoverModule
+        SkyPopoverModule,
+        NoopAnimationsModule
       ]
     });
 
