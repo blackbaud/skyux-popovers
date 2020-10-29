@@ -3,7 +3,8 @@ import {
 } from '@angular/core';
 
 import {
-  ComponentFixture
+  ComponentFixture,
+  tick
 } from '@angular/core/testing';
 
 import {
@@ -65,16 +66,20 @@ export class SkyPopoverFixture {
    */
   public blur(): Promise<any> {
 
-    // this.containerElement.focus();
-    // this.containerElement.blur();
-
-    // this.debugEl.nativeElement.blur();
-    // this.contentElement.blur();
-
+    // close the popover by changing focus to the body element
     SkyAppTestUtility.fireDomEvent(window.document.body, 'click');
-    // document.body.click();
 
+    /*
+      There needs to be enough time provided for the overlay to disappear before
+      returning, allowing consumers to perform assertions as expected.
+      We don't want our consumers to have to worry about any timing issues,
+      so we handle it here.
+     */
     this.fixture.detectChanges();
+    tick();
+    this.fixture.detectChanges();
+    tick();
+
     return this.fixture.whenStable();
   }
 
