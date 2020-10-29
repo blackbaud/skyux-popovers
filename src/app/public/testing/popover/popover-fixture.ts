@@ -1,8 +1,4 @@
 import {
-  DebugElement
-} from '@angular/core';
-
-import {
   ComponentFixture
 } from '@angular/core/testing';
 
@@ -16,14 +12,9 @@ import {
  * of a component, such as changing its DOM structure.
  */
 export class SkyPopoverFixture {
-  private debugEl: DebugElement;
-
   constructor(
-    private fixture: ComponentFixture<any>,
-    skyTestId: string
-  ) {
-    this.debugEl = SkyAppTestUtility.getDebugElementByTestId(fixture, skyTestId, 'sky-popover');
-  }
+    private fixture: ComponentFixture<any>
+  ) { }
 
   /**
    * Indicates if the popover is open and visible.

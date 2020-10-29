@@ -10,6 +10,10 @@ import {
 } from '@angular/core';
 
 import {
+  NoopAnimationsModule
+} from '@angular/platform-browser/animations';
+
+import {
   expect
 } from '@skyux-sdk/testing';
 
@@ -24,8 +28,6 @@ import {
 import {
   SkyAppTestUtility
 } from '@skyux-sdk/testing';
-
-const DATA_SKY_ID = 'test-popover';
 
 //#region Test component
 @Component({
@@ -43,7 +45,6 @@ const DATA_SKY_ID = 'test-popover';
 </button>
 
 <sky-popover
-  data-sky-id="${DATA_SKY_ID}"
   [popoverTitle]="popoverTitle"
   [dismissOnBlur]="dismissOnBlur"
   #myPopover
@@ -103,7 +104,7 @@ describe('Popover fixture', () => {
     );
     testComponent = fixture.componentInstance;
     fixture.detectChanges();
-    popoverFixture = new SkyPopoverFixture(fixture, DATA_SKY_ID);
+    popoverFixture = new SkyPopoverFixture(fixture);
   });
 
   it('should not expose popover properties when hidden', fakeAsync(async () => {
