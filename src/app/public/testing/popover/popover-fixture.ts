@@ -26,7 +26,7 @@ export class SkyPopoverFixture {
   /**
    * Returns the popover position if the popover is open, otherwise undefined.
    */
-  public get position(): string {
+  public get placement(): string {
     return this.getClassSuffixByClassPrefix(this.containerElement, 'sky-popover-placement-');
   }
 

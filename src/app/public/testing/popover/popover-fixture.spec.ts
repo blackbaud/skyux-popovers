@@ -107,7 +107,7 @@ describe('Popover fixture', () => {
     expect(popoverFixture.title).toBeUndefined();
     expect(popoverFixture.body).toBeUndefined();
     expect(popoverFixture.alignment).toBeUndefined();
-    expect(popoverFixture.position).toBeUndefined();
+    expect(popoverFixture.placement).toBeUndefined();
   }));
 
   it('should expose popover properties when visible', fakeAsync(async () => {
@@ -125,7 +125,7 @@ describe('Popover fixture', () => {
     expect(popoverFixture.title).toEqual(testComponent.popoverTitle);
     expect(SkyAppTestUtility.getText(popoverFixture.body)).toEqual(testComponent.popoverBody);
     expect(popoverFixture.alignment).toEqual(testComponent.popoverAlignment);
-    expect(popoverFixture.position).toEqual(testComponent.popoverPlacement);
+    expect(popoverFixture.placement).toEqual(testComponent.popoverPlacement);
   }));
 
   it('should hide by default when blur is invoked', fakeAsync(async () => {
