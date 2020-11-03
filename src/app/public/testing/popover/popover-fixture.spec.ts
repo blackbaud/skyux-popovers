@@ -121,7 +121,7 @@ describe('Popover fixture', () => {
     // the popover is closed initially, we need to open it to check values
     openPopover();
 
-    // expect all values to be undefined since the popover element does not exist
+    // expect the values to match our updates
     expect(popoverFixture.title).toEqual(testComponent.popoverTitle);
     expect(SkyAppTestUtility.getText(popoverFixture.body)).toEqual(testComponent.popoverBody);
     expect(popoverFixture.alignment).toEqual(testComponent.popoverAlignment);
