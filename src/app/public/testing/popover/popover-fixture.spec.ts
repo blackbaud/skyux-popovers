@@ -47,11 +47,11 @@ import {
 `
 })
 class PopoverTestComponent {
+  public dismissOnBlur: boolean;
   public popoverAlignment: string;
+  public popoverBody: string = 'popover body';
   public popoverPlacement: string;
   public popoverTitle: string = 'popover title';
-  public popoverBody: string = 'popover body';
-  public dismissOnBlur: boolean;
 }
 //#endregion Test component
 
