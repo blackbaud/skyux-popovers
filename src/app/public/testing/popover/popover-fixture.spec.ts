@@ -4,9 +4,7 @@ import {
 
 import {
   ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
+  TestBed
 } from '@angular/core/testing';
 
 import {
@@ -65,19 +63,16 @@ describe('Popover fixture', () => {
     return document.querySelector('.sky-btn');
   }
 
-  function detectChangesFakeAsync(): void {
-    fixture.detectChanges();
-    tick();
-  }
-
-  function openPopover(): void {
+  function openPopover(): Promise<any> {
     expect(popoverFixture.popoverIsVisible).toEqual(false);
 
     let triggerEl = getPopoverTriggerEl();
     triggerEl.click();
-    detectChangesFakeAsync();
+    fixture.detectChanges();
 
-    expect(popoverFixture.popoverIsVisible).toEqual(true);
+    return fixture.whenStable().then(() => {
+      expect(popoverFixture.popoverIsVisible).toEqual(true);
+    });
   }
   //#endregion
 
@@ -99,7 +94,7 @@ describe('Popover fixture', () => {
     popoverFixture = new SkyPopoverFixture(fixture);
   });
 
-  it('should not expose popover properties when hidden', fakeAsync(async () => {
+  it('should not expose popover properties when hidden', async () => {
     // the popover should be hidden
     expect(popoverFixture.popoverIsVisible).toEqual(false);
 
@@ -108,9 +103,9 @@ describe('Popover fixture', () => {
     expect(popoverFixture.body).toBeUndefined();
     expect(popoverFixture.alignment).toBeUndefined();
     expect(popoverFixture.placement).toBeUndefined();
-  }));
+  });
 
-  it('should expose popover properties when visible', fakeAsync(async () => {
+  it('should expose popover properties when visible', async () => {
     // give properties non-default values
     testComponent.popoverTitle = 'my title';
     testComponent.popoverBody = 'my popover message';
@@ -126,33 +121,33 @@ describe('Popover fixture', () => {
     expect(SkyAppTestUtility.getText(popoverFixture.body)).toEqual(testComponent.popoverBody);
     expect(popoverFixture.alignment).toEqual(testComponent.popoverAlignment);
     expect(popoverFixture.placement).toEqual(testComponent.popoverPlacement);
-  }));
+  });
 
-  it('should hide by default when blur is invoked', fakeAsync(async () => {
+  it('should hide by default when blur is invoked', async () => {
     // open the popover
-    openPopover();
+    await openPopover();
 
     // blur
     await popoverFixture.blur();
-    detectChangesFakeAsync();
+    fixture.detectChanges();
 
     // expect the popover to be dismissed
     expect(popoverFixture.popoverIsVisible).toEqual(false);
-  }));
+  });
 
-  it('should honor dismissOnBlur flag', fakeAsync(async () => {
+  it('should honor dismissOnBlur flag', async () => {
     // oveerride the dismissOnBlur default
     testComponent.dismissOnBlur = false;
     fixture.detectChanges();
 
     // open the popover
-    openPopover();
+    await openPopover();
 
     // blur
     await popoverFixture.blur();
-    detectChangesFakeAsync();
+    fixture.detectChanges();
 
     // expect the popover to remain open
     expect(popoverFixture.popoverIsVisible).toEqual(true);
-  }));
+  });
 });
