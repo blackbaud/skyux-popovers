@@ -61,7 +61,7 @@ describe('Popover fixture', () => {
   let popoverFixture: SkyPopoverFixture;
 
   //#region helpers
-  function getCallerElement(): HTMLButtonElement {
+  function getPopoverTriggerEl(): HTMLButtonElement {
     return document.querySelector('.sky-btn');
   }
 
@@ -73,8 +73,8 @@ describe('Popover fixture', () => {
   function openPopover(): void {
     expect(popoverFixture.popoverIsVisible).toEqual(false);
 
-    let caller = getCallerElement();
-    caller.click();
+    let triggerEl = getPopoverTriggerEl();
+    triggerEl.click();
     detectChangesFakeAsync();
 
     expect(popoverFixture.popoverIsVisible).toEqual(true);
