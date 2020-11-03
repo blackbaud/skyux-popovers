@@ -1,13 +1,13 @@
 import {
-  fakeAsync,
-  TestBed,
-  ComponentFixture,
-  tick
-} from '@angular/core/testing';
-
-import {
   Component
 } from '@angular/core';
+
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick
+} from '@angular/core/testing';
 
 import {
   expect,
@@ -38,8 +38,8 @@ import {
 </button>
 
 <sky-popover
-  [popoverTitle]="popoverTitle"
   [dismissOnBlur]="dismissOnBlur"
+  [popoverTitle]="popoverTitle"
   #myPopover
 >
   {{popoverBody}}
