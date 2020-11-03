@@ -104,7 +104,7 @@ describe('Popover fixture', () => {
     expect(popoverFixture.popoverIsVisible).toEqual(false);
 
     // expect all values to be undefined since the popover element does not exist
-    expect(popoverFixture.title).toBeUndefined();
+    expect(popoverFixture.popoverTitle).toBeUndefined();
     expect(popoverFixture.body).toBeUndefined();
     expect(popoverFixture.alignment).toBeUndefined();
     expect(popoverFixture.placement).toBeUndefined();
@@ -122,7 +122,7 @@ describe('Popover fixture', () => {
     openPopover();
 
     // expect the values to match our updates
-    expect(popoverFixture.title).toEqual(testComponent.popoverTitle);
+    expect(popoverFixture.popoverTitle).toEqual(testComponent.popoverTitle);
     expect(SkyAppTestUtility.getText(popoverFixture.body)).toEqual(testComponent.popoverBody);
     expect(popoverFixture.alignment).toEqual(testComponent.popoverAlignment);
     expect(popoverFixture.placement).toEqual(testComponent.popoverPlacement);

@@ -40,7 +40,7 @@ export class SkyPopoverFixture {
   /**
    * Returns the popover title text if the popover is open, otherwise undefined.
    */
-  public get title(): string {
+  public get popoverTitle(): string {
     return SkyAppTestUtility.getText(this.titleElement);
   }
 
