@@ -12,9 +12,6 @@ import {
  * of a component, such as changing its DOM structure.
  */
 export class SkyPopoverFixture {
-  constructor(
-    private fixture: ComponentFixture<any>
-  ) { }
 
   /**
    * Indicates if the popover is open and visible.
@@ -50,6 +47,10 @@ export class SkyPopoverFixture {
   public get body(): HTMLElement {
     return this.bodyElement;
   }
+
+  constructor(
+    private fixture: ComponentFixture<any>
+  ) { }
 
   /**
    * Triggers the blur event for the popover.
