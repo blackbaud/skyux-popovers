@@ -94,7 +94,7 @@ describe('Popover fixture', () => {
     popoverFixture = new SkyPopoverFixture(fixture);
   });
 
-  it('should not expose popover properties when hidden', async () => {
+  it('should not expose popover properties when hidden', () => {
     // the popover should be hidden
     expect(popoverFixture.popoverIsVisible).toEqual(false);
 
@@ -114,7 +114,7 @@ describe('Popover fixture', () => {
     fixture.detectChanges();
 
     // the popover is closed initially, we need to open it to check values
-    openPopover();
+    await openPopover();
 
     // expect the values to match our updates
     expect(popoverFixture.popoverTitle).toEqual(testComponent.popoverTitle);

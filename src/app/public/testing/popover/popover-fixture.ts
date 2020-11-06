@@ -14,12 +14,18 @@ import {
 export class SkyPopoverFixture {
 
   /**
-   * Indicates if the popover is open and visible.
+   * Returns the popover alignment if the popover is open, otherwise undefined.
    */
-  public get popoverIsVisible(): boolean {
-    return this.contentElement !== undefined;
+  public get alignment(): string {
+    return this.getClassSuffixByClassPrefix(this.containerElement, 'sky-popover-alignment-');
   }
 
+  /**
+   * Returns the popover body element if the popover is open, otherwise undefined.
+   */
+  public get body(): HTMLElement {
+    return this.bodyElement;
+  }
   /**
    * Returns the popover position if the popover is open, otherwise undefined.
    */
@@ -28,24 +34,16 @@ export class SkyPopoverFixture {
   }
 
   /**
-   * Returns the popover alignment if the popover is open, otherwise undefined.
-   */
-  public get alignment(): string {
-    return this.getClassSuffixByClassPrefix(this.containerElement, 'sky-popover-alignment-');
-  }
-
-  /**
    * Returns the popover title text if the popover is open, otherwise undefined.
    */
   public get popoverTitle(): string {
     return SkyAppTestUtility.getText(this.titleElement);
   }
-
   /**
-   * Returns the popover body element if the popover is open, otherwise undefined.
+   * Indicates if the popover is open and visible.
    */
-  public get body(): HTMLElement {
-    return this.bodyElement;
+  public get popoverIsVisible(): boolean {
+    return this.contentElement !== undefined;
   }
 
   constructor(
