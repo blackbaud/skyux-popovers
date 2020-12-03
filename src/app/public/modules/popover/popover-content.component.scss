@@ -1,9 +1,11 @@
 @import "~@skyux/theme/scss/mixins";
 @import "~@skyux/theme/scss/_compat/mixins";
 @import "../../styles/mixins";
+@import "~@skyux/theme/scss/themes/modern/_compat/mixins";
 
 $popover-arrow-size: 20px;
 $popover-border-size: 10px;
+$popover-modern-border-size: 6px;
 $popover-max-width: 276px;
 
 .sky-popover-container {
@@ -144,5 +146,71 @@ $popover-max-width: 276px;
 .sky-popover-max-height {
   .sky-popover {
     @include popoverMaxHeight();
+  }
+}
+
+@include sky-theme-modern {
+  .sky-popover {
+    border-radius: 6px;
+  }
+
+  .sky-popover-arrow {
+    transform: rotate(45deg);
+    background-color:$sky-highlight-color-info;
+    width:16px;
+    height:16px;
+    border: none;
+  }
+
+  .sky-popover-placement-above {
+    padding-bottom: $popover-border-size;
+
+    .sky-popover {
+      border-bottom: $popover-modern-border-size solid $sky-highlight-color-info;
+    }
+
+    .sky-popover-arrow {
+      border-radius: 20px 0 3px 0;
+      bottom: 2px;
+    }
+  }
+
+  .sky-popover-placement-below {
+    padding-top: $popover-border-size;
+
+    .sky-popover {
+      border-top: $popover-modern-border-size solid $sky-highlight-color-info;
+    }
+
+    .sky-popover-arrow {
+      top: 2px;
+      border-radius: 3px 0 20px 0;
+    }
+  }
+
+  .sky-popover-placement-right {
+    padding-left: $popover-border-size;
+
+    .sky-popover {
+      border-left: $popover-modern-border-size solid $sky-highlight-color-info;
+    }
+
+    .sky-popover-arrow {
+      left: 2px;
+      border-radius: 0 20px 0 3px;
+    }
+  }
+
+  .sky-popover-placement-left {
+    padding-right: $popover-border-size;
+
+    .sky-popover {
+      border-right: $popover-modern-border-size solid $sky-highlight-color-info;
+    }
+
+    .sky-popover-arrow {
+      right: 2px;
+      border-radius: 0 3px 0 20px;
+    }
   }
 }
