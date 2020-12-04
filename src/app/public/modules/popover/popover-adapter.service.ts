@@ -23,7 +23,7 @@ export class SkyPopoverAdapterService {
   public getArrowCoordinates(
     elements: SkyPopoverAdapterElements,
     placement: SkyPopoverPlacement,
-    themeName: string
+    themeName?: string
   ): SkyPopoverAdapterArrowCoordinates {
     const callerRect = elements.caller.nativeElement.getBoundingClientRect();
     const popoverRect = elements.popover.nativeElement.getBoundingClientRect();
