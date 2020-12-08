@@ -12,10 +12,10 @@
   #popoverRef
 >
   <div
-    class="sky-popover sky-shadow"
+    class="sky-popover"
     tabindex="-1"
     [ngClass]="{
-      'sky-rounded-corners': themeName === 'default',
+      'sky-rounded-corners sky-shadow': themeName === 'default',
       'sky-elevation-4': themeName === 'modern'
     }"
   >
