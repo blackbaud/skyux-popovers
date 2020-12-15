@@ -21,14 +21,14 @@ export class PopoverDemoComponent {
 
   private popoverOpen: boolean = false;
 
+  public onPopoverOpen(isOpen: boolean): void {
+    this.popoverOpen = isOpen;
+  }
+
   public openPopover(): void {
     if (!this.popoverOpen) {
       this.sendMessage(SkyPopoverMessageType.Open);
     }
-  }
-
-  public onPopoverOpen(isOpen: boolean): void {
-    this.popoverOpen = isOpen;
   }
 
   private sendMessage(type: SkyPopoverMessageType): void {
