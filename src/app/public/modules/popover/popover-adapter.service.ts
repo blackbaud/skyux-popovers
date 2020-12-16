@@ -48,13 +48,13 @@ export class SkyPopoverAdapterService {
         if (themeName !== 'modern') {
           top = callerRect.top - arrowRect.height;
         } else {
-          top = callerRect.top - arrowRect.height + 4;
+          top = callerRect.top - arrowRect.height + 5;
         }
       } else {
         if (themeName !== 'modern') {
           top = callerRect.bottom;
         } else {
-          top = callerRect.bottom + 3;
+          top = callerRect.bottom + 4;
         }
       }
     } else {
@@ -71,13 +71,13 @@ export class SkyPopoverAdapterService {
         if (themeName !== 'modern') {
           left = callerRect.left - arrowRect.width;
         } else {
-          left = callerRect.left - arrowRect.width + 4;
+          left = callerRect.left - arrowRect.width + 5;
         }
       } else {
         if (themeName !== 'modern') {
           left = callerRect.right;
         } else {
-          left = callerRect.right + 3;
+          left = callerRect.right + 4;
         }
       }
     }

@@ -60,7 +60,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'above', themeName);
 
-        expect(offset).toEqual({ top: themeName === 'modern' ? 484 : 480, left: 550 });
+        expect(offset).toEqual({ top: themeName === 'modern' ? 485 : 480, left: 550 });
       });
 
       it('should not detach arrow from popover left', () => {
@@ -81,7 +81,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'above', themeName);
 
-        expect(offset).toEqual({ top: themeName === 'modern' ? 484 : 480, left: 720 });
+        expect(offset).toEqual({ top: themeName === 'modern' ? 485 : 480, left: 720 });
       });
 
       it('should not detach arrow from popover right', () => {
@@ -102,7 +102,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'above', themeName);
 
-        expect(offset).toEqual({ top: themeName === 'modern' ? 484 : 480, left: 380 });
+        expect(offset).toEqual({ top: themeName === 'modern' ? 485 : 480, left: 380 });
       });
     });
 
@@ -126,7 +126,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'below', themeName);
 
-        expect(offset).toEqual({ top: themeName === 'modern' ? 553 : 550, left: 550 });
+        expect(offset).toEqual({ top: themeName === 'modern' ? 554 : 550, left: 550 });
       });
 
       it('should not detach arrow from popover left', () => {
@@ -147,7 +147,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'below', themeName);
 
-        expect(offset).toEqual({ top: themeName === 'modern' ? 553 : 550, left: 720 });
+        expect(offset).toEqual({ top: themeName === 'modern' ? 554 : 550, left: 720 });
       });
 
       it('should not detach arrow from popover right', () => {
@@ -168,7 +168,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'below', themeName);
 
-        expect(offset).toEqual({ top: themeName === 'modern' ? 553 : 550, left: 380 });
+        expect(offset).toEqual({ top: themeName === 'modern' ? 554 : 550, left: 380 });
       });
     });
 
@@ -191,7 +191,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'left', themeName);
 
-        expect(offset).toEqual({ top: 525, left: themeName === 'modern' ? 464 : 460 });
+        expect(offset).toEqual({ top: 525, left: themeName === 'modern' ? 465 : 460 });
       });
 
       it('should not detach arrow from popover top', () => {
@@ -212,7 +212,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'left', themeName);
 
-        expect(offset).toEqual({ top: 870, left: themeName === 'modern' ? 464 : 460 });
+        expect(offset).toEqual({ top: 870, left: themeName === 'modern' ? 465 : 460 });
       });
 
       it('should not detach arrow from popover bottom', () => {
@@ -233,7 +233,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'left', themeName);
 
-        expect(offset).toEqual({ top: 330, left: themeName === 'modern' ? 464 : 460 });
+        expect(offset).toEqual({ top: 330, left: themeName === 'modern' ? 465 : 460 });
       });
     });
 
@@ -256,7 +256,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'right', themeName);
 
-        expect(offset).toEqual({ top: 525, left: themeName === 'modern' ? 603 : 600 });
+        expect(offset).toEqual({ top: 525, left: themeName === 'modern' ? 604 : 600 });
       });
 
       it('should not detach arrow from popover top', () => {
@@ -277,7 +277,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'right', themeName);
 
-        expect(offset).toEqual({ top: 870, left: themeName === 'modern' ? 603 : 600 });
+        expect(offset).toEqual({ top: 870, left: themeName === 'modern' ? 604 : 600 });
       });
 
       it('should not detach arrow from popover bottom', () => {
@@ -298,7 +298,7 @@ describe('SkyPopoverAdapterService', () => {
           popoverArrow: new ElementRef(popoverArrowElement)
         }, 'right', themeName);
 
-        expect(offset).toEqual({ top: 330, left: themeName === 'modern' ? 603 : 600 });
+        expect(offset).toEqual({ top: 330, left: themeName === 'modern' ? 604 : 600 });
       });
     });
   }
