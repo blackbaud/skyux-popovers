@@ -12,8 +12,8 @@
 </button>
 
 <sky-popover #myPopover
-  (popoverClosed)="onPopoverOpen(false)"
-  (popoverOpened)="onPopoverOpen(true)"
+  (popoverClosed)="onPopoverStateChange(false)"
+  (popoverOpened)="onPopoverStateChange(true)"
 >
   This is a popover.
 </sky-popover>

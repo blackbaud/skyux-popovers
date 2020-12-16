@@ -21,7 +21,7 @@ export class PopoverDemoComponent {
 
   private popoverOpen: boolean = false;
 
-  public onPopoverOpen(isOpen: boolean): void {
+  public onPopoverStateChange(isOpen: boolean): void {
     this.popoverOpen = isOpen;
   }
 
