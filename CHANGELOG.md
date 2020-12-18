@@ -1,7 +1,7 @@
 # 4.4.0 (2020-12-18)
 
 - Added modern theme styles to the popover component. [#131](https://github.com/blackbaud/skyux-popovers/pull/131)
-- Fixed the popver component to handle messages to open a popover when it is already open. [#134](https://github.com/blackbaud/skyux-popovers/pull/134)
+- Fixed the popover component to handle messages to open a popover when it is already open. [#134](https://github.com/blackbaud/skyux-popovers/pull/134)
 
 # 4.3.1 (2020-11-11)
 
