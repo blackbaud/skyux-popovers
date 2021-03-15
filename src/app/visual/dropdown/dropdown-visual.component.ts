@@ -57,4 +57,7 @@ export class DropdownVisualComponent {
     this.themeSvc.setTheme(themeSettings);
   }
 
+  public addMenuItem(name: string): void {
+    this.colors.unshift({name});
+  }
 }

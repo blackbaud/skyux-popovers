@@ -107,6 +107,11 @@ export class DropdownFixtureComponent {
     this.changeDetector.detectChanges();
   }
 
+  public addItems() {
+    this.items.unshift({ name: 'Option Added', disabled: false });
+    this.changeDetector.detectChanges();
+  }
+
   public setManyItems(): void {
     const items: any[] = [];
 

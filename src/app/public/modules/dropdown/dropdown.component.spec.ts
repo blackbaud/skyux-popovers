@@ -208,6 +208,10 @@ describe('Dropdown component', function () {
     expect(spy).toHaveBeenCalledWith({
       type: SkyDropdownMessageType.Reposition
     });
+
+    fixture.componentInstance.addItems();
+    detectChangesFakeAsync();
+    expect(fixture.componentInstance.dropdownItemRefs.length).toEqual(4);
   }));
 
   it('should add scrollbars for long list of dropdown items', fakeAsync(() => {
