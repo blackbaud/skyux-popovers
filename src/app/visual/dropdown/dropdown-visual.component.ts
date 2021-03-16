@@ -56,4 +56,5 @@ export class DropdownVisualComponent {
   public themeSettingsChange(themeSettings: SkyThemeSettings): void {
     this.themeSvc.setTheme(themeSettings);
   }
+
 }
