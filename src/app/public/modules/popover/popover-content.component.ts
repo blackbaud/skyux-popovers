@@ -160,8 +160,6 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
         )
         .subscribe((themeSettings) => {
           this.themeName = themeSettings.currentSettings?.theme?.name;
-          this.updateArrowOffset();
-          this.changeDetector.markForCheck();
         });
     }
   }
@@ -324,7 +322,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
     this.arrowTop = top;
     this.arrowLeft = left;
-  }
+    }
 
   private addEventListeners(): void {
     const hostElement = this.elementRef.nativeElement;
