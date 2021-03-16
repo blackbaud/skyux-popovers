@@ -112,7 +112,6 @@ describe('Popover fixture', () => {
     testComponent.popoverAlignment = 'left';
     testComponent.popoverPlacement = 'below';
     fixture.detectChanges();
-    await fixture.whenStable();
 
     // the popover is closed initially, we need to open it to check values
     await openPopover();
