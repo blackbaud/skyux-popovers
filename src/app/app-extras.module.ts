@@ -17,7 +17,7 @@ import {
 
 import {
   SkyIconModule
-} from "@skyux/indicators";
+} from '@skyux/indicators';
 
 import {
   SkyAppLinkModule
