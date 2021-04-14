@@ -20,7 +20,7 @@ import {
 
 import {
   SkyThemeService
-} from "@skyux/theme";
+} from '@skyux/theme';
 
 import {
   fromEvent as observableFromEvent,

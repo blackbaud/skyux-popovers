@@ -17,7 +17,7 @@ import {
 
 import {
   SkyThemeModule
-} from "@skyux/theme";
+} from '@skyux/theme';
 
 import {
   SkyPopoversResourcesModule
