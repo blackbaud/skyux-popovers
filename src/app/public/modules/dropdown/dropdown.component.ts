@@ -259,6 +259,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
         this.handleIncomingMessages(message);
       });
 
+    // Load proper icons on theme change.
     this.themeSvc.settingsChange
       .pipe(
         takeUntil(this.ngUnsubscribe)

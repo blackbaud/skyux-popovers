@@ -13,14 +13,18 @@ import {
 } from '@skyux/core';
 
 import {
+  SkyTheme,
+  SkyThemeMode,
+  SkyThemeModule,
+  SkyThemeService,
+  SkyThemeSettings,
+  SkyThemeSettingsChange
+} from '@skyux/theme';
+
+import {
   expect,
   SkyAppTestUtility
 } from '@skyux-sdk/testing';
-
-import {
-  SkyTheme, SkyThemeMode,
-  SkyThemeModule, SkyThemeService, SkyThemeSettings, SkyThemeSettingsChange
-} from '@skyux/theme';
 
 import {
   BehaviorSubject,
@@ -183,8 +187,8 @@ describe('Dropdown component', function () {
       previousSettings: mockThemeService.settingsChange.getValue().currentSettings
     });
     detectChangesFakeAsync();
-    console.log(fixture.nativeElement.outerHTML);
-    expect(true).toBeTrue();
+    const icon = fixture.nativeElement.querySelector('[ng-reflect-icon-type="skyux"]');
+    expect(icon).toExist();
   }));
 
   it('should allow setting the horizontal alignment', fakeAsync(inject(
