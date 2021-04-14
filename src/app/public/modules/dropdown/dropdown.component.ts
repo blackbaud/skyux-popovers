@@ -19,6 +19,10 @@ import {
 } from '@skyux/core';
 
 import {
+  SkyThemeService
+} from "@skyux/theme";
+
+import {
   fromEvent as observableFromEvent,
   Subject
 } from 'rxjs';
@@ -46,7 +50,6 @@ import {
 import {
   parseAffixHorizontalAlignment
 } from './dropdown-extensions';
-import {SkyThemeService} from "@skyux/theme";
 
 @Component({
   selector: 'sky-dropdown',
