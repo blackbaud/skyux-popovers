@@ -18,8 +18,12 @@
   >
     <ng-container [ngSwitch]="buttonType">
       <ng-template ngSwitchCase="context-menu">
-        <sky-icon
+        <sky-icon *skyThemeIf="'default'"
           icon="ellipsis-h"
+        ></sky-icon>
+        <sky-icon *skyThemeIf="'modern'"
+          icon="ellipsis"
+          iconType="skyux"
         ></sky-icon>
       </ng-template>
 

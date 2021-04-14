@@ -16,10 +16,6 @@ import {
 } from '@skyux/http';
 
 import {
-  SkyIconModule
-} from '@skyux/indicators';
-
-import {
   SkyAppLinkModule
 } from '@skyux/router';
 
@@ -35,7 +31,6 @@ import {
     SkyCodeModule,
     SkyDocsToolsModule,
     SkyDropdownModule,
-    SkyIconModule,
     SkyPopoverModule
   ],
   providers: [

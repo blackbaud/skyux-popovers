@@ -34,6 +34,7 @@ import {
 import {
   SkyDropdownComponent
 } from './dropdown.component';
+import {SkyThemeModule} from "@skyux/theme";
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import {
     SkyAffixModule,
     SkyIconModule,
     SkyOverlayModule,
-    SkyPopoversResourcesModule
+    SkyPopoversResourcesModule,
+    SkyThemeModule
   ],
   exports: [
     SkyDropdownButtonComponent,
