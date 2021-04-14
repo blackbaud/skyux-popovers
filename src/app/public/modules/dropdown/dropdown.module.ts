@@ -16,6 +16,10 @@ import {
 } from '@skyux/indicators';
 
 import {
+  SkyThemeModule
+} from "@skyux/theme";
+
+import {
   SkyPopoversResourcesModule
 } from '../shared/popovers-resources.module';
 
@@ -34,7 +38,6 @@ import {
 import {
   SkyDropdownComponent
 } from './dropdown.component';
-import {SkyThemeModule} from "@skyux/theme";
 
 @NgModule({
   declarations: [
