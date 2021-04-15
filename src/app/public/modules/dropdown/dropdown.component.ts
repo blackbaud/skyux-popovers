@@ -5,7 +5,7 @@ import {
   ElementRef,
   Input,
   OnDestroy,
-  OnInit,
+  OnInit, Optional,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -245,7 +245,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
     private overlayService: SkyOverlayService,
-    private themeSvc: SkyThemeService
+    @Optional() private themeSvc?: SkyThemeService
   ) { }
 
   public ngOnInit(): void {
@@ -260,7 +260,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
       });
 
     // Load proper icons on theme change.
-    this.themeSvc.settingsChange
+    this.themeSvc?.settingsChange
       .pipe(
         takeUntil(this.ngUnsubscribe)
       )
