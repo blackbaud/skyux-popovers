@@ -5,7 +5,8 @@ import {
   ElementRef,
   Input,
   OnDestroy,
-  OnInit, Optional,
+  OnInit,
+  Optional,
   TemplateRef,
   ViewChild
 } from '@angular/core';

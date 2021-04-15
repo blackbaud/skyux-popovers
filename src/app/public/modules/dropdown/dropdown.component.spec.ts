@@ -178,7 +178,6 @@ describe('Dropdown component', function () {
   }));
 
   it('should change theme', fakeAsync(() => {
-    tick();
     detectChangesFakeAsync();
     mockThemeService.settingsChange.next({
       currentSettings: new SkyThemeSettings(
@@ -187,7 +186,6 @@ describe('Dropdown component', function () {
       ),
       previousSettings: mockThemeService.settingsChange.getValue().currentSettings
     });
-    tick();
     detectChangesFakeAsync();
     const icon = fixture.nativeElement.querySelector('[ng-reflect-icon-type="skyux"]');
     expect(icon).toExist();
