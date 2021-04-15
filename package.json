@@ -1,6 +1,6 @@
 {
   "name": "@skyux/popovers",
-  "version": "4.4.1",
+  "version": "4.5.0",
   "description": "SKY UX Popovers",
   "scripts": {
     "build": "skyux build-public-library",
@@ -55,10 +55,10 @@
     "@skyux/config": "4.4.0",
     "@skyux/core": "4.5.0",
     "@skyux/docs-tools": "4.8.1",
-    "@skyux/forms": "4.16.2",
-    "@skyux/http": "4.1.0",
-    "@skyux/i18n": "4.0.4",
-    "@skyux/indicators": "4.9.1",
+    "@skyux/forms": "4.16.3",
+    "@skyux/http": "4.2.0",
+    "@skyux/i18n": "4.1.0",
+    "@skyux/indicators": "4.9.2",
     "@skyux/inline-form": "4.1.1",
     "@skyux/layout": "4.6.0",
     "@skyux/lists": "4.7.1",
