@@ -1,6 +1,6 @@
 # 4.5.0 (2021-04-15)
 
-- Added support for SkyUX Icons on dropdown component. [#141](https://github.com/blackbaud/skyux-popovers/pull/141)
+- Added support for SKY UX icons on dropdown component. [#141](https://github.com/blackbaud/skyux-popovers/pull/141)
 
 # 4.4.1 (2021-03-19)
 
