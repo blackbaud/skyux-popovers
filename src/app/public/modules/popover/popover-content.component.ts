@@ -263,7 +263,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public close(): void {
     this.isOpen = false;
-    this.changeDetector.markForCheck();
+    this.changeDetector.detectChanges();
   }
 
   public applyFocus(): void {

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -144,7 +145,8 @@ export class SkyPopoverComponent implements OnDestroy {
   private _placement: SkyPopoverPlacement;
 
   constructor(
-    private overlayService: SkyOverlayService
+    private overlayService: SkyOverlayService,
+    private changeDetector: ChangeDetectorRef
   ) { }
 
   public ngOnDestroy(): void {
@@ -271,6 +273,9 @@ export class SkyPopoverComponent implements OnDestroy {
 
     this.overlay = overlay;
     this.contentRef = contentRef;
+
+    overlay.componentRef.changeDetectorRef.detectChanges();
+    this.changeDetector.detectChanges();
   }
 
 }
