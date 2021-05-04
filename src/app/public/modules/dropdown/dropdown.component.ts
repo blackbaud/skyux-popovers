@@ -125,6 +125,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   /**
    * Specifies an ARIA label for the dropdown. This sets the dropdown's `aria-label` attribute
    * [to support accessibility](https://developer.blackbaud.com/skyux/learn/accessibility).
+   * @default "Context menu"
    */
   @Input()
   public label: string;
