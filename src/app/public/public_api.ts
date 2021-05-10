@@ -12,3 +12,5 @@ export * from './modules/popover/types/popover-message-type';
 export * from './modules/popover/types/popover-placement';
 export * from './modules/popover/types/popover-position';
 export * from './modules/popover/types/popover-trigger';
+
+export * from './modules/popover/popover-lazy-compat.module';
