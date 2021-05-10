@@ -257,7 +257,9 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       this.updateArrowOffset();
 
       this.isOpen = true;
-      this.changeDetector.markForCheck();
+
+      // Trigger change detection after the popover has been setup.
+      this.changeDetector.detectChanges();
     });
   }
 
