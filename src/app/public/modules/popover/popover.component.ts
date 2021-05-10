@@ -191,6 +191,8 @@ export class SkyPopoverComponent implements OnDestroy {
         popoverTitle: this.popoverTitle
       }
     );
+
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -273,9 +275,6 @@ export class SkyPopoverComponent implements OnDestroy {
 
     this.overlay = overlay;
     this.contentRef = contentRef;
-
-    overlay.componentRef.changeDetectorRef.detectChanges();
-    this.changeDetector.detectChanges();
   }
 
 }
