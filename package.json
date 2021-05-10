@@ -55,7 +55,7 @@
     "@skyux/config": "4.4.0",
     "@skyux/core": "4.5.0",
     "@skyux/docs-tools": "4.9.0",
-    "@skyux/forms": "4.17.0",
+    "@skyux/forms": "4.17.1",
     "@skyux/http": "4.2.0",
     "@skyux/i18n": "4.1.0",
     "@skyux/indicators": "4.9.2",
