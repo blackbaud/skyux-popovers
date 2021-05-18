@@ -43,6 +43,8 @@ import {
 
 /**
  * @internal
+ * @deprecated This module was created as a temporary work-around to allow
+ * `SkyPopoverModule` to work within lazy-loaded feature modules.
  */
 @NgModule({
   declarations: [
