@@ -7,10 +7,6 @@ import {
 } from '@angular/core';
 
 import {
-  BrowserAnimationsModule
-} from '@angular/platform-browser/animations';
-
-import {
   SkyAffixModule,
   SkyCoreAdapterModule,
   SkyOverlayModule
@@ -52,7 +48,6 @@ import {
     SkyPopoverDirective
   ],
   imports: [
-    BrowserAnimationsModule,
     CommonModule,
     SkyAffixModule,
     SkyCoreAdapterModule,
