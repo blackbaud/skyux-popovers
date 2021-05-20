@@ -1,3 +1,7 @@
+# 5.0.0-alpha.0 (2021-05-20)
+
+- Removed `BrowserAnimationsModule` from the `imports` section of `SkyPopoverModule` to support lazy-loading. Consumers of `SkyPopoverModule` must now import `BrowserAnimationsModule` into their application's root module. [#152](https://github.com/blackbaud/skyux-indicators/pull/152)
+
 # 4.5.2 (2021-05-10)
 
 - Fixed the dropdown component to focus on the first menu item after users select the dropdown button. [#148](https://github.com/blackbaud/skyux-popovers/pull/148)
