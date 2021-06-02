@@ -71,7 +71,10 @@ import {
   selector: 'sky-popover-content',
   templateUrl: './popover-content.component.html',
   styleUrls: ['./popover-content.component.scss'],
-  animations: [skyPopoverAnimation]
+  animations: [skyPopoverAnimation],
+  providers: [
+    SkyPopoverAdapterService
+  ]
 })
 export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 

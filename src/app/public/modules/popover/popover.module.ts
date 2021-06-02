@@ -26,10 +26,6 @@ import {
 } from '../shared/popovers-resources.module';
 
 import {
-  SkyPopoverAdapterService
-} from './popover-adapter.service';
-
-import {
   SkyPopoverContentComponent
 } from './popover-content.component';
 
@@ -65,7 +61,6 @@ import {
     SkyPopoverContentComponent
   ],
   providers: [
-    SkyPopoverAdapterService,
     SkyThemeService
   ]
 })
