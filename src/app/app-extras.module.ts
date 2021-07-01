@@ -12,10 +12,6 @@ import {
 } from '@skyux/docs-tools';
 
 import {
-  SkyAuthHttpClientModule
-} from '@skyux/http';
-
-import {
   SkyAppLinkModule
 } from '@skyux/router';
 
@@ -27,7 +23,6 @@ import {
 @NgModule({
   exports: [
     SkyAppLinkModule,
-    SkyAuthHttpClientModule,
     SkyCodeModule,
     SkyDocsToolsModule,
     SkyDropdownModule,
