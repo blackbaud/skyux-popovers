@@ -7,6 +7,10 @@ import {
 } from '@angular/core';
 
 import {
+  SkyPopoversForRootCompatModule
+} from '../../shared/popovers-for-root-compat.module';
+
+import {
   SkyDropdownModule
 } from '../dropdown.module';
 
@@ -20,6 +24,7 @@ import {
   ],
   imports: [
     CommonModule,
+    SkyPopoversForRootCompatModule,
     SkyDropdownModule
   ],
   exports: [

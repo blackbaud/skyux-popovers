@@ -8,7 +8,6 @@ import {
 
 import {
   SkyAffixModule,
-  SkyCoreAdapterModule,
   SkyOverlayModule
 } from '@skyux/core';
 
@@ -17,9 +16,12 @@ import {
 } from '@skyux/indicators';
 
 import {
-  SkyThemeModule,
-  SkyThemeService
+  SkyThemeModule
 } from '@skyux/theme';
+
+import {
+  SkyPopoversForRootCompatModule
+} from '../shared/popovers-for-root-compat.module';
 
 import {
   SkyPopoversResourcesModule
@@ -46,9 +48,9 @@ import {
   imports: [
     CommonModule,
     SkyAffixModule,
-    SkyCoreAdapterModule,
     SkyIconModule,
     SkyOverlayModule,
+    SkyPopoversForRootCompatModule,
     SkyPopoversResourcesModule,
     SkyThemeModule
   ],
@@ -59,9 +61,6 @@ import {
   ],
   entryComponents: [
     SkyPopoverContentComponent
-  ],
-  providers: [
-    SkyThemeService
   ]
 })
 export class SkyPopoverModule { }

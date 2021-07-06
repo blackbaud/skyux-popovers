@@ -148,12 +148,12 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     private affixService: SkyAffixService,
     private coreAdapterService: SkyCoreAdapterService,
     private adapterService: SkyPopoverAdapterService,
-    private themeSvc: SkyThemeService,
-    @Optional() private context: SkyPopoverContext
+    @Optional() private context?: SkyPopoverContext,
+    @Optional() private themeSvc?: SkyThemeService
   ) { }
 
   public ngOnInit(): void {
-    this.contentTarget.createEmbeddedView(this.context.contentTemplateRef);
+    this.contentTarget.createEmbeddedView(this.context?.contentTemplateRef);
     this.addEventListeners();
 
     if (this.themeSvc) {

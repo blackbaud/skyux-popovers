@@ -11,8 +11,7 @@ import {
 } from '@skyux/popovers';
 
 import {
-  SkyThemeModule,
-  SkyThemeService
+  SkyThemeModule
 } from '@skyux/theme';
 
 @NgModule({
@@ -25,9 +24,6 @@ import {
   ],
   imports: [
     SkyThemeModule
-  ],
-  providers: [
-    SkyThemeService
   ]
 })
 export class SkyPopoverTestingModule { }
