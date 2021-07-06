@@ -11,6 +11,10 @@ import {
 } from '@angular/platform-browser/animations';
 
 import {
+  SkyPopoversForRootCompatModule
+} from '../../shared/popovers-for-root-compat.module';
+
+import {
   SkyPopoverModule
 } from '../popover.module';
 
@@ -22,6 +26,7 @@ import {
   imports: [
     CommonModule,
     NoopAnimationsModule,
+    SkyPopoversForRootCompatModule,
     SkyPopoverModule
   ],
   exports: [
