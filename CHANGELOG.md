@@ -1,3 +1,8 @@
+# 5.0.0-beta.0 (2021-07-06)
+
+- Initial beta release.
+- Added support for `5.0.0-beta.*` versions of SKY UX component libraries. [#154](https://github.com/blackbaud/skyux-popovers/pull/154)
+
 # 5.0.0-alpha.0 (2021-05-20)
 
 - Removed `BrowserAnimationsModule` from the `imports` section of `SkyPopoverModule` to support lazy-loading. Consumers of `SkyPopoverModule` must now import `BrowserAnimationsModule` into their application's root module. [#152](https://github.com/blackbaud/skyux-indicators/pull/152)
