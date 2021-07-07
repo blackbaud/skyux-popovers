@@ -1,4 +1,4 @@
-# 4.5.3 (2021-07-07)
+# 4.5.3 (2021-07-08)
 
 - Fixed the dropdown component to close after clicking an item when items are nested in multiple layers, such as `*ngFor` and `*ngIf` directives. [#156](https://github.com/blackbaud/skyux-popovers/pull/156)
 
