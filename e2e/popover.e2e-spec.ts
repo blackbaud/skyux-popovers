@@ -48,6 +48,7 @@ describe('Popover', () => {
     });
 
     it('should match previous screenshot of error popovers', (done) => {
+      SkyHostBrowser.scrollTo(`#screenshot-all-danger-popovers`);
       expect('#screenshot-all-danger-popovers').toMatchBaselineScreenshot(done, {
         screenshotName: getScreenshotName('popover-all-danger-popovers')
       });
