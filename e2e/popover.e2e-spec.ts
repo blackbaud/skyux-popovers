@@ -47,6 +47,12 @@ describe('Popover', () => {
       });
     });
 
+    it('should match previous screenshot of error popovers', (done) => {
+      expect('#screenshot-all-danger-popovers').toMatchBaselineScreenshot(done, {
+        screenshotName: getScreenshotName('popover-all-danger--popovers')
+      });
+    });
+
     it('should open a popover above the caller', (done) => {
       testPopoverPlacement('above', done);
     });

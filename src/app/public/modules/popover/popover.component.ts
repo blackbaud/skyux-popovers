@@ -97,6 +97,12 @@ export class SkyPopoverComponent implements OnDestroy {
   public popoverTitle: string;
 
   /**
+   * Specifies the type of popover.
+   */
+  @Input()
+  public popoverType: 'danger' | 'info';
+
+  /**
    * Fires when users close the popover.
    */
   @Output()
@@ -186,7 +192,8 @@ export class SkyPopoverComponent implements OnDestroy {
         horizontalAlignment: this.alignment,
         isStatic: false,
         placement: this.placement,
-        popoverTitle: this.popoverTitle
+        popoverTitle: this.popoverTitle,
+        popoverType: this.popoverType
       }
     );
   }
