@@ -218,6 +218,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     this.horizontalAlignment = config.horizontalAlignment;
     this.placement = config.placement;
     this.popoverTitle = config.popoverTitle;
+    /* istanbul ignore else */
     if (config.popoverType) {
       this.popoverType = config.popoverType;
     }
