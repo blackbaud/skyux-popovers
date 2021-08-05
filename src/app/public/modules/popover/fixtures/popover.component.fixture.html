@@ -19,10 +19,10 @@
     [dismissOnBlur]="dismissOnBlur"
     [placement]="popoverPlacement"
     [popoverTitle]="popoverTitle"
+    [popoverType]="popoverType"
     (popoverClosed)="onPopoverClosed()"
     (popoverOpened)="onPopoverOpened()"
     #popoverRef
-    popoverType="info"
   >
     <div
       [style.height.px]="height ? height : null"
