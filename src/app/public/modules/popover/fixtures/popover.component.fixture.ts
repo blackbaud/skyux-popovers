@@ -87,7 +87,7 @@ export class PopoverFixtureComponent implements OnInit, AfterViewInit {
 
   public showFocusableChildren: boolean = false;
 
-  public popoverType: 'info' | 'danger' | undefined;
+  public popoverType: 'info' | 'danger';
 
   public ngOnInit(): void {
     this.popoverRef.enableAnimations = false;

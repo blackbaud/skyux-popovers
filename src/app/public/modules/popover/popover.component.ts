@@ -98,7 +98,6 @@ export class SkyPopoverComponent implements OnDestroy {
 
   /**
    * Specifies the type of popover.
-   *
    * @default 'info'
    */
   @Input()
