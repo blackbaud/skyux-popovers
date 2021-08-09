@@ -1,6 +1,6 @@
 # 5.0.0-beta.1 (2021-08-09)
 
-- Added bug fixes and features from the `master` branch.
+- Added bug fixes and features from the `master` branch. [#160](https://github.com/blackbaud/skyux-popovers/pull/160)
 
 # 4.6.0 (2021-08-06)
 
