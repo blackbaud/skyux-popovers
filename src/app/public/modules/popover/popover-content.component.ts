@@ -112,6 +112,8 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
   public popoverTitle: string;
 
+  public popoverType: 'danger' | 'info' = 'info';
+
   public themeName: string;
 
   @ViewChild('arrowRef', {
@@ -210,6 +212,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
       isStatic: boolean;
       placement: SkyPopoverPlacement;
       popoverTitle: string;
+      popoverType?: 'danger' | 'info';
     }
   ): void {
     this.caller = caller;
@@ -218,6 +221,9 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
     this.horizontalAlignment = config.horizontalAlignment;
     this.placement = config.placement;
     this.popoverTitle = config.popoverTitle;
+    if (config.popoverType) {
+      this.popoverType = config.popoverType;
+    }
 
     this.changeDetector.markForCheck();
 
