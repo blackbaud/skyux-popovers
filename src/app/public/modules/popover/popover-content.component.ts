@@ -236,6 +236,10 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
     // Let the styles render before gauging the affix dimensions.
     setTimeout(() => {
+      if (!this.popoverRef?.nativeElement || !this.ngUnsubscribe || this.ngUnsubscribe.isStopped) {
+        return;
+      }
+
       if (!this.affixer) {
         this.setupAffixer();
       }
