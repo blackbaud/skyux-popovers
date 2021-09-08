@@ -9,7 +9,7 @@ import {
 
 import {
   SkyDropdownMenuChange
-} from '../../../../../popovers/src/public-api';
+} from 'projects/popovers/src/public-api';
 
 @Component({
   selector: 'dropdown-visual',

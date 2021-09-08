@@ -12,3 +12,14 @@ export * from './modules/popover/types/popover-message-type';
 export * from './modules/popover/types/popover-placement';
 export * from './modules/popover/types/popover-position';
 export * from './modules/popover/types/popover-trigger';
+
+// Components and directives must be exported to support Angular's "partial" Ivy compiler.
+// Obscure names are used to indicate types are not part of the public API.
+export { SkyDropdownItemComponent as λ1 } from './modules/dropdown/dropdown-item.component';
+export { SkyDropdownButtonComponent as λ2 } from './modules/dropdown/dropdown-button.component';
+export { SkyDropdownComponent as λ3 } from './modules/dropdown/dropdown.component';
+export { SkyDropdownComponent as λ4 } from './modules/dropdown/dropdown.component';
+export { SkyDropdownMenuComponent as λ5 } from './modules/dropdown/dropdown-menu.component';
+export { SkyPopoverContentComponent as λ6 } from './modules/popover/popover-content.component';
+export { SkyPopoverComponent as λ7 } from './modules/popover/popover.component';
+export { SkyPopoverDirective as λ8 } from './modules/popover/popover.directive';

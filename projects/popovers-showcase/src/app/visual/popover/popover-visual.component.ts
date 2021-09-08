@@ -20,16 +20,16 @@ import {
 
 import {
   SkyPopoverContentComponent
-} from '../../../../../popovers/src/modules/popover/popover-content.component'
+} from 'projects/popovers/src/modules/popover/popover-content.component'
 
 import {
   SkyPopoverContext
-} from '../../../../../popovers/src/modules/popover/popover-context'
+} from 'projects/popovers/src/modules/popover/popover-context'
 
 import {
   SkyPopoverAlignment,
   SkyPopoverPlacement
-} from '../../../../../popovers/src/public-api';
+} from 'projects/popovers/src/public-api';
 
 @Component({
   selector: 'popover-visual',

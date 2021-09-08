@@ -11,15 +11,6 @@ import {
 } from '@angular/forms';
 
 import {
-  SkyCodeModule
-} from '@blackbaud/skyux-lib-code-block';
-
-import {
-  SkyDocsToolsModule,
-  SkyDocsToolsOptions
-} from '@skyux/docs-tools';
-
-import {
   SkyAppLinkModule
 } from '@skyux/router';
 
@@ -47,8 +38,6 @@ import { VisualComponent } from './visual.component';
     CommonModule,
     ReactiveFormsModule,
     SkyAppLinkModule,
-    SkyCodeModule,
-    SkyDocsToolsModule,
     SkyDropdownModule,
     SkyPopoverModule
   ]
