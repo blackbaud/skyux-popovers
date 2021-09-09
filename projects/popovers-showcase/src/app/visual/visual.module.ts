@@ -11,13 +11,17 @@ import {
 } from '@angular/forms';
 
 import {
+  SkyE2eThemeSelectorModule
+} from '@skyux/e2e-client';
+
+import {
   SkyAppLinkModule
 } from '@skyux/router';
 
 import {
   SkyDropdownModule,
   SkyPopoverModule
-} from '../../../../popovers/src/public-api';
+} from 'projects/popovers/src/public-api';
 
 import {
   DropdownVisualComponent
@@ -26,7 +30,10 @@ import {
 import {
   PopoverVisualComponent
 } from './popover/popover-visual.component';
-import { VisualComponent } from './visual.component';
+
+import {
+  VisualComponent
+} from './visual.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +46,7 @@ import { VisualComponent } from './visual.component';
     ReactiveFormsModule,
     SkyAppLinkModule,
     SkyDropdownModule,
+    SkyE2eThemeSelectorModule,
     SkyPopoverModule
   ]
 })

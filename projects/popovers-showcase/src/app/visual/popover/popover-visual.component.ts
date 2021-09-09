@@ -14,11 +14,6 @@ import {
 } from '@angular/forms';
 
 import {
-  SkyThemeService,
-  SkyThemeSettings
-} from '@skyux/theme';
-
-import {
   SkyPopoverContentComponent
 } from 'projects/popovers/src/modules/popover/popover-content.component'
 
@@ -56,8 +51,7 @@ export class PopoverVisualComponent implements AfterViewInit {
   constructor(
     private resolver: ComponentFactoryResolver,
     private elementRef: ElementRef,
-    private injector: Injector,
-    private themeSvc: SkyThemeService
+    private injector: Injector
   ) { }
 
   public ngAfterViewInit(): void {
@@ -66,9 +60,6 @@ export class PopoverVisualComponent implements AfterViewInit {
     });
   }
 
-  public themeSettingsChange(themeSettings: SkyThemeSettings): void {
-    this.themeSvc.setTheme(themeSettings);
-  }
 
   /**
    * Creates "static" popover content for the visual tests only.
