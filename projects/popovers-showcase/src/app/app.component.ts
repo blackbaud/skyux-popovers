@@ -17,7 +17,6 @@ import {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'popovers-showcase';
   public isLoaded = false;
 
   constructor(
