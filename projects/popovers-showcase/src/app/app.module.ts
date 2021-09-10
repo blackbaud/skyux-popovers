@@ -11,6 +11,10 @@ import {
 } from '@angular/platform-browser/animations';
 
 import {
+  SkyThemeService
+} from '@skyux/theme';
+
+import {
   VisualModule
 } from './visual/visual.module';
 
@@ -32,7 +36,9 @@ import {
     NoopAnimationsModule,
     VisualModule
   ],
-  providers: [],
+  providers: [
+    SkyThemeService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
