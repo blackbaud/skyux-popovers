@@ -204,6 +204,7 @@ export class SkyPopoverComponent implements OnDestroy {
    * @internal
    */
   public close(): void {
+    /*istanbul ignore next*/
     this.contentRef?.close();
   }
 
@@ -212,6 +213,7 @@ export class SkyPopoverComponent implements OnDestroy {
    * @internal
    */
   public applyFocus(): void {
+    /*istanbul ignore next*/
     this.contentRef?.applyFocus();
   }
 
@@ -259,6 +261,7 @@ export class SkyPopoverComponent implements OnDestroy {
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe(() => {
+        /*istanbul ignore else*/
         if (this.isActive) {
           this.overlayService.close(this.overlay);
           this.overlay = undefined;

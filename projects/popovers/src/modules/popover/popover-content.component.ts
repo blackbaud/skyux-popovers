@@ -155,6 +155,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
+    /*istanbul ignore next*/
     this.contentTarget.createEmbeddedView(this.context?.contentTemplateRef);
     this.addEventListeners();
 
@@ -165,6 +166,7 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
           takeUntil(this.ngUnsubscribe)
         )
         .subscribe((themeSettings) => {
+          /*istanbul ignore next*/
           this.themeName = themeSettings.currentSettings?.theme?.name;
         });
     }
@@ -197,8 +199,10 @@ export class SkyPopoverContentComponent implements OnInit, OnDestroy {
 
     if (event.phaseName === 'done') {
       if (event.toState === 'open') {
+        /*istanbul ignore next*/
         this._opened?.next();
       } else {
+        /*istanbul ignore next*/
         this._closed?.next();
       }
     }

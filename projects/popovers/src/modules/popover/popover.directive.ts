@@ -240,6 +240,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
         break;
 
       case SkyPopoverMessageType.Close:
+        /*istanbul ignore else*/
         if (this.skyPopover.isActive) {
           this.closePopover();
         }
