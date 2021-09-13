@@ -14,7 +14,7 @@
     "skyux:generate-lib-resources-module": "ng generate @skyux/i18n:lib-resources-module",
     "skyux:update": "npm run skyux:update-angular && npm run skyux:update-skyux",
     "skyux:update-angular": "ng update @angular/core@12 @angular/cli@12 --allow-dirty --force",
-    "skyux:update-skyux": "ng update @blackbaud-internal/skyux-angular-builders@next @skyux/packages@next --allow-dirty --force"
+    "skyux:update-skyux": "ng update @skyux/packages@next --allow-dirty --force"
   },
   "private": true,
   "dependencies": {
@@ -32,7 +32,7 @@
     "@skyux/e2e-client": "^5.0.0",
     "@skyux/i18n": "^5.0.0-beta.7",
     "@skyux/indicators": "^5.0.0-beta.4",
-    "@skyux/packages": "^5.0.0-beta.84",
+    "@skyux/packages": "^5.0.0-beta.85",
     "@skyux/router": "^5.0.0-beta.1",
     "@skyux/theme": "^5.0.0-beta.5",
     "rxjs": "~6.6.0",
