@@ -1,6 +1,6 @@
 {
   "name": "@skyux/popovers",
-  "version": "5.0.0-beta.1",
+  "version": "5.0.0-beta.2",
   "peerDependencies": {
     "@angular/animations": "^12.2.0",
     "@angular/common": "^12.2.0",
