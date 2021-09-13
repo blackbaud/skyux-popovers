@@ -66,7 +66,7 @@ describe('Dropdown', () => {
       // Now that the button is focused, use the Arrow Down key to expand the menu, which
       // will also set focus on the first dropdown item.
       await buttonEl.sendKeys(Key.ARROW_DOWN);
-      browser.driver.sleep(250);
+      await browser.driver.sleep(250);
 
       expect('#screenshot-dropdown-button').toMatchBaselineScreenshot(done, {
         screenshotName: getScreenshotName('dropdown-item-focused')
