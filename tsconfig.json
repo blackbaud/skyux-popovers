@@ -15,6 +15,9 @@
       "popovers": [
         "dist/popovers/popovers",
         "dist/popovers"
+      ],
+      "@skyux/popovers": [
+        "projects/popovers/src/public-api.ts"
       ]
     },
     "module": "es2020",

@@ -11,6 +11,10 @@ import {
 } from '@angular/forms';
 
 import {
+  RouterModule
+} from '@angular/router';
+
+import {
   SkyE2eThemeSelectorModule
 } from '@skyux/e2e-client';
 
@@ -44,6 +48,7 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     SkyAppLinkModule,
     SkyDropdownModule,
     SkyE2eThemeSelectorModule,

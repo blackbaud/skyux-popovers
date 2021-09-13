@@ -14,7 +14,12 @@ import {
   PopoverVisualComponent
 } from './visual/popover/popover-visual.component';
 
+import {
+  VisualComponent
+} from './visual/visual.component';
+
 const routes: Routes = [
+  { path: '', component: VisualComponent },
   { path: 'visual/dropdown', component: DropdownVisualComponent },
   { path: 'visual/popover', component: PopoverVisualComponent }
 ];

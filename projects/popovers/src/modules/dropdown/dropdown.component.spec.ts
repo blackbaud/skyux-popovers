@@ -1214,3 +1214,38 @@ describe('Dropdown component', function () {
     }));
   });
 });
+
+describe('Dropdown component without theme service', function () {
+
+  let fixture: ComponentFixture<DropdownFixtureComponent>;
+
+  //#region helpers
+
+  /**
+   * Multiple ticks are needed to accommodate setTimeout and observable streams.
+   */
+   function detectChangesFakeAsync(): void {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
+  }
+
+  //#endregion
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        SkyDropdownFixturesModule,
+        SkyThemeModule
+      ]
+    });
+
+    fixture = TestBed.createComponent(DropdownFixtureComponent);
+  });
+
+  it('should build without a theme service', fakeAsync(() => {
+    detectChangesFakeAsync();
+    expect(fixture.componentInstance).toBeTruthy();
+  }));
+});

@@ -247,7 +247,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     private affixService: SkyAffixService,
     private overlayService: SkyOverlayService,
     @Optional() private themeSvc?: SkyThemeService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.addEventListeners();
