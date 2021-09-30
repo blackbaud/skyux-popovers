@@ -32,7 +32,8 @@
             "karmaConfig": "projects/popovers/karma.conf.js",
             "codeCoverage": true,
             "codeCoverageExclude": [
-              "**/fixtures/**"
+              "**/fixtures/**",
+              "projects/popovers/src/test.ts"
             ],
             "styles": [
               "@skyux/theme/css/sky.css",
