@@ -1,21 +1,11 @@
 <sky-e2e-theme-selector></sky-e2e-theme-selector>
 
-<div
-  class="static-popovers"
-  id="screenshot-all-popovers"
->
-  <ng-container
-    #staticPopoversTarget
-  ></ng-container>
+<div class="static-popovers" id="screenshot-all-popovers">
+  <ng-container #staticPopoversTarget></ng-container>
 </div>
 
-<div
-  class="static-popovers"
-  id="screenshot-all-danger-popovers"
->
-  <ng-container
-    #staticDangerPopoversTarget
-  ></ng-container>
+<div class="static-popovers" id="screenshot-all-danger-popovers">
+  <ng-container #staticDangerPopoversTarget></ng-container>
 </div>
 
 <ng-template #staticPopoverContentRef>
@@ -25,13 +15,27 @@
 <div>
   <strong>Popover type:</strong>
   <ul class="sky-list-unstyled">
-    <li><label><input type="radio" [formControl]="popoverType" value="info"> info</label></li>
-    <li><label><input type="radio" [formControl]="popoverType" value="danger"> danger</label></li>
+    <li>
+      <label
+        ><input type="radio" [formControl]="popoverType" value="info" />
+        info</label
+      >
+    </li>
+    <li>
+      <label
+        ><input type="radio" [formControl]="popoverType" value="danger" />
+        danger</label
+      >
+    </li>
   </ul>
 </div>
 
 <div id="screenshot-popover-placements">
-  <button id="btn-popover-placement-default" class="sky-btn" [skyPopover]="myPopover5">
+  <button
+    id="btn-popover-placement-default"
+    class="sky-btn"
+    [skyPopover]="myPopover5"
+  >
     Default
   </button>
 
@@ -39,7 +43,12 @@
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elit arcu.
   </sky-popover>
 
-  <button id="btn-popover-placement-right" class="sky-btn" [skyPopover]="myPopover1" skyPopoverPlacement="right">
+  <button
+    id="btn-popover-placement-right"
+    class="sky-btn"
+    [skyPopover]="myPopover1"
+    skyPopoverPlacement="right"
+  >
     Right
   </button>
 
@@ -47,7 +56,12 @@
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elit arcu.
   </sky-popover>
 
-  <button id="btn-popover-placement-above" class="sky-btn" [skyPopover]="myPopover2" skyPopoverPlacement="above">
+  <button
+    id="btn-popover-placement-above"
+    class="sky-btn"
+    [skyPopover]="myPopover2"
+    skyPopoverPlacement="above"
+  >
     Top
   </button>
 
@@ -56,7 +70,12 @@
   </sky-popover>
 
   <button
-    id="btn-popover-placement-above-left" class="sky-btn" [skyPopover]="myPopover2a" skyPopoverPlacement="above" skyPopoverAlignment="left">
+    id="btn-popover-placement-above-left"
+    class="sky-btn"
+    [skyPopover]="myPopover2a"
+    skyPopoverPlacement="above"
+    skyPopoverAlignment="left"
+  >
     Top, align left
   </button>
 
@@ -65,7 +84,12 @@
   </sky-popover>
 
   <button
-    id="btn-popover-placement-above-right" class="sky-btn" [skyPopover]="myPopover2b" skyPopoverPlacement="above" skyPopoverAlignment="right">
+    id="btn-popover-placement-above-right"
+    class="sky-btn"
+    [skyPopover]="myPopover2b"
+    skyPopoverPlacement="above"
+    skyPopoverAlignment="right"
+  >
     Top, align right
   </button>
 
@@ -73,7 +97,12 @@
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elit arcu.
   </sky-popover>
 
-  <button id="btn-popover-placement-below" class="sky-btn" [skyPopover]="myPopover3" skyPopoverPlacement="below">
+  <button
+    id="btn-popover-placement-below"
+    class="sky-btn"
+    [skyPopover]="myPopover3"
+    skyPopoverPlacement="below"
+  >
     Below
   </button>
 
@@ -82,7 +111,12 @@
   </sky-popover>
 
   <button
-    id="btn-popover-placement-below-left" class="sky-btn" [skyPopover]="myPopover3a" skyPopoverPlacement="below" skyPopoverAlignment="left">
+    id="btn-popover-placement-below-left"
+    class="sky-btn"
+    [skyPopover]="myPopover3a"
+    skyPopoverPlacement="below"
+    skyPopoverAlignment="left"
+  >
     Below, align left
   </button>
 
@@ -91,7 +125,12 @@
   </sky-popover>
 
   <button
-    id="btn-popover-placement-below-right" class="sky-btn" [skyPopover]="myPopover3b" skyPopoverPlacement="below" skyPopoverAlignment="right">
+    id="btn-popover-placement-below-right"
+    class="sky-btn"
+    [skyPopover]="myPopover3b"
+    skyPopoverPlacement="below"
+    skyPopoverAlignment="right"
+  >
     Below, align right
   </button>
 
@@ -99,7 +138,12 @@
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elit arcu.
   </sky-popover>
 
-  <button id="btn-popover-placement-left" class="sky-btn" [skyPopover]="myPopover4" skyPopoverPlacement="left">
+  <button
+    id="btn-popover-placement-left"
+    class="sky-btn"
+    [skyPopover]="myPopover4"
+    skyPopoverPlacement="left"
+  >
     Left
   </button>
 
@@ -108,7 +152,7 @@
   </sky-popover>
 </div>
 
-<div id="screenshot-popover-tiny" style="padding-top:200px;">
+<div id="screenshot-popover-tiny" style="padding-top: 200px">
   <button id="btn-popover-tiny" class="sky-btn" [skyPopover]="myPopoverTiny">
     Default
   </button>
@@ -119,7 +163,11 @@
 </div>
 
 <div id="screenshot-popover-with-dropdown">
-  <button id="btn-popover-with-dropdown" class="sky-btn" [skyPopover]="myPopoverWithDropdown">
+  <button
+    id="btn-popover-with-dropdown"
+    class="sky-btn"
+    [skyPopover]="myPopoverWithDropdown"
+  >
     Default
   </button>
 
@@ -128,27 +176,19 @@
     #myPopoverWithDropdown
     [popoverType]="popoverType.value"
   >
-    <div
-      id="popover-with-dropdown"
-    >
-      The content of a popover can be text, HTML, or Angular components.<br><br>
+    <div id="popover-with-dropdown">
+      The content of a popover can be text, HTML, or Angular components.<br /><br />
 
       <sky-dropdown buttonType="context-menu">
         <sky-dropdown-menu>
           <sky-dropdown-item>
-            <button type="button">
-              Option 1
-            </button>
+            <button type="button">Option 1</button>
           </sky-dropdown-item>
           <sky-dropdown-item>
-            <button type="button">
-              Option 2
-            </button>
+            <button type="button">Option 2</button>
           </sky-dropdown-item>
           <sky-dropdown-item>
-            <button type="button">
-              Option 3
-            </button>
+            <button type="button">Option 3</button>
           </sky-dropdown-item>
         </sky-dropdown-menu>
       </sky-dropdown>
@@ -156,12 +196,22 @@
   </sky-popover>
 </div>
 
-<div id="screenshot-popover-positioned-parent" style="padding-top:0;height:500px;">
-  <div style="border:1px solid red;position:relative;padding:20px;overflow:hidden;">
-    <table style="border:1px solid blue;width:100%;">
+<div
+  id="screenshot-popover-positioned-parent"
+  style="padding-top: 0; height: 500px"
+>
+  <div
+    style="
+      border: 1px solid red;
+      position: relative;
+      padding: 20px;
+      overflow: hidden;
+    "
+  >
+    <table style="border: 1px solid blue; width: 100%">
       <tbody>
         <tr>
-          <td style="padding:20px;">
+          <td style="padding: 20px">
             <span id="popover-positioned-parent-container-left">
               <button
                 id="btn-popover-position-parent-left"
@@ -169,34 +219,25 @@
                 type="button"
                 [skyPopover]="positionedParent1"
                 skyPopoverPlacement="below"
-                skyPopoverAlignment="left">
+                skyPopoverAlignment="left"
+              >
                 Below, align left
               </button>
 
-              <sky-popover
-                #positionedParent1
-                [popoverType]="popoverType.value"
-              >
-                <div
-                  id="popover-positioned-parent-left"
-                >
-                  The content of a popover can be text, HTML, or Angular components.<br>
+              <sky-popover #positionedParent1 [popoverType]="popoverType.value">
+                <div id="popover-positioned-parent-left">
+                  The content of a popover can be text, HTML, or Angular
+                  components.<br />
                   <sky-dropdown buttonType="context-menu">
                     <sky-dropdown-menu>
                       <sky-dropdown-item>
-                        <button type="button">
-                          Option 1
-                        </button>
+                        <button type="button">Option 1</button>
                       </sky-dropdown-item>
                       <sky-dropdown-item>
-                        <button type="button">
-                          Option 2
-                        </button>
+                        <button type="button">Option 2</button>
                       </sky-dropdown-item>
                       <sky-dropdown-item>
-                        <button type="button">
-                          Option 3
-                        </button>
+                        <button type="button">Option 3</button>
                       </sky-dropdown-item>
                     </sky-dropdown-menu>
                   </sky-dropdown>
@@ -208,37 +249,28 @@
                 id="btn-popover-position-parent-right"
                 class="sky-btn"
                 type="button"
-                style="float:right;"
+                style="float: right"
                 [skyPopover]="positionedParent2"
                 skyPopoverPlacement="below"
-                skyPopoverAlignment="left">
+                skyPopoverAlignment="left"
+              >
                 Below, align left
               </button>
 
-              <sky-popover
-                #positionedParent2
-                [popoverType]="popoverType.value"
-              >
-                <div
-                  id="popover-positioned-parent-right"
-                >
-                  The content of a popover can be text, HTML, or Angular components.<br>
+              <sky-popover #positionedParent2 [popoverType]="popoverType.value">
+                <div id="popover-positioned-parent-right">
+                  The content of a popover can be text, HTML, or Angular
+                  components.<br />
                   <sky-dropdown buttonType="context-menu">
                     <sky-dropdown-menu>
                       <sky-dropdown-item>
-                        <button type="button">
-                          Option 1
-                        </button>
+                        <button type="button">Option 1</button>
                       </sky-dropdown-item>
                       <sky-dropdown-item>
-                        <button type="button">
-                          Option 2
-                        </button>
+                        <button type="button">Option 2</button>
                       </sky-dropdown-item>
                       <sky-dropdown-item>
-                        <button type="button">
-                          Option 3
-                        </button>
+                        <button type="button">Option 3</button>
                       </sky-dropdown-item>
                     </sky-dropdown-menu>
                   </sky-dropdown>
@@ -257,9 +289,10 @@
     <button
       class="sky-btn"
       type="button"
-      style="display:block;width:100%;"
+      style="display: block; width: 100%"
       [skyPopover]="myPopover5"
-      skyPopoverPlacement="below">
+      skyPopoverPlacement="below"
+    >
       Below
     </button>
   </p>
@@ -267,10 +300,11 @@
     <button
       class="sky-btn"
       type="button"
-      style="display:block;width:100%;"
+      style="display: block; width: 100%"
       [skyPopover]="myPopover5"
       skyPopoverPlacement="below"
-      skyPopoverAlignment="left">
+      skyPopoverAlignment="left"
+    >
       Below, left
     </button>
   </p>
@@ -278,10 +312,11 @@
     <button
       class="sky-btn"
       type="button"
-      style="display:block;width:100%;"
+      style="display: block; width: 100%"
       [skyPopover]="myPopover5"
       skyPopoverPlacement="below"
-      skyPopoverAlignment="right">
+      skyPopoverAlignment="right"
+    >
       Below, right
     </button>
   </p>
@@ -289,9 +324,10 @@
     <button
       class="sky-btn"
       type="button"
-      style="display:block;width:100%;"
+      style="display: block; width: 100%"
       [skyPopover]="myPopover5"
-      skyPopoverPlacement="above">
+      skyPopoverPlacement="above"
+    >
       Above
     </button>
   </p>
@@ -299,10 +335,11 @@
     <button
       class="sky-btn"
       type="button"
-      style="display:block;width:100%;"
+      style="display: block; width: 100%"
       [skyPopover]="myPopover5"
       skyPopoverPlacement="above"
-      skyPopoverAlignment="left">
+      skyPopoverAlignment="left"
+    >
       Above, left
     </button>
   </p>
@@ -310,10 +347,11 @@
     <button
       class="sky-btn"
       type="button"
-      style="display:block;width:100%;"
+      style="display: block; width: 100%"
       [skyPopover]="myPopover5"
       skyPopoverPlacement="above"
-      skyPopoverAlignment="right">
+      skyPopoverAlignment="right"
+    >
       Above, right
     </button>
   </p>

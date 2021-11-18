@@ -1,13 +1,6 @@
-import {
-  expect,
-  SkyHostBrowser,
-  SkyVisualThemeSelector
-} from '@skyux-sdk/e2e';
+import { expect, SkyHostBrowser, SkyVisualThemeSelector } from '@skyux-sdk/e2e';
 
-import {
-  element,
-  by
-} from 'protractor';
+import { element, by } from 'protractor';
 
 describe('Popover', () => {
   let currentTheme: string;
@@ -32,26 +25,32 @@ describe('Popover', () => {
     return SkyVisualThemeSelector.selectTheme(theme, mode);
   }
 
-  async function testPopoverPlacement(placement: string, done: DoneFn): Promise<void> {
+  async function testPopoverPlacement(
+    placement: string,
+    done: DoneFn
+  ): Promise<void> {
     await SkyHostBrowser.scrollTo(`#screenshot-popover-placements`);
     await element(by.id(`btn-popover-placement-${placement}`)).click();
     expect('#screenshot-popover-placements').toMatchBaselineScreenshot(done, {
-      screenshotName: getScreenshotName(`popover-placement-${placement}`)
+      screenshotName: getScreenshotName(`popover-placement-${placement}`),
     });
   }
 
   function validateAll() {
     it('should match previous screenshot', (done) => {
       expect('#screenshot-all-popovers').toMatchBaselineScreenshot(done, {
-        screenshotName: getScreenshotName('popover-all-popovers')
+        screenshotName: getScreenshotName('popover-all-popovers'),
       });
     });
 
     it('should match previous screenshot of error popovers', async (done) => {
       await SkyHostBrowser.scrollTo(`#screenshot-all-danger-popovers`);
-      expect('#screenshot-all-danger-popovers').toMatchBaselineScreenshot(done, {
-        screenshotName: getScreenshotName('popover-all-danger-popovers')
-      });
+      expect('#screenshot-all-danger-popovers').toMatchBaselineScreenshot(
+        done,
+        {
+          screenshotName: getScreenshotName('popover-all-danger-popovers'),
+        }
+      );
     });
 
     it('should open a popover above the caller', (done) => {
@@ -91,35 +90,50 @@ describe('Popover', () => {
       await SkyHostBrowser.scrollTo(`#screenshot-popover-tiny`);
       await element(by.id(`btn-popover-tiny`)).click();
       expect('#screenshot-popover-tiny').toMatchBaselineScreenshot(done, {
-        screenshotName: getScreenshotName('popover-tiny-screen')
+        screenshotName: getScreenshotName('popover-tiny-screen'),
       });
     });
 
     it('should handle absolutely positioned items inside the popover', async (done) => {
       await SkyHostBrowser.scrollTo('#screenshot-popover-with-dropdown');
       await element(by.id('btn-popover-with-dropdown')).click();
-      await element(by.css('#popover-with-dropdown .sky-dropdown-button')).click();
-      expect('#screenshot-popover-with-dropdown').toMatchBaselineScreenshot(done, {
-        screenshotName: getScreenshotName('popover-with-dropdown')
-      });
+      await element(
+        by.css('#popover-with-dropdown .sky-dropdown-button')
+      ).click();
+      expect('#screenshot-popover-with-dropdown').toMatchBaselineScreenshot(
+        done,
+        {
+          screenshotName: getScreenshotName('popover-with-dropdown'),
+        }
+      );
     });
 
     it('should handle left aligned popover in positioned parent', async (done) => {
       await SkyHostBrowser.scrollTo('#screenshot-popover-positioned-parent');
       await element(by.id('btn-popover-position-parent-left')).click();
-      await element(by.css('#popover-positioned-parent-left .sky-dropdown-button')).click();
-      expect('#screenshot-popover-positioned-parent').toMatchBaselineScreenshot(done, {
-        screenshotName: getScreenshotName('popover-position-parent-left')
-      });
+      await element(
+        by.css('#popover-positioned-parent-left .sky-dropdown-button')
+      ).click();
+      expect('#screenshot-popover-positioned-parent').toMatchBaselineScreenshot(
+        done,
+        {
+          screenshotName: getScreenshotName('popover-position-parent-left'),
+        }
+      );
     });
 
     it('should handle right aligned popover in positioned parent', async (done) => {
       await SkyHostBrowser.scrollTo('#screenshot-popover-positioned-parent');
       await element(by.id('btn-popover-position-parent-right')).click();
-      await element(by.css('#popover-positioned-parent-right .sky-dropdown-button')).click();
-      expect('#screenshot-popover-positioned-parent').toMatchBaselineScreenshot(done, {
-        screenshotName: getScreenshotName('popover-position-parent-right')
-      });
+      await element(
+        by.css('#popover-positioned-parent-right .sky-dropdown-button')
+      ).click();
+      expect('#screenshot-popover-positioned-parent').toMatchBaselineScreenshot(
+        done,
+        {
+          screenshotName: getScreenshotName('popover-position-parent-right'),
+        }
+      );
     });
   }
 
@@ -148,5 +162,4 @@ describe('Popover', () => {
 
     validateAll();
   });
-
 });

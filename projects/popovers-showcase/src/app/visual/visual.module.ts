@@ -1,43 +1,25 @@
-import {
-  CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-  NgModule
-} from '@angular/core';
+import { NgModule } from '@angular/core';
 
-import {
-  ReactiveFormsModule
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
-import {
-  RouterModule
-} from '@angular/router';
+import { RouterModule } from '@angular/router';
 
-import {
-  SkyE2eThemeSelectorModule
-} from '@skyux/e2e-client';
+import { SkyE2eThemeSelectorModule } from '@skyux/e2e-client';
 
-import {
-  SkyAppLinkModule
-} from '@skyux/router';
+import { SkyAppLinkModule } from '@skyux/router';
 
 import {
   SkyDropdownModule,
-  SkyPopoverModule
+  SkyPopoverModule,
 } from 'projects/popovers/src/public-api';
 
-import {
-  DropdownVisualComponent
-} from './dropdown/dropdown-visual.component';
+import { DropdownVisualComponent } from './dropdown/dropdown-visual.component';
 
-import {
-  PopoverVisualComponent
-} from './popover/popover-visual.component';
+import { PopoverVisualComponent } from './popover/popover-visual.component';
 
-import {
-  VisualComponent
-} from './visual.component';
+import { VisualComponent } from './visual.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +34,7 @@ import {
     SkyAppLinkModule,
     SkyDropdownModule,
     SkyE2eThemeSelectorModule,
-    SkyPopoverModule
-  ]
+    SkyPopoverModule,
+  ],
 })
 export class VisualModule {}
