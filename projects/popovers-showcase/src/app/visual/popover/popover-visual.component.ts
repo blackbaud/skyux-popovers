@@ -6,40 +6,33 @@ import {
   Injector,
   TemplateRef,
   ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
 
-import {
-  FormControl
-} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
-import {
-  SkyPopoverContentComponent
-} from 'projects/popovers/src/modules/popover/popover-content.component'
+import { SkyPopoverContentComponent } from 'projects/popovers/src/modules/popover/popover-content.component';
 
-import {
-  SkyPopoverContext
-} from 'projects/popovers/src/modules/popover/popover-context'
+import { SkyPopoverContext } from 'projects/popovers/src/modules/popover/popover-context';
 
 import {
   SkyPopoverAlignment,
-  SkyPopoverPlacement
+  SkyPopoverPlacement,
 } from 'projects/popovers/src/public-api';
 
 @Component({
-  selector: 'popover-visual',
+  selector: 'app-popover-visual',
   templateUrl: './popover-visual.component.html',
-  styleUrls: ['./popover-visual.component.scss']
+  styleUrls: ['./popover-visual.component.scss'],
 })
 export class PopoverVisualComponent implements AfterViewInit {
-
   @ViewChild('staticPopoversTarget', {
-    read: ViewContainerRef
+    read: ViewContainerRef,
   })
   private staticPopoversTarget: ViewContainerRef;
 
   @ViewChild('staticDangerPopoversTarget', {
-    read: ViewContainerRef
+    read: ViewContainerRef,
   })
   private staticDangerPopoversTarget: ViewContainerRef;
 
@@ -52,7 +45,7 @@ export class PopoverVisualComponent implements AfterViewInit {
     private resolver: ComponentFactoryResolver,
     private elementRef: ElementRef,
     private injector: Injector
-  ) { }
+  ) {}
 
   public ngAfterViewInit(): void {
     setTimeout(() => {
@@ -60,61 +53,60 @@ export class PopoverVisualComponent implements AfterViewInit {
     });
   }
 
-
   /**
    * Creates "static" popover content for the visual tests only.
    */
   private createStaticPopovers(): void {
     const configs: {
       horizontalAlignment: SkyPopoverAlignment;
-      placement: SkyPopoverPlacement,
+      placement: SkyPopoverPlacement;
       popoverTitle: string;
     }[] = [
       {
         horizontalAlignment: 'center',
         placement: 'above',
-        popoverTitle: undefined
+        popoverTitle: undefined,
       },
       {
         horizontalAlignment: 'center',
         placement: 'below',
-        popoverTitle: undefined
+        popoverTitle: undefined,
       },
       {
         horizontalAlignment: 'center',
         placement: 'right',
-        popoverTitle: undefined
+        popoverTitle: undefined,
       },
       {
         horizontalAlignment: 'center',
         placement: 'left',
-        popoverTitle: undefined
+        popoverTitle: undefined,
       },
       {
         horizontalAlignment: 'center',
         placement: 'above',
-        popoverTitle: undefined
+        popoverTitle: undefined,
       },
       {
         horizontalAlignment: 'center',
         placement: 'above',
-        popoverTitle: 'Did you know?'
+        popoverTitle: 'Did you know?',
       },
       {
         horizontalAlignment: 'center',
         placement: 'below',
-        popoverTitle: 'Did you know?'
+        popoverTitle: 'Did you know?',
       },
       {
         horizontalAlignment: 'center',
         placement: 'right',
-        popoverTitle: 'Did you know?'
+        popoverTitle: 'Did you know?',
       },
       {
         horizontalAlignment: 'center',
         placement: 'left',
-        popoverTitle: 'Did you know?'
-      }
+        popoverTitle: 'Did you know?',
+      },
     ];
 
     const injector = Injector.create({
@@ -122,30 +114,23 @@ export class PopoverVisualComponent implements AfterViewInit {
         {
           provide: SkyPopoverContext,
           useValue: new SkyPopoverContext({
-            contentTemplateRef: this.staticPopoverContentRef
-          })
-        }
+            contentTemplateRef: this.staticPopoverContentRef,
+          }),
+        },
       ],
-      parent: this.injector
+      parent: this.injector,
     });
 
-    const factory = this.resolver.resolveComponentFactory(SkyPopoverContentComponent);
+    const factory = this.resolver.resolveComponentFactory(
+      SkyPopoverContentComponent
+    );
 
     configs.forEach((config) => {
-      const componentRef = this.staticPopoversTarget.createComponent(factory, undefined, injector);
-
-      componentRef.instance.open(this.elementRef, {
-        dismissOnBlur: false,
-        enableAnimations: false,
-        horizontalAlignment: config.horizontalAlignment,
-        isStatic: true,
-        placement: config.placement,
-        popoverTitle: config.popoverTitle
-      });
-    });
-
-    configs.forEach((config) => {
-      const componentRef = this.staticDangerPopoversTarget.createComponent(factory, undefined, injector);
+      const componentRef = this.staticPopoversTarget.createComponent(
+        factory,
+        undefined,
+        injector
+      );
 
       componentRef.instance.open(this.elementRef, {
         dismissOnBlur: false,
@@ -154,9 +139,25 @@ export class PopoverVisualComponent implements AfterViewInit {
         isStatic: true,
         placement: config.placement,
         popoverTitle: config.popoverTitle,
-        popoverType: 'danger'
+      });
+    });
+
+    configs.forEach((config) => {
+      const componentRef = this.staticDangerPopoversTarget.createComponent(
+        factory,
+        undefined,
+        injector
+      );
+
+      componentRef.instance.open(this.elementRef, {
+        dismissOnBlur: false,
+        enableAnimations: false,
+        horizontalAlignment: config.horizontalAlignment,
+        isStatic: true,
+        placement: config.placement,
+        popoverTitle: config.popoverTitle,
+        popoverType: 'danger',
       });
     });
   }
-
 }
