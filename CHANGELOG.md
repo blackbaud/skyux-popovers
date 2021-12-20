@@ -1,3 +1,7 @@
+# 4.7.1 (2021-12-20)
+
+- Added bug fixes and features from the `master` branch. [#171](https://github.com/blackbaud/skyux-popovers/pull/171)
+
 # 4.7.0 (2021-08-25)
 
 - Added reference checking on close to support AG Grid popovers. [#161](https://github.com/blackbaud/skyux-popovers/pull/161)

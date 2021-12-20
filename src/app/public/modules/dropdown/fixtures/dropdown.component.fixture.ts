@@ -94,9 +94,9 @@ export class DropdownFixtureComponent {
     { name: 'Option 4', disabled: false }
   ];
 
-  constructor(
-    private changeDetector: ChangeDetectorRef
-  ) { }
+  public show: boolean = true;
+
+  constructor(private changeDetector: ChangeDetectorRef) {}
 
   public onMenuChanges(): void { }
 

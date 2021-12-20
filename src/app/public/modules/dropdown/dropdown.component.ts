@@ -242,6 +242,8 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   private _trigger: SkyDropdownTriggerType;
 
+  private _positionTimeout: number;
+
   constructor(
     private changeDetector: ChangeDetectorRef,
     private affixService: SkyAffixService,
@@ -273,6 +275,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.destroyAffixer();
     this.destroyOverlay();
+    clearTimeout(this._positionTimeout);
 
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -470,7 +473,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
     this.createOverlay();
     this.changeDetector.markForCheck();
 
-    setTimeout(() => {
+    this._positionTimeout = setTimeout(() => {
       this.affixer.affixTo(this.triggerButton.nativeElement, {
         autoFitContext: SkyAffixAutoFitContext.Viewport,
         enableAutoFit: true,
