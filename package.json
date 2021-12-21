@@ -46,11 +46,7 @@
     "@angular-eslint/template-parser": "12.7.0",
     "@angular/cli": "12.2.14",
     "@angular/compiler-cli": "12.2.15",
-<<<<<<< Updated upstream
     "@skyux-sdk/angular-builders": "5.0.0-beta.3",
-=======
-    "@skyux-sdk/angular-builders": "file:.yalc/@skyux-sdk/angular-builders",
->>>>>>> Stashed changes
     "@skyux-sdk/documentation-schematics": "5.0.0",
     "@skyux-sdk/e2e": "5.0.0-beta.1",
     "@skyux-sdk/prettier-schematics": "5.0.0",
