@@ -29,7 +29,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
 
   /**
    * Specifies the horizontal alignment of the popover in relation to the trigger element.
-   * Options include:`center`, `right`, and `left`.
+   * Options include:`"center"`, `"right"`, and `"left"`.
    * @default "center"
    */
   @Input()
@@ -43,7 +43,7 @@ export class SkyPopoverDirective implements OnInit, OnDestroy {
 
   /**
    * Specifies the placement of the popover in relation to the trigger element.
-   * Options include:`above`, `below`, `right`, and `left`.
+   * Options include:`"above"`, `"below"`, `"right"`, and `"left"`.
    * @default "above"
    */
   @Input()
