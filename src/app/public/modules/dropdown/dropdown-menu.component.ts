@@ -57,14 +57,14 @@ export class SkyDropdownMenuComponent implements AfterContentInit, OnDestroy {
   /**
    * Specifies the HTML element ID (without the leading `#`) of the element that labels
    * the dropdown menu. This sets the dropdown menu's `aria-labelledby` attribute
-   * [to support accessibility](https://developer.blackbaud.com/skyux/learn/accessibility).
+   * [to support accessibility](https://developer.blackbaud.com/skyux-v4/learn/accessibility).
    */
   @Input()
   public ariaLabelledBy: string;
 
   /**
    * Specifies an ARIA role for the dropdown menu
-   * [to support accessibility](https://developer.blackbaud.com/skyux/learn/accessibility)
+   * [to support accessibility](https://developer.blackbaud.com/skyux-v4/learn/accessibility)
    * by indicating how the dropdown menu functions and what it controls. The dropdown button
    * inherits this value to set its `aria-haspopup` property. For information
    * about how an ARIA role indicates what an item represents on a web page, see the
