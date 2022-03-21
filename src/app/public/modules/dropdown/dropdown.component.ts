@@ -63,7 +63,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   /**
    * Specifies a background color for the dropdown button. Available values are `default` and
    * `primary`. These values set the background color from the
-   * [secondary and primary button classes](https://developer.blackbaud.com/skyux/components/button) respectively.
+   * [secondary and primary button classes](https://developer.blackbaud.com/skyux-v4/components/button) respectively.
    * @default "default"
    */
   @Input()
@@ -124,7 +124,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
 
   /**
    * Specifies an ARIA label for the dropdown. This sets the dropdown's `aria-label` attribute
-   * [to support accessibility](https://developer.blackbaud.com/skyux/learn/accessibility).
+   * [to support accessibility](https://developer.blackbaud.com/skyux-v4/learn/accessibility).
    */
   @Input()
   public label: string;
@@ -159,7 +159,7 @@ export class SkyDropdownComponent implements OnInit, OnDestroy {
   /**
    * Specifies how users interact with the dropdown button to expose the dropdown menu.
    * We recommend the default `click` value because the `hover` value can pose
-   * [accessibility](https://developer.blackbaud.com/skyux/learn/accessibility) issues
+   * [accessibility](https://developer.blackbaud.com/skyux-v4/learn/accessibility) issues
    * for users on touch devices such as phones and tablets.
    * @deprecated We recommend against using this property. If you choose to use the deprecated
    * `hover` value anyway, we recommend that you not use it in combination with the `title`
